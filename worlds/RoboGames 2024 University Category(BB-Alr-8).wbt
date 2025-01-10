@@ -2,15 +2,16 @@
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "../protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Roughcast.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.3895672818960493 -0.29811165373735965 -0.8714165334569346 4.317831925042535
-  position 0.7710501123309003 -3.4154561655306934 4.209322889856997
+  orientation 0.06474478886321695 -0.831635676921332 -0.5515344170463482 5.144588080708867
+  position -2.324187249993221 -0.7704474096224829 2.8011519773509086
 }
 TexturedBackground {
 }
@@ -49,6 +50,18 @@ Wall {
   size 0.01 0.5 0.1
 }
 Wall {
+  translation 0.95 -0.24 0
+  rotation 0 0 1 1.5708
+  name "wall(46)"
+  size 0.01 0.1 0.1
+  appearance Roughcast {
+    colorOverride 0.647 0.412 0.118
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
   translation 0.25 -0.25 0
   rotation 0 0 1 1.5708
   name "wall(36)"
@@ -64,6 +77,18 @@ Wall {
   rotation 0 0 1 1.5708
   name "wall(37)"
   size 0.01 0.5 0.1
+}
+Wall {
+  translation 0.55 -0.49 0
+  rotation 0 0 1 1.5708
+  name "wall(47)"
+  size 0.01 0.1 0.1
+  appearance Roughcast {
+    colorOverride 1 0 1
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
 }
 Wall {
   translation 0.75 -0.875 0
@@ -138,6 +163,18 @@ Wall {
   size 0.01 0.25 0.1
 }
 Wall {
+  translation -1.125 -0.49 0
+  rotation 0 0 1 1.5708
+  name "wall(44)"
+  size 0.01 0.1 0.1
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
   translation -0.875 0.25 0
   rotation 0 0 1 1.5708
   name "wall(16)"
@@ -192,10 +229,34 @@ Wall {
   size 0.01 0.25 0.1
 }
 Wall {
+  translation 0.7 0.49 0
+  rotation 0 0 1 1.5708
+  name "wall(45)"
+  size 0.01 0.1 0.1
+  appearance Roughcast {
+    colorOverride 1 0 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
   translation -0.25 -0.75 0
   rotation 0 0 1 1.5708
   name "wall(2)"
   size 0.01 0.5 0.1
+}
+Wall {
+  translation 0.05 -1.245 0
+  rotation 0 0 1 1.5708
+  name "wall(48)"
+  size 0.01 0.1 0.1
+  appearance Roughcast {
+    colorOverride 1 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
 }
 Wall {
   translation -0.75 -0.75 0
@@ -258,5 +319,11 @@ Wall {
   size 0.01 0.25 0.1
 }
 E-puck {
-  translation -0.125 1.125 0
+  hidden position_0_0 71.33978040936063
+  hidden position_0_1 106.25117908887634
+  hidden rotation_1 0 -1 0 4.058443276794409
+  hidden rotation_2 0 1 0 5.720214174002957
+  translation 0.2911454654727502 1.2132132751073876 -4.188818254177544e-05
+  rotation 0.002339338963052186 -0.003379816047034706 0.9999915521326688 1.0286111003124627
+  controller "build"
 }
