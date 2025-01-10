@@ -1,15 +1,15 @@
-#ifndef MY_ROBOT_HPP
-#define MY_ROBOT_HPP
+#ifndef EPUCK_HPP
+#define EPUCK_HPP
 
 #include <webots/Robot.hpp>
 #include <webots/Motor.hpp>
 #include <webots/DistanceSensor.hpp>
 #include <webots/LED.hpp>
 
-class MyRobot : public webots::Robot {
+class Epuck : public webots::Robot {
 public:
-    MyRobot();
-    virtual ~MyRobot();
+    Epuck();
+    virtual ~Epuck();
     void run();
 
 private:
@@ -19,7 +19,7 @@ private:
     // Device related constants
     static const int NUM_SENSORS = 8;
     static const int NUM_LEDS = 10;
-    static const double MAX_SPEED = 6.28;  // rad/s
+    static constexpr double MAX_SPEED = 6.28;  // rad/s
     
     // Device pointers
     webots::Motor *leftMotor;

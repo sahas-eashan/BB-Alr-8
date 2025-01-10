@@ -1,7 +1,7 @@
-#include "MyRobot.hpp"
+#include "epuck.hpp"
 
 int main(int argc, char **argv) {
-    MyRobot* robot = new MyRobot();
+    Epuck* robot = new Epuck();
     robot->run();
     delete robot;
     return 0;

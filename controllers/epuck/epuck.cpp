@@ -1,16 +1,16 @@
-#include "MyRobot.hpp"
+#include "epuck.hpp"
 #include <iostream>
 
 using namespace webots;
 
-MyRobot::MyRobot() {
+Epuck::Epuck() {
     initDevices();
 }
 
-MyRobot::~MyRobot() {
+Epuck::~Epuck() {
 }
 
-void MyRobot::initDevices() {
+void Epuck::initDevices() {
     // Initialize motors
     leftMotor = getMotor("left wheel motor");
     rightMotor = getMotor("right wheel motor");
@@ -35,7 +35,7 @@ void MyRobot::initDevices() {
     }
 }
 
-void MyRobot::readSensors(double* sensorValues) {
+void Epuck::readSensors(double* sensorValues) {
     for (int i = 0; i < NUM_SENSORS; i++) {
         sensorValues[i] = distanceSensors[i]->getValue();
         // Normalize to 0-1 range
@@ -43,7 +43,7 @@ void MyRobot::readSensors(double* sensorValues) {
     }
 }
 
-void MyRobot::setMotorSpeeds(double leftSpeed, double rightSpeed) {
+void Epuck::setMotorSpeeds(double leftSpeed, double rightSpeed) {
     // Ensure speeds don't exceed maximum
     leftSpeed = std::min(std::max(leftSpeed, -MAX_SPEED), MAX_SPEED);
     rightSpeed = std::min(std::max(rightSpeed, -MAX_SPEED), MAX_SPEED);
@@ -52,7 +52,7 @@ void MyRobot::setMotorSpeeds(double leftSpeed, double rightSpeed) {
     rightMotor->setVelocity(rightSpeed);
 }
 
-void MyRobot::run() {
+void Epuck::run() {
     std::cout << "E-puck robot starting..." << std::endl;
     
     // Main control loop
