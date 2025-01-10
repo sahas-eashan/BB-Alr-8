@@ -1,0 +1,134 @@
+#VRML_SIM R2023b utf8
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
+
+PROTO WorldMaze [
+  field SFVec2f floorSize 2.5 2.5
+]
+{
+  Solid {
+    children [
+      # Base arena
+      RectangleArena {
+        floorSize IS floorSize
+      }
+
+      # Outer walls
+      Wall {
+        translation 0 0 1.25
+        rotation 0 1 0 0
+        size 2.5 0.1 0.01
+        name "outer_wall_top"
+      }
+      Wall {
+        translation 0 0 -1.25
+        rotation 0 1 0 0
+        size 2.5 0.1 0.01
+        name "outer_wall_bottom"
+      }
+      Wall {
+        translation -1.25 0 0
+        rotation 0 1 0 1.57
+        size 2.5 0.1 0.01
+        name "outer_wall_left"
+      }
+      Wall {
+        translation 1.25 0 0
+        rotation 0 1 0 1.57
+        size 2.5 0.1 0.01
+        name "outer_wall_right"
+      }
+
+      # Inner maze walls
+      Wall {
+        translation -0.625 0 -1
+        rotation 0 1 0 1.57
+        size 1 0.1 0.01
+        name "inner_wall_1"
+      }
+      Wall {
+        translation 0.625 0 -0.875
+        rotation 0 1 0 1.57
+        size 0.75 0.1 0.01
+        name "inner_wall_2"
+      }
+      Wall {
+        translation 0 0 -0.5
+        rotation 0 1 0 0
+        size 1.25 0.1 0.01
+        name "inner_wall_3"
+      }
+      Wall {
+        translation -0.75 0 -0.125
+        rotation 0 1 0 1.57
+        size 0.5 0.1 0.01
+        name "inner_wall_4"
+      }
+      Wall {
+        translation 0.75 0 0.125
+        rotation 0 1 0 1.57
+        size 0.5 0.1 0.01
+        name "inner_wall_5"
+      }
+      Wall {
+        translation -0.375 0 0.5
+        rotation 0 1 0 0
+        size 1.25 0.1 0.01
+        name "inner_wall_6"
+      }
+      Wall {
+        translation 0 0 1
+        rotation 0 1 0 1.57
+        size 1 0.1 0.01
+        name "inner_wall_7"
+      }
+
+      # Colored walls
+      Wall {
+        translation -1.125 0 -1.125
+        rotation 0 1 0 0
+        size 0.25 0.1 0.01
+        appearance PBRAppearance {
+          baseColor 1 0 0 # Red
+        }
+        name "colored_wall_red"
+      }
+      Wall {
+        translation -1.125 0 -0.75
+        rotation 0 1 0 0
+        size 0.25 0.1 0.01
+        appearance PBRAppearance {
+          baseColor 1 1 0 # Yellow
+        }
+        name "colored_wall_yellow"
+      }
+      Wall {
+        translation -1.125 0 -0.375
+        rotation 0 1 0 0
+        size 0.25 0.1 0.01
+        appearance PBRAppearance {
+          baseColor 1 0 1 # Pink
+        }
+        name "colored_wall_pink"
+      }
+      Wall {
+        translation -1.125 0 0
+        rotation 0 1 0 0
+        size 0.25 0.1 0.01
+        appearance PBRAppearance {
+          baseColor 0.65 0.41 0.12 # Brown
+        }
+        name "colored_wall_brown"
+      }
+      Wall {
+        translation -1.125 0 0.375
+        rotation 0 1 0 0
+        size 0.25 0.1 0.01
+        appearance PBRAppearance {
+          baseColor 0 1 0 # Green
+        }
+        name "colored_wall_green"
+      }
+    ]
+  }
+}
