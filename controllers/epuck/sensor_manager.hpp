@@ -2,7 +2,7 @@
 #define SENSOR_MANAGER_HPP
 
 #include <webots/Robot.hpp>
-#include <webots/DistanceSensor.hpp>
+#include <webots/LightSensor.hpp>
 #include "config.hpp"
 
 class SensorManager {
@@ -12,11 +12,11 @@ public:
 
     void initializeSensors(webots::Robot* robot);
     void calibrateSensors(webots::Robot* robot);
-    void readSensors(double* sensorValues);
+    float readSensors(double* sensorValues);
     bool isInitialized() const { return isBaselineInitialized; }
 
 private:
-    webots::DistanceSensor* distanceSensors[Config::NUM_SENSORS];
+    webots::LightSensor* lightSensors[Config::NUM_SENSORS];
     double sensorHistory[Config::NUM_SENSORS][Config::HISTORY_SIZE];
     double baselineValues[Config::NUM_SENSORS];
     int historyIndex;

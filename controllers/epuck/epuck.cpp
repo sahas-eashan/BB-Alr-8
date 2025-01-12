@@ -85,7 +85,7 @@ void Epuck::togglePID()
 
 float Epuck::calculatePID(float leftValue, float rightValue)
 {
-    float error = leftValue - rightValue;
+    float adjustment = 0;
 
-    return error;
+    return adjustment;
 }
