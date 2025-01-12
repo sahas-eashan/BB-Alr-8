@@ -6,8 +6,8 @@ using namespace webots;
 Epuck::Epuck()
     : pidEnabled(true)
     , lastError(0.0)
-    , Kp(Config::Epuck::DEFAULT_KP)
-    , Kd(Config::Epuck::DEFAULT_KD)
+    , Kp(Config::DEFAULT_KP)
+    , Kd(Config::DEFAULT_KD)
 {
     initDevices();
 }
@@ -26,7 +26,7 @@ void Epuck::initDevices() {
 
     // Initialize LEDs
     char ledName[5];
-    for (int i = 0; i < Config::Epuck::NUM_LEDS; i++) {
+    for (int i = 0; i < Config::NUM_LEDS; i++) {
         sprintf(ledName, "led%d", i);
         leds[i] = getLED(ledName);
     }
@@ -41,23 +41,23 @@ void Epuck::run() {
     sensorManager.calibrateSensors(this);
 
     // Main control loop
-    while (step(Config::Epuck::TIME_STEP) != -1) {
-        double sensorValues[Config::Epuck::NUM_SENSORS] = {0};
+    while (step(Config::TIME_STEP) != -1) {
+        double sensorValues[Config::NUM_SENSORS] = {0};
         sensorManager.readSensors(sensorValues);
 
         // Obstacle avoidance logic
-        double leftSpeed = Config::Epuck::MAX_SPEED;
-        double rightSpeed = Config::Epuck::MAX_SPEED;
+        double leftSpeed = Config::MAX_SPEED;
+        double rightSpeed = Config::MAX_SPEED;
 
-        if (sensorValues[0] > Config::Epuck::OBSTACLE_THRESHOLD || 
-            sensorValues[1] > Config::Epuck::OBSTACLE_THRESHOLD) {
-            leftSpeed = Config::Epuck::MAX_SPEED;
-            rightSpeed = -Config::Epuck::MAX_SPEED;
+        if (sensorValues[0] > Config::OBSTACLE_THRESHOLD || 
+            sensorValues[1] > Config::OBSTACLE_THRESHOLD) {
+            leftSpeed = Config::MAX_SPEED;
+            rightSpeed = -Config::MAX_SPEED;
         }
-        else if (sensorValues[7] > Config::Epuck::OBSTACLE_THRESHOLD || 
-                 sensorValues[6] > Config::Epuck::OBSTACLE_THRESHOLD) {
-            leftSpeed = -Config::Epuck::MAX_SPEED;
-            rightSpeed = Config::Epuck::MAX_SPEED;
+        else if (sensorValues[7] > Config::OBSTACLE_THRESHOLD || 
+                 sensorValues[6] > Config::OBSTACLE_THRESHOLD) {
+            leftSpeed = -Config::MAX_SPEED;
+            rightSpeed = Config::MAX_SPEED;
         }
 
         setMotorSpeeds(leftSpeed, rightSpeed);
@@ -66,8 +66,8 @@ void Epuck::run() {
 
 void Epuck::setMotorSpeeds(double leftSpeed, double rightSpeed) {
     // Ensure speeds don't exceed maximum
-    leftSpeed = std::min(std::max(leftSpeed, -Config::Epuck::MAX_SPEED), Config::Epuck::MAX_SPEED);
-    rightSpeed = std::min(std::max(rightSpeed, -Config::Epuck::MAX_SPEED), Config::Epuck::MAX_SPEED);
+    leftSpeed = std::min(std::max(leftSpeed, -Config::MAX_SPEED), Config::MAX_SPEED);
+    rightSpeed = std::min(std::max(rightSpeed, -Config::MAX_SPEED), Config::MAX_SPEED);
 
     // leftMotor->setVelocity(leftSpeed);
     // rightMotor->setVelocity(rightSpeed);

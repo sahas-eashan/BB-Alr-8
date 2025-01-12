@@ -16,9 +16,9 @@ public:
     bool isInitialized() const { return isBaselineInitialized; }
 
 private:
-    webots::DistanceSensor* distanceSensors[Config::Epuck::NUM_SENSORS];
-    double sensorHistory[Config::Epuck::NUM_SENSORS][Config::Epuck::HISTORY_SIZE];
-    double baselineValues[Config::Epuck::NUM_SENSORS];
+    webots::DistanceSensor* distanceSensors[Config::NUM_SENSORS];
+    double sensorHistory[Config::NUM_SENSORS][Config::HISTORY_SIZE];
+    double baselineValues[Config::NUM_SENSORS];
     int historyIndex;
     bool isBaselineInitialized;
 

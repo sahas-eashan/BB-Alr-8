@@ -20,7 +20,7 @@ private:
     // Hardware
     webots::Motor *leftMotor;
     webots::Motor *rightMotor;
-    webots::LED *leds[Config::Epuck::NUM_LEDS];
+    webots::LED *leds[Config::NUM_LEDS];
 
     // PID control
     bool pidEnabled;

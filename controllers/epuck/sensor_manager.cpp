@@ -6,9 +6,9 @@ SensorManager::SensorManager()
     : historyIndex(0), isBaselineInitialized(false) 
 {
     // Initialize arrays
-    for (int i = 0; i < Config::Epuck::NUM_SENSORS; i++) {
+    for (int i = 0; i < Config::NUM_SENSORS; i++) {
         baselineValues[i] = 0;
-        for (int j = 0; j < Config::Epuck::HISTORY_SIZE; j++) {
+        for (int j = 0; j < Config::HISTORY_SIZE; j++) {
             sensorHistory[i][j] = 0;
         }
     }
@@ -20,31 +20,31 @@ SensorManager::~SensorManager() {
 
 void SensorManager::initializeSensors(webots::Robot* robot) {
     char sensorName[5];
-    for (int i = 0; i < Config::Epuck::NUM_SENSORS; i++) {
+    for (int i = 0; i < Config::NUM_SENSORS; i++) {
         sprintf(sensorName, "ps%d", i);
         distanceSensors[i] = robot->getDistanceSensor(sensorName);
-        distanceSensors[i]->enable(Config::Epuck::TIME_STEP);
+        distanceSensors[i]->enable(Config::TIME_STEP);
     }
 }
 
 void SensorManager::calibrateSensors(webots::Robot* robot) {
-    double tempBaseline[Config::Epuck::NUM_SENSORS] = {0};
+    double tempBaseline[Config::NUM_SENSORS] = {0};
 
     // Initial step to ensure sensors are ready
-    robot->step(Config::Epuck::TIME_STEP);
+    robot->step(Config::TIME_STEP);
 
     // Collect samples
-    for (int sample = 0; sample < Config::Epuck::CALIBRATION_SAMPLES; sample++) {
-        for (int i = 0; i < Config::Epuck::NUM_SENSORS; i++) {
+    for (int sample = 0; sample < Config::CALIBRATION_SAMPLES; sample++) {
+        for (int i = 0; i < Config::NUM_SENSORS; i++) {
             tempBaseline[i] += distanceSensors[i]->getValue();
         }
-        robot->step(Config::Epuck::TIME_STEP);
+        robot->step(Config::TIME_STEP);
     }
 
     // Calculate baselines and initialize history
-    for (int i = 0; i < Config::Epuck::NUM_SENSORS; i++) {
-        baselineValues[i] = tempBaseline[i] / Config::Epuck::CALIBRATION_SAMPLES;
-        for (int j = 0; j < Config::Epuck::HISTORY_SIZE; j++) {
+    for (int i = 0; i < Config::NUM_SENSORS; i++) {
+        baselineValues[i] = tempBaseline[i] / Config::CALIBRATION_SAMPLES;
+        for (int j = 0; j < Config::HISTORY_SIZE; j++) {
             sensorHistory[i][j] = baselineValues[i];
         }
     }
@@ -58,7 +58,7 @@ void SensorManager::readSensors(double* sensorValues) {
     }
 
     std::cout << "Sensor values: ";
-    for (int i = 0; i < Config::Epuck::NUM_SENSORS; i++) {
+    for (int i = 0; i < Config::NUM_SENSORS; i++) {
         double rawValue = distanceSensors[i]->getValue();
         updateSensorHistory(i, rawValue);
 
@@ -67,13 +67,13 @@ void SensorManager::readSensors(double* sensorValues) {
         processedValue = (processedValue < 0) ? 0 : processedValue;
 
         sensorValues[i] = abs(processedValue - sensorValues[i]) > 
-            Config::Epuck::STABILIZING_THRESHOLD ? processedValue : sensorValues[i];
+            Config::STABILIZING_THRESHOLD ? processedValue : sensorValues[i];
 
         std::cout << i << ":" << sensorValues[i] << " ";
     }
     std::cout << std::endl;
 
-    historyIndex = (historyIndex + 1) % Config::Epuck::HISTORY_SIZE;
+    historyIndex = (historyIndex + 1) % Config::HISTORY_SIZE;
 }
 
 void SensorManager::updateSensorHistory(int sensorIndex, double value) {
@@ -82,8 +82,8 @@ void SensorManager::updateSensorHistory(int sensorIndex, double value) {
 
 double SensorManager::calculateSmoothedValue(int sensorIndex) {
     double sum = 0;
-    for (int j = 0; j < Config::Epuck::HISTORY_SIZE; j++) {
+    for (int j = 0; j < Config::HISTORY_SIZE; j++) {
         sum += sensorHistory[sensorIndex][j];
     }
-    return sum / Config::Epuck::HISTORY_SIZE;
+    return sum / Config::HISTORY_SIZE;
 }
