@@ -2,9 +2,9 @@
 #define EPUCK_HPP
 
 #include <webots/Robot.hpp>
-#include <webots/Motor.hpp>
 #include <webots/LED.hpp>
 #include "sensor_manager.hpp"
+#include "motors.hpp"
 #include "config.hpp"
 
 class Epuck : public webots::Robot {
@@ -16,23 +16,14 @@ public:
 private:
     // Components
     SensorManager sensorManager;
-    
-    // Hardware
-    webots::Motor *leftMotor;
-    webots::Motor *rightMotor;
+    Motors motors;
+
     webots::LED *leds[Config::NUM_LEDS];
+    double sensorValues[Config::NUM_SENSORS] = {0};
 
-    // PID control
-    bool pidEnabled;
-    float lastError;
-    float Kp;
-    float Kd;
 
-    // Helper functions
     void initDevices();
-    void setMotorSpeeds(double leftSpeed, double rightSpeed);
-    void togglePID();
-    float calculatePID(float leftValue, float rightValue);
+
 };
 
 #endif
