@@ -26,13 +26,13 @@ namespace Config
     static const double MAX_STEERING = 1.5; // Maximum steering adjustment
     static const double MAX_INTEGRAL = 1.0; // Anti-windup limit
 
-    static const double Kp = 0.06;
+    static const double Kp = 0.07;
     static const double Ki = 0.01;
     static const double Kd = 0.11;
 
     // Motors
     const int TIME_90_TURN = 1750;
-    const int TIME_PER_CELL = 1900; 
+    const int TIME_PER_CELL = 1850; 
 
     static constexpr double MAX_SPEED = 10.0;
     constexpr double BASE_SPEED = Config::MAX_SPEED * 0.7;
