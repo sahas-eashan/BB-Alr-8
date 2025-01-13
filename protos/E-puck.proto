@@ -60,7 +60,7 @@ Robot {
           %< if (v2) { >%
             maxVelocity 7.536 # 1200 step/s
           %< } else { >%
-            maxVelocity 6.28 # 1000 step/s
+            maxVelocity 20 # 1000 step/s
           %< } >%
         }
         PositionSensor {
@@ -215,7 +215,7 @@ Robot {
           %< if (v2) { >%
             maxVelocity 7.536 # 1200 step/s
           %< } else { >%
-            maxVelocity 6.28 # 1000 step/s
+            maxVelocity 20 # 1000 step/s
           %< } >%
         }
         PositionSensor {

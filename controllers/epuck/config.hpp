@@ -7,7 +7,7 @@
 namespace Config
 {
     // Time configuration
-    static const int TIME_STEP = 16; // milliseconds
+    static const int TIME_STEP = 32; // milliseconds
 
     // Hardware configuration
     static const int NUM_SENSORS = 8;
@@ -23,37 +23,19 @@ namespace Config
 
     static const double IDEAL_WALL_DISTANCE = 9; // Desired distance from wall in cm
     static const int MAX_WALL_DISTANCE = 25;
-    static const double MAX_STEERING = 2.0; // Maximum steering adjustment
+    static const double MAX_STEERING = 1.5; // Maximum steering adjustment
     static const double MAX_INTEGRAL = 1.0; // Anti-windup limit
 
-    static const double Kp = 0.8;
-    static const double Ki = 0.1;
-    static const double Kd = 0.2;
+    static const double Kp = 0.06;
+    static const double Ki = 0.01;
+    static const double Kd = 0.11;
 
     // Motors
-    constexpr double WHEEL_RADIUS = 0.0205; 
-    constexpr double WHEEL_DISTANCE = 0.0568;                           
-    constexpr double WHEEL_CIRCUMFERENCE = 2 * M_PI * WHEEL_RADIUS;     
-    constexpr double MAX_SPEED = 10.0;                                  
-    constexpr double MAX_SPEED_MPS = MAX_SPEED * WHEEL_RADIUS;     
+    const int TIME_90_TURN = 1750;
+    const int TIME_PER_CELL = 1900; 
 
-    constexpr double CELL_SIZE = 0.180;          // [m] Size of one maze cell
-    constexpr double TURNING_SPEED = 2.5;        // [rad/s] Speed during turns
-    constexpr double POSITION_TOLERANCE = 0.001; // [m] Acceptable position error
-    constexpr double ANGLE_TOLERANCE = 0.01;     // [rad] Acceptable angle error
-
-    // Movement timing constants
-    constexpr int TURN_90_STEPS = 375;   // Time steps for 90-degree turn
-    constexpr int TURN_180_STEPS = 750;  // Time steps for 180-degree turn
-    constexpr double ACCELERATION = 0.3; // [rad/s²] Acceleration rate
-    constexpr double DECELERATION = 0.3; // [rad/s²] Deceleration rate
-
-    // Encoder-related constants
-    constexpr double ENCODER_RESOLUTION = 159.23; // [steps/rotation] E-puck encoder resolution
-    constexpr double STEPS_PER_METER = ENCODER_RESOLUTION / WHEEL_CIRCUMFERENCE;
-
-    // Movement thresholds
-    constexpr double MIN_SPEED = 0.1;                                            // [rad/s] Minimum speed to consider robot moving
-    constexpr double ROTATION_COEFFICIENT = WHEEL_DISTANCE / (2 * WHEEL_RADIUS); // For turn calculations
+    static constexpr double MAX_SPEED = 10.0;
+    constexpr double BASE_SPEED = Config::MAX_SPEED * 0.7;
+    constexpr double TURN_SPEED = Config::MAX_SPEED * 0.5; 
 }
 #endif

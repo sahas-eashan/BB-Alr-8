@@ -23,7 +23,11 @@ private:
 
 
     void initDevices();
-
+    void turnLeft();
+    void turnRight();
+    void turn180();
+    void moveForward(int cells, double *sensorValues);
 };
+
 
 #endif

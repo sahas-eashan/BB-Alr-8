@@ -51,11 +51,11 @@ double SensorManager::calculateSideWallError() const
     }
     // If only left wall is detected
     else if (leftWallDistance < Config::MAX_WALL_DISTANCE) {
-        return -2*(Config::IDEAL_WALL_DISTANCE - leftWallDistance);
+        return (Config::IDEAL_WALL_DISTANCE - leftWallDistance);
     }
     // If only right wall is detected
     else if (rightWallDistance < Config::MAX_WALL_DISTANCE) {
-        return 2*(rightWallDistance - Config::IDEAL_WALL_DISTANCE);
+        return (rightWallDistance - Config::IDEAL_WALL_DISTANCE);
     }
     
     return 0.0; // No walls detected
@@ -84,8 +84,10 @@ double SensorManager::applyPIDControl(double error)
 double SensorManager::calculateSteeringAdjustment()
 {
     double error = getWallError();
-    double adjustment = applyPIDControl(error);
     
+    double adjustment = applyPIDControl(error);
+    std:: cout <<"  error : " << error << " adjust : " << adjustment << " "; 
+
     // Limit the maximum steering adjustment
     return std::clamp(adjustment, -Config::MAX_STEERING, Config::MAX_STEERING);
 }
