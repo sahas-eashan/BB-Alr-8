@@ -10,8 +10,8 @@ EXTERNPROTO "../protos/E-puck.proto"
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.30506108940504834 -0.914032922185384 0.2673603353009802 5.087020328336429
-  position -2.6286986279765734 0.771451688248743 4.48430598192961
+  orientation 0.4471862775774169 -0.5558524727400952 -0.7007513551147619 4.313067352303495
+  position 0.2922427461717093 -1.1880652331378125 4.0557215535455935
 }
 TexturedBackground {
 }
@@ -79,6 +79,12 @@ Wall {
   size 0.01 0.5 0.1
 }
 Wall {
+  translation -0.25 -0.5 0
+  rotation 0 0 1 1.5708
+  name "wall(50)"
+  size 0.01 0.5 0.1
+}
+Wall {
   translation 0.55 -0.49 0
   rotation 0 0 1 1.5708
   name "wall(47)"
@@ -121,11 +127,6 @@ Wall {
   size 0.01 0.5 0.1
 }
 Wall {
-  translation 0 0.75 0
-  name "wall(20)"
-  size 0.01 0.5 0.1
-}
-Wall {
   translation -0.75 -0.5 0
   name "wall(13)"
   size 0.01 1 0.1
@@ -157,6 +158,12 @@ Wall {
   size 0.01 0.25 0.1
 }
 Wall {
+  translation 0.125 -0.5 0
+  rotation 0 0 1 1.5708
+  name "wall(51)"
+  size 0.01 0.25 0.1
+}
+Wall {
   translation -1.125 -0.5 0
   rotation 0 0 1 1.5708
   name "wall(15)"
@@ -178,6 +185,12 @@ Wall {
   translation -0.875 0.25 0
   rotation 0 0 1 1.5708
   name "wall(16)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.625 -0.25 0
+  rotation 0 0 1 1.5708
+  name "wall(52)"
   size 0.01 0.25 0.1
 }
 Wall {
@@ -284,7 +297,7 @@ Wall {
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0.25 0.375 0
+  translation 0.25 0.125 0
   name "wall(42)"
   size 0.01 0.25 0.1
 }
@@ -301,6 +314,11 @@ Wall {
 Wall {
   translation 0.5 1 0
   name "wall(22)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.75 0.75 0
+  name "wall(49)"
   size 0.01 0.5 0.1
 }
 Wall {
@@ -321,14 +339,8 @@ Wall {
 E-puck {
   hidden position_0_0 533.3507743139062
   hidden position_0_1 1386.6916969967965
-  hidden linearVelocity_0 -6.1934795820655335e-09 6.849878123162933e-07 0.00011112759820998474
-  hidden angularVelocity_0 1.0215727044726615e-08 -3.286769360597576e-09 -3.5446487276349945
   hidden rotation_1 0 1 0 5.563208510820922
-  hidden linearVelocity_1 -0.08637145185797701 -0.031056323744630847 -9.812540645097806e-05
-  hidden angularVelocity_1 1.6963411369524135 -4.703730426320048 -3.5673544565193276
   hidden rotation_2 0 1 0 4.3909294172874835
-  hidden linearVelocity_2 0.08637143943852132 0.031057693648732163 -9.812497893095907e-05
-  hidden angularVelocity_2 -1.6963411163370248 4.7037304198096015 -3.567354457451229
   translation 0.369528209635713 1.157924964199909 -0.00013321246095714633
   rotation 9.493763487987874e-11 1.0212822068709492e-10 -1 2.898477310230898
   controller "epuck"
