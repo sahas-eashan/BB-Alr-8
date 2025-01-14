@@ -336,8 +336,9 @@ Wall {
   name "wall(1)"
   size 0.01 0.25 0.1
 }
-E-puck {
+DEF EPUCK E-puck {
   translation -1.125 -1.125 0
   rotation 9.493763487987874e-11 1.0212822068709492e-10 -1 0
   controller "epuck"
+  supervisor TRUE
 }

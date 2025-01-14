@@ -3,6 +3,10 @@ build/release/main.o: main.cpp epuck.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/LED.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/Device.hpp \
  C:/Program\ Files/Webots/include/controller/c/webots/types.h \
+ C:\Program\ Files\Webots/include/controller/cpp/webots/Supervisor.hpp \
+ C:\Program\ Files\Webots/include/controller/cpp/webots/Node.hpp \
+ C:\Program\ Files\Webots/include/controller/cpp/webots/Field.hpp \
+ C:/Program\ Files/Webots/include/controller/c/webots/contact_point.h \
  sensor_manager.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/DistanceSensor.hpp \
  config.hpp motors.hpp \
