@@ -23,7 +23,6 @@ void Motors::setSpeed(double leftSpeed, double rightSpeed)
     leftSpeed = clamp(leftSpeed, -Config::MAX_SPEED, Config::MAX_SPEED);
     rightSpeed = clamp(rightSpeed, -Config::MAX_SPEED, Config::MAX_SPEED);
 
-    std::cout << "left : " << leftSpeed << "  right : " << rightSpeed;
     leftMotor->setVelocity(leftSpeed);
     rightMotor->setVelocity(rightSpeed);
 }

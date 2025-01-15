@@ -95,7 +95,6 @@ void Epuck::moveForward(int cells, double *sensorValues)
         motors.setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
 
         step(Config::TIME_STEP);
-        std::cout << " " << std::endl;
     }
 
     motors.stop();
@@ -111,9 +110,10 @@ void Epuck::run()
     {
         sensorManager.readSensors(sensorValues);
 
+        recordOwnPosition();
         moveForward(4, sensorValues);
         turn180();
-        recordOwnPosition();
+        
         motors.delay(2000);
     }
 }

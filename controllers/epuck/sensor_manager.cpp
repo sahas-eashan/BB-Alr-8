@@ -86,7 +86,6 @@ double SensorManager::calculateSteeringAdjustment()
     double error = getWallError();
     
     double adjustment = applyPIDControl(error);
-    std:: cout <<"  error : " << error << " adjust : " << adjustment << " "; 
 
     // Limit the maximum steering adjustment
     return std::clamp(adjustment, -Config::MAX_STEERING, Config::MAX_STEERING);
