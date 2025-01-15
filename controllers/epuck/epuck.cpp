@@ -6,6 +6,7 @@
 #include <webots/Node.hpp>
 #include <webots/Supervisor.hpp>
 #include <cmath>  
+
 using namespace webots;
 
 Epuck::Epuck()
@@ -104,13 +105,19 @@ void Epuck::run()
 {
     std::cout << "E-puck robot starting..." << std::endl;
 
-    
+    Position pos = recordOwnPosition();
+
+    int startX = pos.x_mapped;
+    int startY = pos.y_mapped;
+
+    floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
+    floodfill.printCosts(); 
+
     // Main control loop
     while (step(Config::TIME_STEP) != -1)
     {
         sensorManager.readSensors(sensorValues);
 
-        recordOwnPosition();
         moveForward(4, sensorValues);
         turn180();
         

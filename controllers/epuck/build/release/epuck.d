@@ -9,6 +9,6 @@ build/release/epuck.o: epuck.cpp epuck.hpp \
  /usr/local/webots/include/controller/cpp/webots/../../c/webots/contact_point.h \
  sensor_manager.hpp \
  /usr/local/webots/include/controller/cpp/webots/DistanceSensor.hpp \
- config.hpp motors.hpp \
+ config.hpp floodfill.hpp motors.hpp \
  /usr/local/webots/include/controller/cpp/webots/Motor.hpp \
  /usr/local/webots/include/controller/cpp/webots/Receiver.hpp

@@ -7,6 +7,7 @@
 #include <webots/Supervisor.hpp>
 #include <webots/Node.hpp>
 #include "sensor_manager.hpp"
+#include "floodfill.hpp"
 #include "motors.hpp"
 #include "config.hpp"
 
@@ -25,6 +26,8 @@ private:
     // Components
     SensorManager sensorManager;
     Motors motors;
+    Floodfill floodfill;
+    
     webots::LED *leds[Config::NUM_LEDS];
     double sensorValues[Config::NUM_SENSORS] = {0};
     webots::Node *selfNode;  // Added to store robot node reference
