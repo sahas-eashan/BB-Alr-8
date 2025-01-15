@@ -41,7 +41,8 @@ namespace Config
     // Floodfill
     const int MAZE_LENGTH = 10;
     const int MAZE_WIDTH = 10;
-
+    
+    const int cellOrder[5] = { {7, 6} , {5, 0}, { 7, 3}, { 8, 4}};
 
 }
 #endif

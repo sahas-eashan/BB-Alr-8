@@ -2,6 +2,8 @@
 #include <queue>
 #include <utility>
 #include <limits>
+#include <iomanip>  // for setw
+#include <iostream>
 
 // Wall direction constants
 const int NORTH = 1;
@@ -103,4 +105,40 @@ int Floodfill::getCellCost(int x, int y) const {
 
 bool Floodfill::isValidCell(int x, int y) const {
     return x >= 0 && x < Config::MAZE_LENGTH && y >= 0 && y < Config::MAZE_WIDTH;
+}
+
+void Floodfill::updateCellCost(int x, int y, int cost) {
+    if (!isValidCell(x, y)) return;
+    costsOfCells[x][y] = cost;
+}
+
+void Floodfill::printCosts() const {
+    std::cout << "Current Flood Fill Costs:" << std::endl;
+    std::cout << "   ";
+    // Print column headers
+    for (int i = 0; i < Config::MAZE_WIDTH; i++) {
+        std::cout << std::setw(4) << i;
+    }
+    std::cout << std::endl;
+
+    // Print horizontal line
+    std::cout << "   ";
+    for (int i = 0; i < Config::MAZE_WIDTH; i++) {
+        std::cout << "----";
+    }
+    std::cout << std::endl;
+
+    // Print each row with row number
+    for (int y = Config::MAZE_LENGTH - 1; y >= 0; y--) {  // Print from top to bottom
+        std::cout << std::setw(2) << y << "|";
+        for (int x = 0; x < Config::MAZE_WIDTH; x++) {
+            if (costsOfCells[x][y] == std::numeric_limits<int>::max()) {
+                std::cout << std::setw(4) << "∞";
+            } else {
+                std::cout << std::setw(4) << costsOfCells[x][y];
+            }
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
 }
