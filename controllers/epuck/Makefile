@@ -39,7 +39,7 @@
 ###
 ### ---- C++ Sources ----
 ### if your program uses several C++ source files:
-CXX_SOURCES = epuck.cpp main.cpp sensor_manager.cpp motors.cpp
+CXX_SOURCES = epuck.cpp main.cpp sensor_manager.cpp motors.cpp floodfill.cpp
 ###
 ### ---- Compilation options ----
 ### if special compilation flags are necessary:

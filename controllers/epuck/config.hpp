@@ -37,5 +37,12 @@ namespace Config
     static constexpr double MAX_SPEED = 10.0;
     constexpr double BASE_SPEED = Config::MAX_SPEED * 0.7;
     constexpr double TURN_SPEED = Config::MAX_SPEED * 0.5; 
+
+    // Floodfill
+    const int MAZE_LENGTH = 10;
+    const int MAZE_WIDTH = 10;
+    
+    const std::pair<int, int> cellOrder[4] = { {7, 6}, {5, 0}, {7, 3}, {8, 4} };
+
 }
 #endif
