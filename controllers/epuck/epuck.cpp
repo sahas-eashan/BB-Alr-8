@@ -101,10 +101,68 @@ void Epuck::moveForward(int cells, double *sensorValues)
     motors.stop();
 }
 
+void Epuck::faceNorth() {
+    // Attempt to grab the EPUCK node from the scene
+    Node *myEPUCK = getFromDef("EPUCK");
+    if (!myEPUCK) {
+        std::cerr << "Uh oh, can't find EPUCK node. No turning possible." << std::endl;
+        return;
+    }
+
+    // We'll get the 'rotation' field, which is axis-angle: [0,1,0, angle] ideally
+    Field *rotField = myEPUCK->getField("rotation");
+    if (!rotField) {
+        std::cerr << "No rotation field? This is suspicious, dude." << std::endl;
+        return;
+    }
+
+    // Grab the current rotation array
+    const double *rotArray = rotField->getSFRotation();
+
+    // The angle is at index 3
+    double currAng = rotArray[3];
+
+    // Let's define "north" as facing 90 degrees (PI/2) about Y-axis
+    double northAng = 1.5708; // about 90 deg in radians
+
+    // We'll see how much we need to rotate
+    double angleWeNeed = northAng - currAng;
+
+    // Normalize that angle into [-pi, pi] so we turn the shortest way
+    while (angleWeNeed > M_PI) angleWeNeed -= 2.0 * M_PI;
+    while (angleWeNeed < -M_PI) angleWeNeed += 2.0 * M_PI;
+
+    // Convert to degrees just so we can scale the turning time easily
+    double angleDeg = angleWeNeed * 180.0 / M_PI;
+
+    // Our turning speed
+    double spinSpeed = Config::TURN_SPEED;
+
+    // Time needed is proportional to how many degrees we must spin
+    // we know TIME_90_TURN is the time to turn 90 deg
+    double timeToSpin = (std::fabs(angleDeg) / 90.0) * Config::TIME_90_TURN;
+
+    // Decide direction: if angleWeNeed > 0, let's turn left, else turn right
+    if (angleWeNeed > 0) {
+        // Turn left
+        motors.setSpeed(-spinSpeed, spinSpeed);
+    } else {
+        // Turn right
+        motors.setSpeed(spinSpeed, -spinSpeed);
+    }
+
+    // Step long enough to complete the turn
+    step(static_cast<int>(timeToSpin));
+    motors.stop();
+
+    // Just for fun, let's print out the final orientation
+    std::cout << "Just tried to face north. Let's hope it worked!" << std::endl;
+}
+
 void Epuck::run()
 {
     std::cout << "E-puck robot starting..." << std::endl;
-
+    faceNorth();
     Position pos = recordOwnPosition();
 
     int startX = pos.x_mapped;
@@ -122,5 +180,6 @@ void Epuck::run()
         turn180();
         
         motors.delay(2000);
+        
     }
 }

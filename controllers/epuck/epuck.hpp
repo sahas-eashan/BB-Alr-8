@@ -37,6 +37,7 @@ private:
     void turnRight();
     void turn180();
     void moveForward(int cells, double *sensorValues);
+    void faceNorth();
 };
 
 #endif 
