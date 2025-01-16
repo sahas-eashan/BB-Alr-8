@@ -90,3 +90,25 @@ double SensorManager::calculateSteeringAdjustment()
     // Limit the maximum steering adjustment
     return std::clamp(adjustment, -Config::MAX_STEERING, Config::MAX_STEERING);
 }
+
+double SensorManager::frontWallDistance() const
+{
+    double distanceSensor0 = getDistance(0);
+    double distanceSensor7 = getDistance(7);
+
+    return (distanceSensor0*Config::COS10 + distanceSensor7*Config::COS10)/2;
+}
+
+double SensorManager::leftWallDistance() const
+{
+    double distanceSensor5 = getDistance(5);
+
+    return distanceSensor5;
+}
+
+double SensorManager::rightWallDistance() const
+{
+    double distanceSensor2 = getDistance(2);
+
+    return distanceSensor2;
+}

@@ -16,6 +16,11 @@ public:
     double calculateSteeringAdjustment();
     void readSensors(double* sensorValues);
 
+    double frontWallDistance() const;
+    double leftWallDistance() const;
+    double rightWallDistance() const;
+
+
 private:
     webots::DistanceSensor* distanceSensors[Config::NUM_SENSORS];
     double distances[Config::NUM_SENSORS] = {0};

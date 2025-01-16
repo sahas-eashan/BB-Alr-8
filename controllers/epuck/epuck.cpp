@@ -7,6 +7,8 @@
 #include <webots/Supervisor.hpp>
 #include <cmath>  
 
+
+
 using namespace webots;
 
 Epuck::Epuck()
@@ -25,6 +27,7 @@ void Epuck::initDevices() {
     {
         sprintf(ledName, "led%d", i);
         leds[i] = getLED(ledName);
+        //
     }
 
     // Initialize sensors
@@ -101,6 +104,8 @@ void Epuck::moveForward(int cells, double *sensorValues)
     motors.stop();
 }
 
+
+
 void Epuck::faceNorth() {
     // Attempt to grab the EPUCK node from the scene
     Node *myEPUCK = getFromDef("EPUCK");
@@ -159,27 +164,87 @@ void Epuck::faceNorth() {
     std::cout << "Just tried to face north. Let's hope it worked!" << std::endl;
 }
 
+bool Epuck::iswallFront(){
+    sensorManager.readSensors(sensorValues);
+    float F_Wall_Distance = sensorManager.frontWallDistance();
+    std::cout << "Front wall Distance: " << F_Wall_Distance << " mm " << std::endl;
+    return (F_Wall_Distance < Config::F_WALL_THRESHOLD) ? true : false;
+}
+
+bool Epuck::iswallRight(){
+    sensorManager.readSensors(sensorValues);
+    float R_Wall_Distance = sensorManager.rightWallDistance();
+    std::cout << "Right wall Distance: " << R_Wall_Distance << " mm " << std::endl;
+    return (R_Wall_Distance < Config::R_WALL_THRESHOLD) ? true : false;
+}
+
+bool Epuck::iswallLeft(){
+    sensorManager.readSensors(sensorValues);
+    float L_Wall_Distance = sensorManager.leftWallDistance();
+    std::cout << "Left wall Distance: " << L_Wall_Distance << " mm " << std::endl;
+    return (L_Wall_Distance < Config::L_WALL_THRESHOLD) ? true : false;
+}
+
 void Epuck::run()
 {
     std::cout << "E-puck robot starting..." << std::endl;
     faceNorth();
-    Position pos = recordOwnPosition();
+    heading = Config::Heading::NORTH;
+    position = recordOwnPosition();
 
-    int startX = pos.x_mapped;
-    int startY = pos.y_mapped;
+    int startX = position.x_mapped;
+    int startY = position.y_mapped;
 
-    floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
-    floodfill.printCosts(); 
+    // floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
+    // floodfill.printCosts(); 
+
+    // Config::Action nextAction = solver(*this);
+    // std::cout << "Next Action: " << nextAction << std::endl;
+    
+    // API_moveForward(*this, sensorValues);
+
+    // Config::Action nextAction2 = solver(*this);
+    // std::cout << "Next Action: " << nextAction2 << std::endl;
+
+    // API_turnRight(*this);
+
+    // Config::Action nextAction3 = solver(*this);
+    // std::cout << "Next Action: " << nextAction3 << std::endl;
+
+    go(*this, sensorValues);
+    
+    //bool iswall = API_wallFront(*this);
+
+    //std::cout << "Front Wall: " << iswall << std::endl;
 
     // Main control loop
     while (step(Config::TIME_STEP) != -1)
     {
         sensorManager.readSensors(sensorValues);
 
-        moveForward(4, sensorValues);
-        turn180();
+        //moveForward(2, sensorValues);
+        //API_moveForward(*this, sensorValues);
+
+        //turn180();
+        //API_moveForward(*this, sensorValues);
+       
         
+
         motors.delay(2000);
         
     }
 }
+
+// Get distances from specified sensors
+        // double distanceSensor0 = sensorManager.getDistance(0);
+        // double distanceSensor7 = sensorManager.getDistance(7);
+        // double distanceSensor2 = sensorManager.getDistance(2);
+        // double distanceSensor5 = sensorManager.getDistance(5);
+        // double FrontWallDistance = sensorManager.frontWallDistance();
+
+// std::cout << "Distance from Sensor 0: " << distanceSensor0 << " mm, " ;
+        // std::cout << "Distance from Sensor 7: " << distanceSensor7 << " mm | " ;
+
+        // std::cout << "Distance from Sensor 2: " << distanceSensor2 << " mm, ";
+        // std::cout << "Distance from Sensor 5: " << distanceSensor5 << " mm " << std::endl;
+        // std::cout << "Front wall Distance: " << FrontWallDistance << " mm " << std::endl;
