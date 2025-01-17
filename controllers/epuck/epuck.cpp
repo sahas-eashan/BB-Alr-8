@@ -105,12 +105,13 @@ void Epuck::run()
 {
     std::cout << "E-puck robot starting..." << std::endl;
 
+    floodfill.printMaze();
     Position pos = recordOwnPosition();
 
     int startX = pos.x_mapped;
     int startY = pos.y_mapped;
 
-    floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
+    floodfill.floodMaze(startX , startY , Config::cellOrder[1].first, Config::cellOrder[1].second);
     floodfill.printCosts(); 
 
     // Main control loop
