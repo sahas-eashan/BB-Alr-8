@@ -195,8 +195,9 @@ void Epuck::run()
     int startX = position.x_mapped;
     int startY = position.y_mapped;
 
-    // floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
-    // floodfill.printCosts(); 
+    floodfill.printMaze();
+    floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
+    floodfill.printCosts(); 
 
     // Config::Action nextAction = solver(*this);
     // std::cout << "Next Action: " << nextAction << std::endl;
