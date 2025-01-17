@@ -10,5 +10,5 @@ build/release/epuck.o: epuck.cpp epuck.hpp \
  sensor_manager.hpp \
  /usr/local/webots/include/controller/cpp/webots/DistanceSensor.hpp \
  config.hpp floodfill.hpp motors.hpp \
- /usr/local/webots/include/controller/cpp/webots/Motor.hpp \
- /usr/local/webots/include/controller/cpp/webots/Receiver.hpp
+ /usr/local/webots/include/controller/cpp/webots/Motor.hpp API.hpp \
+ solver.hpp /usr/local/webots/include/controller/cpp/webots/Receiver.hpp

@@ -44,5 +44,29 @@ namespace Config
     
     const std::pair<int, int> cellOrder[4] = { {7, 6}, {5, 0}, {7, 3}, {8, 4} }; //{x, y}
 
+
+    typedef enum Heading
+    {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
+    } Heading;
+
+    typedef enum Action
+    {
+        LEFT,
+        FORWARD,
+        RIGHT,
+        IDLE
+    } Action;
+
+    // Threshold values for detecting walls
+    const float L_WALL_THRESHOLD = 25;
+    const float F_WALL_THRESHOLD = 25;
+    const float R_WALL_THRESHOLD = 25;
+
+    const float COS10 = 0.98480775301;
+
 }
 #endif

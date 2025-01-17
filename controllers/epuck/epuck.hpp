@@ -10,6 +10,8 @@
 #include "floodfill.hpp"
 #include "motors.hpp"
 #include "config.hpp"
+#include "API.hpp"
+#include "solver.hpp"
 
 struct Position {
     int x_mapped, y_mapped;   // Mapped grid coordinates
@@ -21,22 +23,40 @@ public:
     virtual ~Epuck();
     void run();
     Position recordOwnPosition();
-    
-private:
-    // Components
     SensorManager sensorManager;
     Motors motors;
     Floodfill floodfill;
+
+    bool reachedColor = false;
+
+    Config::Heading heading;
+    Position position;
+
+    bool iswallFront();
+    bool iswallRight();
+    bool iswallLeft();
+
+
+    double sensorValues[Config::NUM_SENSORS] = {0};
+
+    void moveForward(int cells, double *sensorValues);
+     void turnLeft();
+    void turnRight();
+    void turn180();
+
+    
+private:
+   
+    
     
     webots::LED *leds[Config::NUM_LEDS];
-    double sensorValues[Config::NUM_SENSORS] = {0};
+    
     webots::Node *selfNode;  // Added to store robot node reference
 
     void initDevices();
-    void turnLeft();
-    void turnRight();
-    void turn180();
-    void moveForward(int cells, double *sensorValues);
+   
+    //void moveForward(int cells, double *sensorValues);
+    void faceNorth();
 };
 
 #endif 
