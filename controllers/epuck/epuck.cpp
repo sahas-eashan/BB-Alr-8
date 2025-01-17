@@ -185,10 +185,89 @@ bool Epuck::iswallLeft(){
     return (L_Wall_Distance < Config::L_WALL_THRESHOLD) ? true : false;
 }
 
+
+void Epuck::turnToHeading(Config::Heading targetHeading) {
+    // Get the robot's node
+    Node *myEPUCK = getFromDef("EPUCK");
+    if (!myEPUCK) {
+        std::cerr << "Error: Cannot find EPUCK node" << std::endl;
+        return;
+    }
+
+    // Get the rotation field
+    Field *rotField = myEPUCK->getField("rotation");
+    if (!rotField) {
+        std::cerr << "Error: Cannot find rotation field" << std::endl;
+        return;
+    }
+
+    // Get current rotation
+    const double *rotArray = rotField->getSFRotation();
+    double currentAngle = rotArray[3];
+
+    // Convert target heading to radians
+    double targetAngle;
+    switch(targetHeading) {
+        case Config::Heading::NORTH:
+            targetAngle = M_PI/2;  // 90 degrees
+            break;
+        case Config::Heading::EAST:
+            targetAngle = 0.0;     // 0 degrees
+            break;
+        case Config::Heading::SOUTH:
+            targetAngle = -M_PI/2; // -90 degrees
+            break;
+        case Config::Heading::WEST:
+            targetAngle = M_PI;    // 180 degrees
+            break;
+        default:
+            std::cerr << "Invalid heading specified" << std::endl;
+            return;
+    }
+
+    // Calculate required rotation
+    double angleToRotate = targetAngle - currentAngle;
+
+    // Normalize angle to [-π, π]
+    while (angleToRotate > M_PI) angleToRotate -= 2.0 * M_PI;
+    while (angleToRotate < -M_PI) angleToRotate += 2.0 * M_PI;
+
+    // Convert to degrees for timing calculation
+    double angleDegrees = angleToRotate * 180.0 / M_PI;
+
+    // Calculate turn time based on angle
+    double turnTime = (std::fabs(angleDegrees) / 90.0) * Config::TIME_90_TURN;
+
+    // Execute turn
+    if (angleToRotate > 0) {
+        // Turn left (counterclockwise)
+        motors.setSpeed(-Config::TURN_SPEED, Config::TURN_SPEED);
+    } else {
+        // Turn right (clockwise)
+        motors.setSpeed(Config::TURN_SPEED, -Config::TURN_SPEED);
+    }
+
+    // Execute turn for calculated duration
+    step(static_cast<int>(turnTime));
+    motors.stop();
+
+    // Update internal heading state
+    heading = targetHeading;
+
+    // Verify final position
+    const double *finalRot = myEPUCK->getField("rotation")->getSFRotation();
+    std::cout << "Turned to heading: " << static_cast<int>(targetHeading) 
+              << ", Final angle: " << finalRot[3] * 180.0 / M_PI << " degrees" << std::endl;
+}
+
+
+
 void Epuck::run()
 {
     std::cout << "E-puck robot starting..." << std::endl;
-    faceNorth();
+    //faceNorth(); // Todo: Implement this function to correctly face north
+    turnToHeading(Config::Heading::NORTH);
+    // for now starting in north direction
     heading = Config::Heading::NORTH;
     position = recordOwnPosition();
 
@@ -196,21 +275,18 @@ void Epuck::run()
     int startY = position.y_mapped;
 
     floodfill.printMaze();
-    floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
-    floodfill.printCosts(); 
+    //floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
+    //floodfill.printCosts(); 
 
-    // Config::Action nextAction = solver(*this);
-    // std::cout << "Next Action: " << nextAction << std::endl;
-    
-    // API_moveForward(*this, sensorValues);
+    sensorManager.readSensors(sensorValues);
 
-    // Config::Action nextAction2 = solver(*this);
-    // std::cout << "Next Action: " << nextAction2 << std::endl;
+    //turnToHeading(Config::Heading::WEST);
 
+   //API_moveForward(*this, sensorValues);
     // API_turnRight(*this);
-
-    // Config::Action nextAction3 = solver(*this);
-    // std::cout << "Next Action: " << nextAction3 << std::endl;
+    // API_moveForward(*this, sensorValues);
+    // API_moveForward(*this, sensorValues);
+    // API_turnLeft(*this);
 
     go(*this, sensorValues);
     
@@ -221,7 +297,7 @@ void Epuck::run()
     // Main control loop
     while (step(Config::TIME_STEP) != -1)
     {
-        sensorManager.readSensors(sensorValues);
+        //sensorManager.readSensors(sensorValues);
 
         //moveForward(2, sensorValues);
         //API_moveForward(*this, sensorValues);
@@ -249,3 +325,18 @@ void Epuck::run()
         // std::cout << "Distance from Sensor 2: " << distanceSensor2 << " mm, ";
         // std::cout << "Distance from Sensor 5: " << distanceSensor5 << " mm " << std::endl;
         // std::cout << "Front wall Distance: " << FrontWallDistance << " mm " << std::endl;
+
+
+
+        // Config::Action nextAction = solver(*this);
+    // std::cout << "Next Action: " << nextAction << std::endl;
+    
+    // API_moveForward(*this, sensorValues);
+
+    // Config::Action nextAction2 = solver(*this);
+    // std::cout << "Next Action: " << nextAction2 << std::endl;
+
+    // API_turnRight(*this);
+
+    // Config::Action nextAction3 = solver(*this);
+    // std::cout << "Next Action: " << nextAction3 << std::endl;

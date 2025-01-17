@@ -161,6 +161,10 @@ Config::Action solver(Epuck& epuck){
     int X = epuck.position.x_mapped;
     int Y = epuck.position.y_mapped;
 
+    // Print world and mapped coordinates
+    std::cout << "Current grid coordinates: x=" << X
+              << ", y=" << Y << std::endl;
+
     if(!epuck.reachedColor && epuck.floodfill.getCellCost(X,Y) == 0){
         epuck.reachedColor = true;
     }
@@ -171,7 +175,7 @@ Config::Action solver(Epuck& epuck){
 
 
     epuck.floodfill.floodMaze(X , Y , Config::cellOrder[0].first, Config::cellOrder[0].second);
-    epuck.floodfill.printCosts(); 
+    //epuck.floodfill.printCosts(); 
 
     if (p==1){
     	return Config::Action::IDLE;
