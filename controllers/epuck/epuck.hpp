@@ -36,6 +36,8 @@ public:
     bool iswallRight();
     bool iswallLeft();
 
+    void turnToHeading(Config::Heading targetHeading);
+
 
     double sensorValues[Config::NUM_SENSORS] = {0};
 
