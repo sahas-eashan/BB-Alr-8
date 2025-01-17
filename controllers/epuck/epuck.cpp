@@ -7,6 +7,8 @@
 #include <webots/Supervisor.hpp>
 #include <cmath>  
 
+
+
 using namespace webots;
 
 Epuck::Epuck()
@@ -25,6 +27,7 @@ void Epuck::initDevices() {
     {
         sprintf(ledName, "led%d", i);
         leds[i] = getLED(ledName);
+        //
     }
 
     // Initialize sensors
@@ -101,26 +104,147 @@ void Epuck::moveForward(int cells, double *sensorValues)
     motors.stop();
 }
 
+
+
+void Epuck::faceNorth() {
+    // Attempt to grab the EPUCK node from the scene
+    Node *myEPUCK = getFromDef("EPUCK");
+    if (!myEPUCK) {
+        std::cerr << "Uh oh, can't find EPUCK node. No turning possible." << std::endl;
+        return;
+    }
+
+    // We'll get the 'rotation' field, which is axis-angle: [0,1,0, angle] ideally
+    Field *rotField = myEPUCK->getField("rotation");
+    if (!rotField) {
+        std::cerr << "No rotation field? This is suspicious, dude." << std::endl;
+        return;
+    }
+
+    // Grab the current rotation array
+    const double *rotArray = rotField->getSFRotation();
+
+    // The angle is at index 3
+    double currAng = rotArray[3];
+
+    // Let's define "north" as facing 90 degrees (PI/2) about Y-axis
+    double northAng = 1.5708; // about 90 deg in radians
+
+    // We'll see how much we need to rotate
+    double angleWeNeed = northAng - currAng;
+
+    // Normalize that angle into [-pi, pi] so we turn the shortest way
+    while (angleWeNeed > M_PI) angleWeNeed -= 2.0 * M_PI;
+    while (angleWeNeed < -M_PI) angleWeNeed += 2.0 * M_PI;
+
+    // Convert to degrees just so we can scale the turning time easily
+    double angleDeg = angleWeNeed * 180.0 / M_PI;
+
+    // Our turning speed
+    double spinSpeed = Config::TURN_SPEED;
+
+    // Time needed is proportional to how many degrees we must spin
+    // we know TIME_90_TURN is the time to turn 90 deg
+    double timeToSpin = (std::fabs(angleDeg) / 90.0) * Config::TIME_90_TURN;
+
+    // Decide direction: if angleWeNeed > 0, let's turn left, else turn right
+    if (angleWeNeed > 0) {
+        // Turn left
+        motors.setSpeed(-spinSpeed, spinSpeed);
+    } else {
+        // Turn right
+        motors.setSpeed(spinSpeed, -spinSpeed);
+    }
+
+    // Step long enough to complete the turn
+    step(static_cast<int>(timeToSpin));
+    motors.stop();
+
+    // Just for fun, let's print out the final orientation
+    std::cout << "Just tried to face north. Let's hope it worked!" << std::endl;
+}
+
+bool Epuck::iswallFront(){
+    sensorManager.readSensors(sensorValues);
+    float F_Wall_Distance = sensorManager.frontWallDistance();
+    std::cout << "Front wall Distance: " << F_Wall_Distance << " mm " << std::endl;
+    return (F_Wall_Distance < Config::F_WALL_THRESHOLD) ? true : false;
+}
+
+bool Epuck::iswallRight(){
+    sensorManager.readSensors(sensorValues);
+    float R_Wall_Distance = sensorManager.rightWallDistance();
+    std::cout << "Right wall Distance: " << R_Wall_Distance << " mm " << std::endl;
+    return (R_Wall_Distance < Config::R_WALL_THRESHOLD) ? true : false;
+}
+
+bool Epuck::iswallLeft(){
+    sensorManager.readSensors(sensorValues);
+    float L_Wall_Distance = sensorManager.leftWallDistance();
+    std::cout << "Left wall Distance: " << L_Wall_Distance << " mm " << std::endl;
+    return (L_Wall_Distance < Config::L_WALL_THRESHOLD) ? true : false;
+}
+
 void Epuck::run()
 {
     std::cout << "E-puck robot starting..." << std::endl;
+    faceNorth();
+    heading = Config::Heading::NORTH;
+    position = recordOwnPosition();
 
-    Position pos = recordOwnPosition();
+    int startX = position.x_mapped;
+    int startY = position.y_mapped;
 
-    int startX = pos.x_mapped;
-    int startY = pos.y_mapped;
+    // floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
+    // floodfill.printCosts(); 
 
-    floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
-    floodfill.printCosts(); 
+    // Config::Action nextAction = solver(*this);
+    // std::cout << "Next Action: " << nextAction << std::endl;
+    
+    // API_moveForward(*this, sensorValues);
+
+    // Config::Action nextAction2 = solver(*this);
+    // std::cout << "Next Action: " << nextAction2 << std::endl;
+
+    // API_turnRight(*this);
+
+    // Config::Action nextAction3 = solver(*this);
+    // std::cout << "Next Action: " << nextAction3 << std::endl;
+
+    go(*this, sensorValues);
+    
+    //bool iswall = API_wallFront(*this);
+
+    //std::cout << "Front Wall: " << iswall << std::endl;
 
     // Main control loop
     while (step(Config::TIME_STEP) != -1)
     {
         sensorManager.readSensors(sensorValues);
 
-        moveForward(4, sensorValues);
-        turn180();
+        //moveForward(2, sensorValues);
+        //API_moveForward(*this, sensorValues);
+
+        //turn180();
+        //API_moveForward(*this, sensorValues);
+       
         
+
         motors.delay(2000);
+        
     }
 }
+
+// Get distances from specified sensors
+        // double distanceSensor0 = sensorManager.getDistance(0);
+        // double distanceSensor7 = sensorManager.getDistance(7);
+        // double distanceSensor2 = sensorManager.getDistance(2);
+        // double distanceSensor5 = sensorManager.getDistance(5);
+        // double FrontWallDistance = sensorManager.frontWallDistance();
+
+// std::cout << "Distance from Sensor 0: " << distanceSensor0 << " mm, " ;
+        // std::cout << "Distance from Sensor 7: " << distanceSensor7 << " mm | " ;
+
+        // std::cout << "Distance from Sensor 2: " << distanceSensor2 << " mm, ";
+        // std::cout << "Distance from Sensor 5: " << distanceSensor5 << " mm " << std::endl;
+        // std::cout << "Front wall Distance: " << FrontWallDistance << " mm " << std::endl;

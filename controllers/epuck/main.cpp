@@ -5,4 +5,5 @@ int main(int argc, char **argv) {
     robot->run();  // This ensures simulation steps occur
     delete robot;
     return 0;
+    
 }
