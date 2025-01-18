@@ -5,7 +5,7 @@
 #include <sstream>
 #include <webots/Node.hpp>
 #include <webots/Supervisor.hpp>
-#include <cmath>  
+#include <cmath>
 
 using namespace webots;
 
@@ -18,7 +18,8 @@ Epuck::~Epuck()
 {
 }
 
-void Epuck::initDevices() {
+void Epuck::initDevices()
+{
     // Initialize LEDs
     char ledName[5];
     for (int i = 0; i < Config::NUM_LEDS; i++)
@@ -33,26 +34,15 @@ void Epuck::initDevices() {
     std::cout << "Sensors Initialized" << std::endl;
     motors.initializeMotors(this);
     std::cout << "Motors Initialized" << std::endl;
-    
-     // Grab the PositionSensors from Webots
-    leftPosSensor = getPositionSensor("left wheel sensor");
-    rightPosSensor = getPositionSensor("right wheel sensor");
-    if (!leftPosSensor || !rightPosSensor) {
-        std::cerr << "Oops! Could not find wheel sensors. Check your .wbt file for correct names." << std::endl;
-    } else {
-        leftPosSensor->enable(Config::TIME_STEP);
-        rightPosSensor->enable(Config::TIME_STEP);
-        std::cout << "PositionSensors enabled." << std::endl;
-    }
 }
 
-
-
-Position Epuck::recordOwnPosition() {
-    Node *selfNode = getFromDef("EPUCK");  // Ensure the DEF name matches
-    if (selfNode == nullptr) {
+Position Epuck::recordOwnPosition()
+{
+    Node *selfNode = getFromDef("EPUCK"); // Ensure the DEF name matches
+    if (selfNode == nullptr)
+    {
         std::cerr << "Error: Could not retrieve self node!" << std::endl;
-        return { -1, -1};  // Return invalid values in case of an error
+        return {-1, -1}; // Return invalid values in case of an error
     }
 
     // Get the position of the robot
@@ -74,199 +64,70 @@ Position Epuck::recordOwnPosition() {
     return {x_mapped, y_mapped};
 }
 
-
-void Epuck::turnLeft() {
-    // let's define some robot geometry constants
-    double trackWidth   = 0.053;   // distance (meters) between the two e-puck wheels
-    double wheelRadius  = 0.0205;  // about 2.05 cm radius for each wheel
-    double turnAngleDeg = 90.0;    // we want a 90° turn to the left
-
-    // convert desired angle to radians
-    double turnAngleRad = turnAngleDeg * M_PI / 180.0;
-
-    // for an in-place turn, each wheel travels an arc with radius = trackWidth/2
-    // arc length = angle_in_radians * radius
-    double distancePerWheel = turnAngleRad * (trackWidth / 2.0);
-
-    // how many radians each wheel must rotate
-    // (distance = radius_wheel * wheel_rotation)
-    double requiredWheelRotation = distancePerWheel / wheelRadius;
-
-    // read the starting angles from the sensors
-    double startLeftAngle  = leftPosSensor->getValue();
-    double startRightAngle = rightPosSensor->getValue();
-
-    // we’ll set one wheel to go forward, other backward
-    double turningSpeed = 3.0; // rad/s (tweak as desired)
-    motors.setSpeed(-turningSpeed, turningSpeed); 
-    // that should pivot left in place (left wheel backward, right wheel forward)
-
-    // we keep turning until the difference in wheel angles = 2 * requiredWheelRotation
-    // Why 2 * ? Because the left wheel is going negative ~X, and the right is going +X.
-    bool keepTurning = true;
-    while (keepTurning) {
-        step(Config::TIME_STEP);
-
-        double leftNow  = leftPosSensor->getValue();
-        double rightNow = rightPosSensor->getValue();
-
-        // how much each wheel has rotated from the start
-        double leftDelta  = leftNow  - startLeftAngle;
-        double rightDelta = rightNow - startRightAngle;
-
-        // For a perfect in-place turn:
-        //   leftDelta ~ -requiredWheelRotation
-        //   rightDelta ~ +requiredWheelRotation
-        // So the difference (rightDelta - leftDelta) should be ~ 2*requiredWheelRotation
-        double angleDiff = rightDelta - leftDelta;
-
-        if (angleDiff >= (2.0 * requiredWheelRotation)) {
-            keepTurning = false;
-        }
-    }
-
+void Epuck::turnLeft()
+{
+    motors.setSpeed(-5, 5);
+    step(Config::TIME_90_TURN);
     motors.stop();
 }
 
-void Epuck::turnRight() {
-    double trackWidth   = 0.053;  
-    double wheelRadius  = 0.0205; 
-    double turnAngleDeg = 90.0;   
-
-    double turnAngleRad = turnAngleDeg * M_PI / 180.0;
-    double distancePerWheel = turnAngleRad * (trackWidth / 2.0);
-    double requiredWheelRotation = distancePerWheel / wheelRadius;
-
-    double startLeftAngle  = leftPosSensor->getValue();
-    double startRightAngle = rightPosSensor->getValue();
-
-    // for a right turn, left wheel forward, right wheel backward
-    double turningSpeed = 3.0; // rad/s
-    motors.setSpeed(turningSpeed, -turningSpeed);
-
-    bool keepTurning = true;
-    while (keepTurning) {
-        step(Config::TIME_STEP);
-
-        double leftNow  = leftPosSensor->getValue();
-        double rightNow = rightPosSensor->getValue();
-
-        double leftDelta  = leftNow  - startLeftAngle;
-        double rightDelta = rightNow - startRightAngle;
-
-        double angleDiff = leftDelta - rightDelta; 
-        // because for a right turn, left is positive, right is negative
-        // so leftDelta - rightDelta should end up ~ 2*requiredWheelRotation
-
-        if (angleDiff >= (2.0 * requiredWheelRotation)) {
-            keepTurning = false;
-        }
-    }
-
+void Epuck::turnRight()
+{
+    motors.setSpeed(Config::TURN_SPEED, -Config::TURN_SPEED);
+    step(Config::TIME_90_TURN);
     motors.stop();
 }
 
-void Epuck::turn180() {
-    // We want 180 degrees
-    double trackWidth   = 0.053; 
-    double wheelRadius  = 0.0205;
-    double turnAngleDeg = 180.0;
-
-    double turnAngleRad = turnAngleDeg * M_PI / 180.0;
-    double distancePerWheel = turnAngleRad * (trackWidth / 2.0);
-    double requiredWheelRotation = distancePerWheel / wheelRadius;
-
-    double startLeftAngle  = leftPosSensor->getValue();
-    double startRightAngle = rightPosSensor->getValue();
-
-    // For a 180, let's do left wheel forward, right wheel backward, or vice versa
-    double turningSpeed = 3.0; 
-    motors.setSpeed(turningSpeed, -turningSpeed); // rotate in place
-
-    bool keepTurning = true;
-    while (keepTurning) {
-        step(Config::TIME_STEP);
-
-        double leftNow  = leftPosSensor->getValue();
-        double rightNow = rightPosSensor->getValue();
-
-        double leftDelta  = leftNow  - startLeftAngle;
-        double rightDelta = rightNow - startRightAngle;
-
-        // for a 180 right turn, difference is leftDelta - rightDelta ~ 2 * requiredWheelRotation
-        double angleDiff = leftDelta - rightDelta;
-
-        if (angleDiff >= (2.0 * requiredWheelRotation)) {
-            keepTurning = false;
-        }
-    }
-
+void Epuck::turn180()
+{
+    motors.setSpeed(Config::TURN_SPEED, -Config::TURN_SPEED);
+    step(Config::TIME_90_TURN * 2);
     motors.stop();
 }
 
-void Epuck::moveForward(int cells, double *sensorValues) {
-    // Let's define how many meters 1 cell is. 
-    // Suppose each cell is 0.1 m wide (example).
-    double distPerCell = 0.265;
-    double targetDist = cells * distPerCell;
+void Epuck::moveForward(int cells, double *sensorValues)
+{
+    int totalTime = cells * Config::TIME_PER_CELL;
+    auto startTime = std::chrono::steady_clock::now();
 
-    // e-puck's approximate wheel radius in meters.
-    double wheelRadius = 0.0205; // ~2.05 cm
-
-    // read the initial wheel rotation
-    double leftStartAngle  = leftPosSensor->getValue();
-    double rightStartAngle = rightPosSensor->getValue();
-
-    // We'll loop until we reach the desired average distance
-    bool keepMoving = true;
-
-    while (keepMoving) {
-        // read sensors for any required steering
+    while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() < totalTime)
+    {
         sensorManager.readSensors(sensorValues);
         double correction = sensorManager.calculateSteeringAdjustment();
+        motors.setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
 
-        // set speeds using base speed +/- the correction
-        motors.setSpeed(Config::BASE_SPEED - correction, 
-                        Config::BASE_SPEED + correction);
-
-        // do one simulation step
         step(Config::TIME_STEP);
+    }
 
-        // get current angles
-        double leftNowAngle  = leftPosSensor->getValue();
-        double rightNowAngle = rightPosSensor->getValue();
+    if (iswallFront())
+    {
+        while (sensorManager.frontWallDistance() > 10)
+        {
+            sensorManager.readSensors(sensorValues);
+            double correction = sensorManager.calculateSteeringAdjustment();
+            motors.setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
 
-        // convert angle difference to linear distance
-        double leftDist  = (leftNowAngle  - leftStartAngle)  * wheelRadius;
-        double rightDist = (rightNowAngle - rightStartAngle) * wheelRadius;
-
-        // average distance traveled by both wheels
-        double avgDist = (std::fabs(leftDist) + std::fabs(rightDist)) / 2.0;
-
-        // check if we've traveled enough
-        if (avgDist >= targetDist) {
-            keepMoving = false;
+            step(Config::TIME_STEP);
         }
     }
 
-    // stop motors
     motors.stop();
 }
 
-
-
-
-void Epuck::faceNorth() {
+void Epuck::faceNorth()
+{
     // Attempt to grab the EPUCK node from the scene
     Node *myEPUCK = getFromDef("EPUCK");
-    if (!myEPUCK) {
+    if (!myEPUCK)
+    {
         std::cerr << "Uh oh, can't find EPUCK node. No turning possible." << std::endl;
         return;
     }
 
     // We'll get the 'rotation' field, which is axis-angle: [0,1,0, angle] ideally
     Field *rotField = myEPUCK->getField("rotation");
-    if (!rotField) {
+    if (!rotField)
+    {
         std::cerr << "No rotation field? This is suspicious, dude." << std::endl;
         return;
     }
@@ -284,8 +145,10 @@ void Epuck::faceNorth() {
     double angleWeNeed = northAng - currAng;
 
     // Normalize that angle into [-pi, pi] so we turn the shortest way
-    while (angleWeNeed > M_PI) angleWeNeed -= 2.0 * M_PI;
-    while (angleWeNeed < -M_PI) angleWeNeed += 2.0 * M_PI;
+    while (angleWeNeed > M_PI)
+        angleWeNeed -= 2.0 * M_PI;
+    while (angleWeNeed < -M_PI)
+        angleWeNeed += 2.0 * M_PI;
 
     // Convert to degrees just so we can scale the turning time easily
     double angleDeg = angleWeNeed * 180.0 / M_PI;
@@ -298,10 +161,13 @@ void Epuck::faceNorth() {
     double timeToSpin = (std::fabs(angleDeg) / 90.0) * Config::TIME_90_TURN;
 
     // Decide direction: if angleWeNeed > 0, let's turn left, else turn right
-    if (angleWeNeed > 0) {
+    if (angleWeNeed > 0)
+    {
         // Turn left
         motors.setSpeed(-spinSpeed, spinSpeed);
-    } else {
+    }
+    else
+    {
         // Turn right
         motors.setSpeed(spinSpeed, -spinSpeed);
     }
@@ -314,39 +180,44 @@ void Epuck::faceNorth() {
     std::cout << "Just tried to face north. Let's hope it worked!" << std::endl;
 }
 
-bool Epuck::iswallFront(){
+bool Epuck::iswallFront()
+{
     sensorManager.readSensors(sensorValues);
     float F_Wall_Distance = sensorManager.frontWallDistance();
-    std::cout << "Front wall Distance: " << F_Wall_Distance << " mm " << std::endl;
+    std::cout << "Front wall Distance: " << F_Wall_Distance << " cm " << std::endl;
     return (F_Wall_Distance < Config::F_WALL_THRESHOLD) ? true : false;
 }
 
-bool Epuck::iswallRight(){
+bool Epuck::iswallRight()
+{
     sensorManager.readSensors(sensorValues);
     float R_Wall_Distance = sensorManager.rightWallDistance();
-    std::cout << "Right wall Distance: " << R_Wall_Distance << " mm " << std::endl;
+    std::cout << "Right wall Distance: " << R_Wall_Distance << " cm " << std::endl;
     return (R_Wall_Distance < Config::R_WALL_THRESHOLD) ? true : false;
 }
 
-bool Epuck::iswallLeft(){
+bool Epuck::iswallLeft()
+{
     sensorManager.readSensors(sensorValues);
     float L_Wall_Distance = sensorManager.leftWallDistance();
-    std::cout << "Left wall Distance: " << L_Wall_Distance << " mm " << std::endl;
+    std::cout << "Left wall Distance: " << L_Wall_Distance << " cm " << std::endl;
     return (L_Wall_Distance < Config::L_WALL_THRESHOLD) ? true : false;
 }
 
-
-void Epuck::turnToHeading(Config::Heading targetHeading) {
+void Epuck::turnToHeading(Config::Heading targetHeading)
+{
     // Get the robot's node
     Node *myEPUCK = getFromDef("EPUCK");
-    if (!myEPUCK) {
+    if (!myEPUCK)
+    {
         std::cerr << "Error: Cannot find EPUCK node" << std::endl;
         return;
     }
 
     // Get the rotation field
     Field *rotField = myEPUCK->getField("rotation");
-    if (!rotField) {
+    if (!rotField)
+    {
         std::cerr << "Error: Cannot find rotation field" << std::endl;
         return;
     }
@@ -357,30 +228,33 @@ void Epuck::turnToHeading(Config::Heading targetHeading) {
 
     // Convert target heading to radians
     double targetAngle;
-    switch(targetHeading) {
-        case Config::Heading::NORTH:
-            targetAngle = M_PI/2;  // 90 degrees
-            break;
-        case Config::Heading::EAST:
-            targetAngle = 0.0;     // 0 degrees
-            break;
-        case Config::Heading::SOUTH:
-            targetAngle = -M_PI/2; // -90 degrees
-            break;
-        case Config::Heading::WEST:
-            targetAngle = M_PI;    // 180 degrees
-            break;
-        default:
-            std::cerr << "Invalid heading specified" << std::endl;
-            return;
+    switch (targetHeading)
+    {
+    case Config::Heading::NORTH:
+        targetAngle = M_PI / 2; // 90 degrees
+        break;
+    case Config::Heading::EAST:
+        targetAngle = 0.0; // 0 degrees
+        break;
+    case Config::Heading::SOUTH:
+        targetAngle = -M_PI / 2; // -90 degrees
+        break;
+    case Config::Heading::WEST:
+        targetAngle = M_PI; // 180 degrees
+        break;
+    default:
+        std::cerr << "Invalid heading specified" << std::endl;
+        return;
     }
 
     // Calculate required rotation
     double angleToRotate = targetAngle - currentAngle;
 
     // Normalize angle to [-π, π]
-    while (angleToRotate > M_PI) angleToRotate -= 2.0 * M_PI;
-    while (angleToRotate < -M_PI) angleToRotate += 2.0 * M_PI;
+    while (angleToRotate > M_PI)
+        angleToRotate -= 2.0 * M_PI;
+    while (angleToRotate < -M_PI)
+        angleToRotate += 2.0 * M_PI;
 
     // Convert to degrees for timing calculation
     double angleDegrees = angleToRotate * 180.0 / M_PI;
@@ -389,10 +263,13 @@ void Epuck::turnToHeading(Config::Heading targetHeading) {
     double turnTime = (std::fabs(angleDegrees) / 90.0) * Config::TIME_90_TURN;
 
     // Execute turn
-    if (angleToRotate > 0) {
+    if (angleToRotate > 0)
+    {
         // Turn left (counterclockwise)
         motors.setSpeed(-Config::TURN_SPEED, Config::TURN_SPEED);
-    } else {
+    }
+    else
+    {
         // Turn right (clockwise)
         motors.setSpeed(Config::TURN_SPEED, -Config::TURN_SPEED);
     }
@@ -406,17 +283,17 @@ void Epuck::turnToHeading(Config::Heading targetHeading) {
 
     // Verify final position
     const double *finalRot = myEPUCK->getField("rotation")->getSFRotation();
-    std::cout << "Turned to heading: " << static_cast<int>(targetHeading) 
+    std::cout << "Turned to heading: " << static_cast<int>(targetHeading)
               << ", Final angle: " << finalRot[3] * 180.0 / M_PI << " degrees" << std::endl;
 }
-
-
 
 void Epuck::run()
 {
     std::cout << "E-puck robot starting..." << std::endl;
-    //faceNorth(); // Todo: Implement this function to correctly face north
+    // faceNorth(); // Todo: Implement this function to correctly face north
+
     turnToHeading(Config::Heading::NORTH);
+
     // for now starting in north direction
     heading = Config::Heading::NORTH;
     position = recordOwnPosition();
@@ -425,68 +302,64 @@ void Epuck::run()
     int startY = position.y_mapped;
 
     floodfill.printMaze();
-    //floodfill.floodMaze(startX , startY , Config::cellOrder[0].first, Config::cellOrder[0].second);
-    //floodfill.printCosts(); 
+    floodfill.floodMaze(startX, startY, Config::cellOrder[0].first, Config::cellOrder[0].second);
+    floodfill.printCosts();
 
     sensorManager.readSensors(sensorValues);
 
-    //turnToHeading(Config::Heading::WEST);
+    // turnToHeading(Config::Heading::WEST);
 
-   //API_moveForward(*this, sensorValues);
-    // API_turnRight(*this);
     // API_moveForward(*this, sensorValues);
-    // API_moveForward(*this, sensorValues);
-    // API_turnLeft(*this);
+    //  API_turnRight(*this);
+    //  API_moveForward(*this, sensorValues);
+    //  API_moveForward(*this, sensorValues);
+    //  API_turnLeft(*this);
 
     go(*this, sensorValues);
-    
-    //bool iswall = API_wallFront(*this);
 
-    //std::cout << "Front Wall: " << iswall << std::endl;
+
+    // bool iswall = API_wallFront(*this);
+
+    // std::cout << "Front Wall: " << iswall << std::endl;
 
     // Main control loop
     while (step(Config::TIME_STEP) != -1)
     {
-        //sensorManager.readSensors(sensorValues);
+        // sensorManager.readSensors(sensorValues);
 
-        //moveForward(2, sensorValues);
-        //API_moveForward(*this, sensorValues);
+        // moveForward(2, sensorValues);
+        // API_moveForward(*this, sensorValues);
 
-        //turn180();
-        //API_moveForward(*this, sensorValues);
-       
-        
+        // turn180();
+        // API_moveForward(*this, sensorValues);
 
         motors.delay(2000);
-        
     }
 }
 
 // Get distances from specified sensors
-        // double distanceSensor0 = sensorManager.getDistance(0);
-        // double distanceSensor7 = sensorManager.getDistance(7);
-        // double distanceSensor2 = sensorManager.getDistance(2);
-        // double distanceSensor5 = sensorManager.getDistance(5);
-        // double FrontWallDistance = sensorManager.frontWallDistance();
+// double distanceSensor0 = sensorManager.getDistance(0);
+// double distanceSensor7 = sensorManager.getDistance(7);
+// double distanceSensor2 = sensorManager.getDistance(2);
+// double distanceSensor5 = sensorManager.getDistance(5);
+// double FrontWallDistance = sensorManager.frontWallDistance();
 
 // std::cout << "Distance from Sensor 0: " << distanceSensor0 << " mm, " ;
-        // std::cout << "Distance from Sensor 7: " << distanceSensor7 << " mm | " ;
+// std::cout << "Distance from Sensor 7: " << distanceSensor7 << " mm | " ;
 
-        // std::cout << "Distance from Sensor 2: " << distanceSensor2 << " mm, ";
-        // std::cout << "Distance from Sensor 5: " << distanceSensor5 << " mm " << std::endl;
-        // std::cout << "Front wall Distance: " << FrontWallDistance << " mm " << std::endl;
+// std::cout << "Distance from Sensor 2: " << distanceSensor2 << " mm, ";
+// std::cout << "Distance from Sensor 5: " << distanceSensor5 << " mm " << std::endl;
+// std::cout << "Front wall Distance: " << FrontWallDistance << " mm " << std::endl;
 
+// Config::Action nextAction = solver(*this);
+// std::cout << "Next Action: " << nextAction << std::endl;
 
+// API_moveForward(*this, sensorValues);
 
-        // Config::Action nextAction = solver(*this);
-    // std::cout << "Next Action: " << nextAction << std::endl;
-    
-    // API_moveForward(*this, sensorValues);
+// Config::Action nextAction2 = solver(*this);
+// std::cout << "Next Action: " << nextAction2 << std::endl;
 
-    // Config::Action nextAction2 = solver(*this);
-    // std::cout << "Next Action: " << nextAction2 << std::endl;
+// API_turnRight(*this);
 
-    // API_turnRight(*this);
-
-    // Config::Action nextAction3 = solver(*this);
-    // std::cout << "Next Action: " << nextAction3 << std::endl;
+// Config::Action nextAction3 = solver(*this);
+// std::cout << "Next Action: " << nextAction3 << std::endl;

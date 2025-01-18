@@ -31,7 +31,7 @@ namespace Config
     static const double Kd = 0.11;
 
     // Motors
-    const int TIME_90_TURN = 1750;
+    const int TIME_90_TURN = 1600;
     const int TIME_PER_CELL = 1850; 
 
     static constexpr double MAX_SPEED = 10.0;
@@ -41,8 +41,8 @@ namespace Config
     // Floodfill
     const int MAZE_LENGTH = 10;
     const int MAZE_WIDTH = 10;
-    
-    const std::pair<int, int> cellOrder[4] = { {7, 6}, {5, 0}, {7, 3}, {8, 4} }; //{x, y}
+    //
+    const std::pair<int, int> cellOrder[5] = { {7, 6}, {5, 0}, {7, 3}, {8, 4}, {0, 3} }; //{x, y}
 
 
     typedef enum Heading
@@ -63,7 +63,7 @@ namespace Config
 
     // Threshold values for detecting walls
     const float L_WALL_THRESHOLD = 25;
-    const float F_WALL_THRESHOLD = 15;
+    const float F_WALL_THRESHOLD = 17;
     const float R_WALL_THRESHOLD = 25;
 
     const float COS10 = 0.98480775301;
