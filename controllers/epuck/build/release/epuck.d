@@ -12,4 +12,5 @@ build/release/epuck.o: epuck.cpp epuck.hpp \
  config.hpp floodfill.hpp motors.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/Motor.hpp API.hpp \
  solver.hpp \
+ C:\Program\ Files\Webots/include/controller/cpp/webots/PositionSensor.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/Receiver.hpp
