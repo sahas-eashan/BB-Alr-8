@@ -12,6 +12,7 @@
 #include "config.hpp"
 #include "API.hpp"
 #include "solver.hpp"
+#include <webots/PositionSensor.hpp>
 
 struct Position {
     int x_mapped, y_mapped;   // Mapped grid coordinates
@@ -42,7 +43,7 @@ public:
     double sensorValues[Config::NUM_SENSORS] = {0};
 
     void moveForward(int cells, double *sensorValues);
-     void turnLeft();
+    void turnLeft();
     void turnRight();
     void turn180();
 
@@ -54,7 +55,8 @@ private:
     webots::LED *leds[Config::NUM_LEDS];
     
     webots::Node *selfNode;  // Added to store robot node reference
-
+    webots::PositionSensor *leftPosSensor;
+    webots::PositionSensor *rightPosSensor;
     void initDevices();
    
     //void moveForward(int cells, double *sensorValues);

@@ -7,8 +7,6 @@
 #include <webots/Supervisor.hpp>
 #include <cmath>  
 
-
-
 using namespace webots;
 
 Epuck::Epuck()
@@ -35,6 +33,17 @@ void Epuck::initDevices() {
     std::cout << "Sensors Initialized" << std::endl;
     motors.initializeMotors(this);
     std::cout << "Motors Initialized" << std::endl;
+    
+     // Grab the PositionSensors from Webots
+    leftPosSensor = getPositionSensor("left wheel sensor");
+    rightPosSensor = getPositionSensor("right wheel sensor");
+    if (!leftPosSensor || !rightPosSensor) {
+        std::cerr << "Oops! Could not find wheel sensors. Check your .wbt file for correct names." << std::endl;
+    } else {
+        leftPosSensor->enable(Config::TIME_STEP);
+        rightPosSensor->enable(Config::TIME_STEP);
+        std::cout << "PositionSensors enabled." << std::endl;
+    }
 }
 
 
@@ -66,43 +75,184 @@ Position Epuck::recordOwnPosition() {
 }
 
 
-void Epuck::turnLeft()
-{
-    motors.setSpeed(-5 ,5);
-    step(Config::TIME_90_TURN);
-    motors.stop();
-}
+void Epuck::turnLeft() {
+    // let's define some robot geometry constants
+    double trackWidth   = 0.053;   // distance (meters) between the two e-puck wheels
+    double wheelRadius  = 0.0205;  // about 2.05 cm radius for each wheel
+    double turnAngleDeg = 90.0;    // we want a 90° turn to the left
 
-void Epuck::turnRight()
-{
-    motors.setSpeed(Config::TURN_SPEED, -Config::TURN_SPEED);
-    step(Config::TIME_90_TURN);
-    motors.stop();
-}
+    // convert desired angle to radians
+    double turnAngleRad = turnAngleDeg * M_PI / 180.0;
 
-void Epuck::turn180()
-{
-    motors.setSpeed(Config::TURN_SPEED, -Config::TURN_SPEED);
-    step(Config::TIME_90_TURN * 2);
-    motors.stop();
-}
+    // for an in-place turn, each wheel travels an arc with radius = trackWidth/2
+    // arc length = angle_in_radians * radius
+    double distancePerWheel = turnAngleRad * (trackWidth / 2.0);
 
-void Epuck::moveForward(int cells, double *sensorValues)
-{
-    int totalTime = cells * Config::TIME_PER_CELL;
-    auto startTime = std::chrono::steady_clock::now();
+    // how many radians each wheel must rotate
+    // (distance = radius_wheel * wheel_rotation)
+    double requiredWheelRotation = distancePerWheel / wheelRadius;
 
-    while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() < totalTime)
-    {
-        sensorManager.readSensors(sensorValues);
-        double correction = sensorManager.calculateSteeringAdjustment();
-        motors.setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
+    // read the starting angles from the sensors
+    double startLeftAngle  = leftPosSensor->getValue();
+    double startRightAngle = rightPosSensor->getValue();
 
+    // we’ll set one wheel to go forward, other backward
+    double turningSpeed = 3.0; // rad/s (tweak as desired)
+    motors.setSpeed(-turningSpeed, turningSpeed); 
+    // that should pivot left in place (left wheel backward, right wheel forward)
+
+    // we keep turning until the difference in wheel angles = 2 * requiredWheelRotation
+    // Why 2 * ? Because the left wheel is going negative ~X, and the right is going +X.
+    bool keepTurning = true;
+    while (keepTurning) {
         step(Config::TIME_STEP);
+
+        double leftNow  = leftPosSensor->getValue();
+        double rightNow = rightPosSensor->getValue();
+
+        // how much each wheel has rotated from the start
+        double leftDelta  = leftNow  - startLeftAngle;
+        double rightDelta = rightNow - startRightAngle;
+
+        // For a perfect in-place turn:
+        //   leftDelta ~ -requiredWheelRotation
+        //   rightDelta ~ +requiredWheelRotation
+        // So the difference (rightDelta - leftDelta) should be ~ 2*requiredWheelRotation
+        double angleDiff = rightDelta - leftDelta;
+
+        if (angleDiff >= (2.0 * requiredWheelRotation)) {
+            keepTurning = false;
+        }
     }
 
     motors.stop();
 }
+
+void Epuck::turnRight() {
+    double trackWidth   = 0.053;  
+    double wheelRadius  = 0.0205; 
+    double turnAngleDeg = 90.0;   
+
+    double turnAngleRad = turnAngleDeg * M_PI / 180.0;
+    double distancePerWheel = turnAngleRad * (trackWidth / 2.0);
+    double requiredWheelRotation = distancePerWheel / wheelRadius;
+
+    double startLeftAngle  = leftPosSensor->getValue();
+    double startRightAngle = rightPosSensor->getValue();
+
+    // for a right turn, left wheel forward, right wheel backward
+    double turningSpeed = 3.0; // rad/s
+    motors.setSpeed(turningSpeed, -turningSpeed);
+
+    bool keepTurning = true;
+    while (keepTurning) {
+        step(Config::TIME_STEP);
+
+        double leftNow  = leftPosSensor->getValue();
+        double rightNow = rightPosSensor->getValue();
+
+        double leftDelta  = leftNow  - startLeftAngle;
+        double rightDelta = rightNow - startRightAngle;
+
+        double angleDiff = leftDelta - rightDelta; 
+        // because for a right turn, left is positive, right is negative
+        // so leftDelta - rightDelta should end up ~ 2*requiredWheelRotation
+
+        if (angleDiff >= (2.0 * requiredWheelRotation)) {
+            keepTurning = false;
+        }
+    }
+
+    motors.stop();
+}
+
+void Epuck::turn180() {
+    // We want 180 degrees
+    double trackWidth   = 0.053; 
+    double wheelRadius  = 0.0205;
+    double turnAngleDeg = 180.0;
+
+    double turnAngleRad = turnAngleDeg * M_PI / 180.0;
+    double distancePerWheel = turnAngleRad * (trackWidth / 2.0);
+    double requiredWheelRotation = distancePerWheel / wheelRadius;
+
+    double startLeftAngle  = leftPosSensor->getValue();
+    double startRightAngle = rightPosSensor->getValue();
+
+    // For a 180, let's do left wheel forward, right wheel backward, or vice versa
+    double turningSpeed = 3.0; 
+    motors.setSpeed(turningSpeed, -turningSpeed); // rotate in place
+
+    bool keepTurning = true;
+    while (keepTurning) {
+        step(Config::TIME_STEP);
+
+        double leftNow  = leftPosSensor->getValue();
+        double rightNow = rightPosSensor->getValue();
+
+        double leftDelta  = leftNow  - startLeftAngle;
+        double rightDelta = rightNow - startRightAngle;
+
+        // for a 180 right turn, difference is leftDelta - rightDelta ~ 2 * requiredWheelRotation
+        double angleDiff = leftDelta - rightDelta;
+
+        if (angleDiff >= (2.0 * requiredWheelRotation)) {
+            keepTurning = false;
+        }
+    }
+
+    motors.stop();
+}
+
+void Epuck::moveForward(int cells, double *sensorValues) {
+    // Let's define how many meters 1 cell is. 
+    // Suppose each cell is 0.1 m wide (example).
+    double distPerCell = 0.265;
+    double targetDist = cells * distPerCell;
+
+    // e-puck's approximate wheel radius in meters.
+    double wheelRadius = 0.0205; // ~2.05 cm
+
+    // read the initial wheel rotation
+    double leftStartAngle  = leftPosSensor->getValue();
+    double rightStartAngle = rightPosSensor->getValue();
+
+    // We'll loop until we reach the desired average distance
+    bool keepMoving = true;
+
+    while (keepMoving) {
+        // read sensors for any required steering
+        sensorManager.readSensors(sensorValues);
+        double correction = sensorManager.calculateSteeringAdjustment();
+
+        // set speeds using base speed +/- the correction
+        motors.setSpeed(Config::BASE_SPEED - correction, 
+                        Config::BASE_SPEED + correction);
+
+        // do one simulation step
+        step(Config::TIME_STEP);
+
+        // get current angles
+        double leftNowAngle  = leftPosSensor->getValue();
+        double rightNowAngle = rightPosSensor->getValue();
+
+        // convert angle difference to linear distance
+        double leftDist  = (leftNowAngle  - leftStartAngle)  * wheelRadius;
+        double rightDist = (rightNowAngle - rightStartAngle) * wheelRadius;
+
+        // average distance traveled by both wheels
+        double avgDist = (std::fabs(leftDist) + std::fabs(rightDist)) / 2.0;
+
+        // check if we've traveled enough
+        if (avgDist >= targetDist) {
+            keepMoving = false;
+        }
+    }
+
+    // stop motors
+    motors.stop();
+}
+
 
 
 
