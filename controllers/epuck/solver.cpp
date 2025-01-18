@@ -2,8 +2,6 @@
 #include <iostream>
 
 
-//Position Epuck.position;
-
 
 Config::Action NextAction(Epuck& epuck){
     int least_distance = 300;   // just some large number, none of the distances will be over 300
@@ -11,69 +9,61 @@ Config::Action NextAction(Epuck& epuck){
 
     //Config::Heading heading = epuck.heading;
 
-    // bool iswallFront = API_wallFront(epuck);
-    // bool iswallRight = API_wallRight(epuck);
-    // bool iswallLeft = API_wallLeft(epuck);
-
-    // std::cout << "Front Wall: " << iswallFront << std::endl;
-    // std::cout << "Right Wall: " << iswallRight << std::endl;
-    // std::cout << "Left Wall: " << iswallLeft << std::endl;
-
     
 
 
     if(epuck.heading == Config::Heading::NORTH){
-        if(API_wallFront(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped + 1) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped, epuck.position.y_mapped, 1) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped + 1) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped + 1);
             optimal_move = Config::Action::FORWARD;
         }
-        if(API_wallRight(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped + 1, epuck.position.y_mapped) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped , epuck.position.y_mapped, 2)== 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped + 1, epuck.position.y_mapped) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped + 1, epuck.position.y_mapped);
             optimal_move = Config::Action::RIGHT;
         }
-        if(API_wallLeft(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped - 1, epuck.position.y_mapped) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped , epuck.position.y_mapped, 8) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped - 1, epuck.position.y_mapped) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped - 1, epuck.position.y_mapped);
             optimal_move = Config::Action::LEFT;
         }
     }
     else if(epuck.heading == Config::Heading::EAST){
-        if(API_wallFront(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped + 1, epuck.position.y_mapped) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped , epuck.position.y_mapped, 2) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped + 1, epuck.position.y_mapped) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped + 1, epuck.position.y_mapped);
             optimal_move = Config::Action::FORWARD;
         }
-        if(API_wallRight(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped - 1) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped, epuck.position.y_mapped , 4) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped - 1) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped - 1);
             optimal_move = Config::Action::RIGHT;
         }
-        if(API_wallLeft(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped + 1) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped, epuck.position.y_mapped , 1)== 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped + 1) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped + 1);
             optimal_move = Config::Action::LEFT;
         }
     }
     else if(epuck.heading == Config::Heading::SOUTH){
-        if(API_wallFront(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped - 1) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped, epuck.position.y_mapped , 4) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped - 1) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped - 1);
             optimal_move = Config::Action::FORWARD;
         }
-        if(API_wallRight(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped - 1, epuck.position.y_mapped) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped , epuck.position.y_mapped, 8) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped - 1, epuck.position.y_mapped) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped - 1, epuck.position.y_mapped);
             optimal_move = Config::Action::RIGHT;
         }
-        if(API_wallLeft(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped + 1, epuck.position.y_mapped) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped , epuck.position.y_mapped, 2) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped + 1, epuck.position.y_mapped) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped + 1, epuck.position.y_mapped);
             optimal_move = Config::Action::LEFT;
         }
     }
     else if(epuck.heading == Config::Heading::WEST){
-        if(API_wallFront(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped - 1, epuck.position.y_mapped) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped , epuck.position.y_mapped, 8)== 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped - 1, epuck.position.y_mapped) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped - 1, epuck.position.y_mapped);
             optimal_move = Config::Action::FORWARD;
         }
-        if(API_wallRight(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped + 1) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped, epuck.position.y_mapped ,  1) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped + 1) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped + 1);
             optimal_move = Config::Action::RIGHT;
         }
-        if(API_wallLeft(epuck) == 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped - 1) < least_distance){
+        if(epuck.floodfill.hasWall(epuck.position.x_mapped, epuck.position.y_mapped , 4)== 0 && epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped - 1) < least_distance){
             least_distance = epuck.floodfill.getCellCost(epuck.position.x_mapped, epuck.position.y_mapped - 1);
             optimal_move = Config::Action::LEFT;
         }
@@ -81,6 +71,7 @@ Config::Action NextAction(Epuck& epuck){
     // handles dead ends (when there's no walls in front, to the right or to the left)
     if (least_distance == 300) {
         optimal_move = Config::Action::RIGHT;
+        std::cout << "Dead end protocol" << std::endl;
     }
     return optimal_move;
 }
@@ -170,16 +161,14 @@ Config::Action solver(Epuck& epuck){
     }
     else if(epuck.reachedColor && epuck.floodfill.getCellCost(X,Y) == 0){
         epuck.reachedColor = false;
-         GoToColorIdX++;
-         std::cout << "Red" << std::endl;
+        GoToColorIdX++;
+        epuck.floodfill.floodMaze(X , Y , Config::cellOrder[GoToColorIdX].first, Config::cellOrder[GoToColorIdX].second); // don't have to flood every time, after incremeenting the color, once is enough
+        std::cout <<"--------" << GoToColorIdX << "  color arrived -------" << std::endl;
     }
 
     if(GoToColorIdX == 5){
         return Config::Action::IDLE;
     }
-
-    epuck.floodfill.floodMaze(X , Y , Config::cellOrder[GoToColorIdX].first, Config::cellOrder[GoToColorIdX].second);
-    //epuck.floodfill.printCosts(); 
 
     
 

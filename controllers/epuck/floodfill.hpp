@@ -22,7 +22,7 @@ private:
     // Wall configuration using bit flags for N,E,S,W walls
     int wallConfig[Config::MAZE_LENGTH][Config::MAZE_WIDTH] = {  // [y][x]
         {13, 4, 6, 12, 6, 14, 14, 12, 4, 6},
-        {12, 3, 9, 3, 11, 10, 9, 3, 10, 9},
+        {12, 3, 9, 3, 11, 10, 9, 3, 10, 11},
         {9, 6, 12, 5, 5, 3, 12, 5, 1, 6},
         {14, 10, 9, 6, 12, 7, 11, 12, 5, 3},
         {10, 10, 14, 10, 9, 5, 6, 8, 6, 14},

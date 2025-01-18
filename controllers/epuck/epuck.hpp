@@ -23,6 +23,7 @@ public:
     virtual ~Epuck();
     void run();
     Position recordOwnPosition();
+
     SensorManager sensorManager;
     Motors motors;
     Floodfill floodfill;
@@ -56,9 +57,7 @@ private:
     webots::Node *selfNode;  // Added to store robot node reference
 
     void initDevices();
-   
-    //void moveForward(int cells, double *sensorValues);
-    void faceNorth();
+
 };
 
 #endif 
