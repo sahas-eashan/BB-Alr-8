@@ -1,4 +1,4 @@
-# RoboGames 2024 - University Category Completion Round Submission | Team BB-Alr-8
+# RoboGames 2024 - University Category Preliminary Round Submission | Team BB-Alr-8
 
 Welcome to the GitHub repository for **Team BB-Alr-8**. This repository contains all the files related to our submission for the RoboGames 2024 Completion Round in the University Category.
 
