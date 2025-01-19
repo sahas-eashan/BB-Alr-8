@@ -31,7 +31,7 @@ The arena was designed as per the RoboGames guidelines:
 
 1. Clone the repository to your local system:
    ```bash
-   git clone https://github.com/yourusername/BB-Alr-8.git
+   git clone https://github.com/KiranGunathilaka/BB-Alr-8.git
 2. Open the Webots simulation platform.
 3. Load the Webots world file: `RoboGames 2024 University Category(BB-Alr-8).wbt.`
 4. Remove intermediate build files.
