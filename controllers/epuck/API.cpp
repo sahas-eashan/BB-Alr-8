@@ -37,7 +37,7 @@ void go(Epuck& epuck, double* sensorValues) {
         switch (nextMove) {
             case Config::Action::FORWARD:
                 API_moveForward(epuck, sensorValues);
-                //epuck.turnToHeading(epuck.heading); // Ensure heading correction occurs after motion completes
+                //epuck.turnToHeading(epuck.heading); 
                 break;
 
             case Config::Action::RIGHT:

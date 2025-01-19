@@ -35,7 +35,7 @@ public:
 
     bool iswallFront();
     bool iswallRight();
-    bool iswallLeft();
+    bool iswallLeft();//
 
     void turnToHeading(Config::Heading targetHeading);
 

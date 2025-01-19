@@ -6,6 +6,8 @@
 #include <webots/Node.hpp>
 #include <webots/Supervisor.hpp>
 #include <cmath>
+#include <thread>
+#include <chrono>
 
 using namespace webots;
 
@@ -141,7 +143,6 @@ bool Epuck::iswallLeft()
 
 void Epuck::turnToHeading(Config::Heading targetHeading)
 {
-    // Get the robot's node
     Node *myEPUCK = getFromDef("EPUCK");
     if (!myEPUCK)
     {
@@ -149,7 +150,6 @@ void Epuck::turnToHeading(Config::Heading targetHeading)
         return;
     }
 
-    // Get the rotation field
     Field *rotField = myEPUCK->getField("rotation");
     if (!rotField)
     {
@@ -157,82 +157,70 @@ void Epuck::turnToHeading(Config::Heading targetHeading)
         return;
     }
 
-    // Get current rotation
-    const double *rotArray = rotField->getSFRotation();
-    double currentAngle = rotArray[3];
+    double targetAngles[4] = {
+        M_PI / 2, // NORTH (90 degrees)
+        0.0,      // EAST (0 degrees)
+        -M_PI / 2,// SOUTH (-90 degrees)
+        M_PI      // WEST (180 degrees)
+    };
 
-    // Convert target heading to radians
-    double targetAngle;
-    switch (targetHeading)
+    
+    double targetAngle = targetAngles[static_cast<int>(targetHeading)];
+
+
+    const double kp = 5.0;      
+    const double threshold = 0.01; 
+    const int maxSteps = 500;  
+
+    for (int stepCount = 0; stepCount < maxSteps; ++stepCount)
     {
-    case Config::Heading::NORTH:
-        targetAngle = M_PI / 2; // 90 degrees
-        std::cout << "Turning North" << std::endl;
-        break;
-    case Config::Heading::EAST:
-        targetAngle = 0.0; // 0 degrees
-        std::cout << "Turning East" << std::endl;
-        break;
-    case Config::Heading::SOUTH:
-        targetAngle = -M_PI / 2; // -90 degrees
-        std::cout << "Turning South" << std::endl;
-        break;
-    case Config::Heading::WEST:
-        targetAngle = M_PI; // 180 degrees
-        std::cout << "Turning West" << std::endl;
-        break;
-    default:
-        std::cerr << "Invalid heading specified" << std::endl;
-        return;
+        
+        const double *rotArray = rotField->getSFRotation();
+        double currentAngle = rotArray[3];
+
+        
+        double error = targetAngle - currentAngle;
+
+        // Normalize error to range [-π, π]
+        while (error > M_PI)
+            error -= 2.0 * M_PI;
+        while (error < -M_PI)
+            error += 2.0 * M_PI;
+
+        
+        if (std::fabs(error) < threshold)
+        {
+            motors.stop();
+            std::cout << "Turned to heading: " << static_cast<int>(targetHeading)
+                      << ", Final angle: " << currentAngle * 180.0 / M_PI << " degrees" << std::endl;
+            heading = targetHeading; // Update internal state
+            return;
+        }
+
+        
+        double turnSpeed = kp * error; // Apply proportional control
+        turnSpeed = clamp(turnSpeed, -Config::TURN_SPEED, Config::TURN_SPEED); 
+
+        
+        motors.setSpeed(-turnSpeed, turnSpeed);
+
+        
+        step(Config::TIME_STEP);
     }
 
-    // Calculate required rotation
-    double angleToRotate = targetAngle - currentAngle;
-
-    // Normalize angle to [-π, π]
-    while (angleToRotate > M_PI)
-        angleToRotate -= 2.0 * M_PI;
-    while (angleToRotate < -M_PI)
-        angleToRotate += 2.0 * M_PI;
-
-    // Convert to degrees for timing calculation
-    double angleDegrees = angleToRotate * 180.0 / M_PI;
-    std::cout << "Angle to rotate" << angleDegrees << std::endl;
-
-    // Calculate turn time based on angle
-    double turnTime = (std::fabs(angleDegrees) / 90.0) * Config::TIME_90_TURN;
-
-    // Execute turn
-    if (angleToRotate > 0)
-    {
-        // Turn left (counterclockwise)
-        motors.setSpeed(-Config::TURN_SPEED, Config::TURN_SPEED);
-    }
-    else
-    {
-        // Turn right (clockwise)
-        motors.setSpeed(Config::TURN_SPEED, -Config::TURN_SPEED);
-    }
-
-    // Execute turn for calculated duration
-    step(static_cast<int>(turnTime));
+    
     motors.stop();
-
-    // Update internal heading state
-    heading = targetHeading;
-
-    // Verify final position
-    const double *finalRot = myEPUCK->getField("rotation")->getSFRotation();
-    std::cout << "Turned to heading: " << static_cast<int>(targetHeading)
-              << ", Final angle: " << finalRot[3] * 180.0 / M_PI << " degrees" << std::endl;
+    std::cerr << "Failed to turn to heading: " << static_cast<int>(targetHeading) << std::endl;
 }
+
+
 
 void Epuck::run()
 {
     std::cout << "E-puck robot starting..." << std::endl;
 
     turnToHeading(Config::Heading::NORTH);
-
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     // for now starting in north direction
     heading = Config::Heading::NORTH;
     position = recordOwnPosition();
