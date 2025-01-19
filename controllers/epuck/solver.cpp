@@ -1,5 +1,7 @@
 #include "solver.hpp"
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 
 
@@ -146,6 +148,7 @@ void updateHeading(Epuck& epuck, Config::Action NextAction){
     }
 }
 int GoToColorIdX = 0;
+Config::Action previousAction = Config::Action::IDLE;
 Config::Action solver(Epuck& epuck){
     
 
@@ -158,23 +161,37 @@ Config::Action solver(Epuck& epuck){
 
     if(!epuck.reachedColor && epuck.floodfill.getCellCost(X,Y) == 0){
         epuck.reachedColor = true;
+        //return Config::Action::IDLE;
     }
     else if(epuck.reachedColor && epuck.floodfill.getCellCost(X,Y) == 0){
         epuck.reachedColor = false;
         GoToColorIdX++;
         epuck.floodfill.floodMaze(X , Y , Config::cellOrder[GoToColorIdX].first, Config::cellOrder[GoToColorIdX].second); // don't have to flood every time, after incremeenting the color, once is enough
         std::cout <<"--------" << GoToColorIdX << "  color arrived -------" << std::endl;
+        
+        if(GoToColorIdX != 0){
+            epuck.turnToHeading(Config::Heading::NORTH);
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            epuck.heading = Config::Heading::NORTH;
+        }
     }
 
-    if(GoToColorIdX == 5){
+    if(GoToColorIdX == 4 && epuck.reachedColor){
         return Config::Action::IDLE;
     }
 
     
-
     Config::Action nextAction = NextAction(epuck);
 
     updateHeading(epuck, nextAction);
+
+    if(previousAction == Config::Action::RIGHT && nextAction == Config::Action::RIGHT){
+        epuck.turnToHeading(epuck.heading);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        return Config::Action::IDLE;
+    }
+    
+    
     UpdatePosition(epuck, nextAction);
 
     return nextAction;
