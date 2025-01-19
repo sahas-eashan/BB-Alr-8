@@ -883,8 +883,8 @@ Robot {
         }
       ]
       fieldOfView IS camera_fieldOfView
-      width IS camera_width
-      height IS camera_height
+      width 256
+      height 128
       near 0.0055
       antiAliasing IS camera_antiAliasing
       motionBlur IS camera_motionBlur

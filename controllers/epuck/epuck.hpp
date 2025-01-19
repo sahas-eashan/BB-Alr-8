@@ -12,6 +12,7 @@
 #include "config.hpp"
 #include "API.hpp"
 #include "solver.hpp"
+#include <webots/Camera.hpp>
 
 struct Position {
     int x_mapped, y_mapped;   // Mapped grid coordinates
@@ -47,6 +48,10 @@ public:
     void turnRight();
     void turn180();
 
+    const unsigned char* getCameraImage();
+    int getCameraWidth() const;
+    int getCameraHeight() const;
+
     
 private:
    
@@ -56,6 +61,8 @@ private:
     
     webots::Node *selfNode;  // Added to store robot node reference
 
+    webots::Camera *camera;
+    
     void initDevices();
 
 };

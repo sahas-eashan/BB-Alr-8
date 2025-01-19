@@ -10,4 +10,6 @@ build/release/solver.o: solver.cpp solver.hpp floodfill.hpp config.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/Field.hpp \
  C:/Program\ Files/Webots/include/controller/c/webots/contact_point.h \
  motors.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/Motor.hpp
+ C:\Program\ Files\Webots/include/controller/cpp/webots/Motor.hpp \
+ C:\Program\ Files\Webots/include/controller/cpp/webots/Camera.hpp \
+ C:/Program\ Files/Webots/include/controller/c/webots/camera_recognition_object.h

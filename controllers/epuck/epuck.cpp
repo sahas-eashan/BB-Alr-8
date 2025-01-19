@@ -31,6 +31,16 @@ void Epuck::initDevices()
         //
     }
 
+        // Initialize camera
+    camera = getCamera("camera");
+    if (camera) {
+        camera->enable(Config::TIME_STEP);
+        std::cout << "Camera enabled with resolution: " 
+                  << camera->getWidth() << "x" << camera->getHeight() << std::endl;
+    } else {
+        std::cerr << "Warning: Camera device not found!" << std::endl;
+    }
+
     // Initialize sensors
     sensorManager.initializeSensors(this);
     std::cout << "Sensors Initialized" << std::endl;
@@ -237,4 +247,19 @@ void Epuck::run()
 
     go(*this, sensorValues);
 
+}
+
+const unsigned char* Epuck::getCameraImage() {
+    if (camera) {
+        return camera->getImage();
+    }
+    return nullptr;
+}
+
+int Epuck::getCameraWidth() const {
+    return camera ? camera->getWidth() : 0;
+}
+
+int Epuck::getCameraHeight() const {
+    return camera ? camera->getHeight() : 0;
 }

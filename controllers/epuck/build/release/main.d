@@ -11,4 +11,6 @@ build/release/main.o: main.cpp epuck.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/DistanceSensor.hpp \
  config.hpp floodfill.hpp motors.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/Motor.hpp API.hpp \
- solver.hpp
+ solver.hpp \
+ C:\Program\ Files\Webots/include/controller/cpp/webots/Camera.hpp \
+ C:/Program\ Files/Webots/include/controller/c/webots/camera_recognition_object.h
