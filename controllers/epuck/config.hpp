@@ -31,7 +31,7 @@ namespace Config
     static const double Kd = 0.11;
 
     // Motors
-    const int TIME_90_TURN = 1450;
+    const int TIME_90_TURN = 1500;//1450
     const int TIME_PER_CELL = 1850; 
 
     static constexpr double MAX_SPEED = 10.0;
