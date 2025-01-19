@@ -8,8 +8,7 @@ Our task was to design a Webots simulation environment and program an E-puck rob
 **Red → Yellow → Pink → Brown → Green**.
 
 The robot achieves the goal by:
-- Detecting the colors sequentially in the arena.
-- Following the given pattern.
+- Following the colors sequentially in the arena starting from any given position.
 - Stopping once the goal is completed.
 
 ## Repository Structure
