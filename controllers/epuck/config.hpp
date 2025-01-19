@@ -58,7 +58,8 @@ namespace Config
         LEFT,
         FORWARD,
         RIGHT,
-        IDLE
+        IDLE,
+        NONE
     } Action;
 
     // Threshold values for detecting walls

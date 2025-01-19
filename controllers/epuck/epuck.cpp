@@ -180,7 +180,7 @@ void Epuck::turnToHeading(Config::Heading targetHeading)
 
     const double kp = 5.0;      
     const double threshold = 0.01; 
-    const int maxSteps = 500;  
+    const int maxSteps = 65;  
 
     for (int stepCount = 0; stepCount < maxSteps; ++stepCount)
     {

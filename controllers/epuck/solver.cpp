@@ -161,7 +161,10 @@ Config::Action solver(Epuck& epuck){
 
     if(!epuck.reachedColor && epuck.floodfill.getCellCost(X,Y) == 0){
         epuck.reachedColor = true;
-        //return Config::Action::IDLE;
+        if(GoToColorIdX == 4){
+             return Config::Action::IDLE;
+        }
+        return Config::Action::NONE;
     }
     else if(epuck.reachedColor && epuck.floodfill.getCellCost(X,Y) == 0){
         epuck.reachedColor = false;
@@ -169,16 +172,16 @@ Config::Action solver(Epuck& epuck){
         epuck.floodfill.floodMaze(X , Y , Config::cellOrder[GoToColorIdX].first, Config::cellOrder[GoToColorIdX].second); // don't have to flood every time, after incremeenting the color, once is enough
         std::cout <<"--------" << GoToColorIdX << "  color arrived -------" << std::endl;
         
-        if(GoToColorIdX != 0){
-            epuck.turnToHeading(Config::Heading::NORTH);
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            epuck.heading = Config::Heading::NORTH;
-        }
+        // if(GoToColorIdX != 1){
+        //     epuck.turnToHeading(Config::Heading::NORTH);
+        //     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        //     epuck.heading = Config::Heading::NORTH;
+        // }
     }
 
-    if(GoToColorIdX == 4 && epuck.reachedColor){
-        return Config::Action::IDLE;
-    }
+    // if(GoToColorIdX == 5 && epuck.reachedColor){
+    //     return Config::Action::IDLE;
+    // }
 
     
     Config::Action nextAction = NextAction(epuck);
@@ -188,8 +191,16 @@ Config::Action solver(Epuck& epuck){
     if(previousAction == Config::Action::RIGHT && nextAction == Config::Action::RIGHT){
         epuck.turnToHeading(epuck.heading);
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        return Config::Action::IDLE;
+        return Config::Action::NONE;
     }
+
+    if(previousAction == Config::Action::LEFT && nextAction == Config::Action::LEFT){
+        epuck.turnToHeading(epuck.heading);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        return Config::Action::NONE;
+    }
+
+    previousAction = nextAction;
     
     
     UpdatePosition(epuck, nextAction);
