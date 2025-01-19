@@ -16,8 +16,8 @@ The robot achieves the goal by:
 - **`.vscode/`**: Configuration files for the VS Code IDE to streamline the development process.
 - **`controllers/epuck/`**: Contains the controller logic for the E-puck robot to execute the task.
 - **`protos/`**: Includes the custom prototype objects used in the Webots simulation.
-- **`worlds/`**: The Webots world file designed according to the specifications.
-- **`RoboGames 2024 University Category(BB-Alr-8).wbt`**: The main Webots world file for the simulation.
+- **`worlds/RoboGames 2024 University Category(BB-Alr-8).wbt`**: The Webots world file designed according to the specifications.
+- **`RoboGames 2024 University Category(BB-Alr-8).mp4`**: Simulation demonstration video.
 
 ## Arena Specifications
 
