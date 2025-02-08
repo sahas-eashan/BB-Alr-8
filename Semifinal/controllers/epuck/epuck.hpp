@@ -2,6 +2,7 @@
 #ifndef EPUCK_HPP
 #define EPUCK_HPP
 
+
 #include <webots/Robot.hpp>
 #include <webots/LED.hpp>
 #include <webots/Supervisor.hpp>
@@ -23,6 +24,7 @@ public:
     Epuck();
     virtual ~Epuck();
     void run();
+    
     Position recordOwnPosition();
 
     SensorManager sensorManager;
