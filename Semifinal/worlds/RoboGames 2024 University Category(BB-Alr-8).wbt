@@ -9,32 +9,88 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.03514405108658932 -0.004871083070196061 -0.9993703859045188 2.8993254688426413
-  position 0.3265292778558887 -0.07102285649292193 0.012875249097819032
+  orientation 0.6209017697008922 -0.4344873591504651 -0.6524582186782193 3.996328364643446
+  position -0.5758010507276807 -1.146582368327323 9.182402684244988
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
-  floorSize 2.5 2.5
+  translation 0 -0.62 0
+  floorSize 5 6.25
+  floorAppearance PBRAppearance {
+    metalness 0
+  }
 }
 Wall {
-  translation -1 0 0
+  translation 0.5 0.625 0
+  name "wall(134)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.5 0.375 0
+  name "wall(184)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.5 -0.125 0
+  name "wall(185)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.76 0.125 0
+  name "wall(192)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.01 0.125 0
+  name "wall(193)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.01 -0.375 0
+  name "wall(194)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.25 -0.125 0
+  name "wall(186)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2 0.49 0
   name "wall(14)"
   size 0.01 1 0.1
 }
 Wall {
-  translation -0.25 1 0
+  translation -1.75 0.75 0
+  name "wall(177)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation -0.5 2 0
   rotation 0 0 1 1.5707996938995747
   name "wall(21)"
   size 0.01 1 0.1
 }
 Wall {
-  translation 0 0.5 0
+  translation 1 0.26 0
   rotation 0 0 1 1.5707996938995747
-  name "wall(25)"
+  name "wall(150)"
   size 0.01 1 0.1
+}
+Wall {
+  translation -1.25 -2.5 0
+  rotation -9.58979e-09 9.58976e-09 -1 -1.5707953071795862
+  name "wall(20)"
+  size 0.01 2.5 0.1
+}
+Wall {
+  translation 1.375 -2.5 0
+  rotation -9.58979e-09 9.58976e-09 -1 -1.5707953071795862
+  name "wall(53)"
+  size 0.01 2.25 0.1
 }
 Wall {
   translation 0.5 -0.75 0
@@ -43,9 +99,51 @@ Wall {
   size 0.01 0.5 0.1
 }
 Wall {
-  translation 1 -0.25 0
+  translation 1.25 -9.183e-07 0
+  rotation 0 0 1 1.5708
+  name "wall(125)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation 0.75 -1 0
+  rotation 0 0 1 1.5708
+  name "wall(112)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 0.25 -1 0
+  rotation 0 0 1 1.5708
+  name "wall(113)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 0.75 -0.25 0
   rotation 0 0 1 1.5708
   name "wall(33)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1.75 -2.25 0
+  rotation 0 0 1 1.5708
+  name "wall(60)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1.25 -1.75 0
+  rotation 0 0 1 1.5708
+  name "wall(73)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.75 -2 0
+  rotation 0 0 1 1.5708
+  name "wall(74)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -2 -0.75 0
+  rotation 0 0 1 1.5708
+  name "wall(66)"
   size 0.01 0.5 0.1
 }
 Wall {
@@ -61,109 +159,483 @@ Wall {
   }
 }
 Wall {
-  translation 0.25 -0.25 0
+  translation -1 -0.75 0
   rotation 0 0 1 1.5708
   name "wall(36)"
   size 0.01 0.5 0.1
 }
 Wall {
+  translation 0 0.5 0
   rotation 0 0 1 1.5708
   name "wall(41)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation 0.75 -0.5 0
+  translation 1 2.25 0
   rotation 0 0 1 1.5708
   name "wall(37)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation -0.25 -0.5 0
+  translation -2.01 2.25 0
   rotation 0 0 1 1.5708
-  name "wall(50)"
+  name "wall(162)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation 0.55 -0.49 0
+  translation -1.76 2 0
   rotation 0 0 1 1.5708
-  name "wall(47)"
-  size 0.01 0.1 0.1
-  appearance Roughcast {
-    colorOverride 1 0 1
-    textureTransform TextureTransform {
-      scale 2.4 1
-    }
-  }
+  name "wall(163)"
+  size 0.01 0.5 0.1
 }
 Wall {
-  translation 0.75 -0.875 0
+  translation -1.26 1.74 0
+  rotation 0 0 1 1.5708
+  name "wall(166)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1.5 0.25 0
+  rotation 0 0 1 1.5708
+  name "wall(197)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -2.26 0.99 0
+  rotation 0 0 1 1.5708
+  name "wall(176)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 0.75 1 0
+  rotation 0 0 1 1.5708
+  name "wall(154)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.009998 -2.25 0
+  rotation 0 0 1 1.5708
+  name "wall(50)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation 0.25 -2.375 0
   name "wall(4)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 1 -0.875 0
+  translation 1.25 -2.375 0
+  name "wall(81)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.5 -2.125 0
+  name "wall(90)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.25 -2.125 0
+  name "wall(95)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.25 -1.375 0
+  name "wall(97)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.25 -0.875 0
+  name "wall(103)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2 -0.625 0
+  name "wall(104)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.25 0.125 0
+  name "wall(121)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.75 0.125 0
+  name "wall(147)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.5 -1.375 0
+  name "wall(100)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.75 -0.875 0
+  name "wall(114)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.5 -0.625 0
+  name "wall(115)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.25 -1.875 0
   name "wall(5)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0 -1 0
+  translation -0.5 -0.75 0
   name "wall(6)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation 1 0 0
+  translation -1.75 -1.875 0
+  name "wall(61)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1.5 -0.625 0
+  name "wall(79)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1 -1.875 0
+  name "wall(72)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 1 -1.875 0
+  name "wall(85)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 1.5 -0.625 0
+  name "wall(117)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 2 0.125 0
+  name "wall(119)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 1.5 1.875 0
+  name "wall(136)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 0.25 1.625 0
+  name "wall(157)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 0 1.375 0
+  name "wall(180)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -0.75 1.375 0
+  name "wall(182)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 0.25 0.625 0
+  name "wall(26)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 2 -1.875 0
+  name "wall(88)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1.25 -2.25 0
+  name "wall(67)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.75 -2.25 0
+  name "wall(71)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.75 -1.5 0
+  name "wall(77)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1.76 -0.99 0
+  name "wall(70)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1.75 0.01 0
+  name "wall(178)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -2.25 0.5 0
   name "wall(34)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation 0.5 -0.25 0
+  translation 0.75 1.5 0
+  name "wall(24)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.5 1.75 0
+  name "wall(164)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.25 1.5 0
+  name "wall(179)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.25 0.5 0
+  name "wall(28)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1.25 0.5 0
+  name "wall(196)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1.5 0.75 0
+  name "wall(199)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1.24 2 0
+  name "wall(165)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -2.24 1.75 0
+  name "wall(171)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 1 1.75 0
+  name "wall(146)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.25 -2 0
   name "wall(35)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation -0.25 -0.25 0
+  translation 1.75 -1.75 0
+  name "wall(89)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 1.75 -1 0
+  name "wall(47)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 0.25 -0.25 0
   name "wall(40)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation -0.75 -0.5 0
+  translation 0.25 -1.5 0
   name "wall(13)"
   size 0.01 1 0.1
 }
 Wall {
-  translation -0.5 0.25 0
+  translation 0 -0.25 0
   name "wall(10)"
   size 0.01 1 0.1
 }
 Wall {
-  translation 0.75 0.5 0
-  name "wall(24)"
-  size 0.01 1 0.1
-}
-Wall {
-  translation 0.25 -1 0
+  translation 0.5 -2 0
   name "wall(7)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation 0.25 -0.5 0
+  translation 1.25 -1.25 0
+  name "wall(106)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 1.25 -0.75 0
+  name "wall(110)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 0.75 -1.5 0
+  name "wall(107)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 0.5 0.01 0
   name "wall(8)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation -1.125 -1 0
+  translation -1.875 -1 0
   rotation 0 0 1 1.5708
   name "wall(3)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0.125 -0.5 0
+  translation -1.375 -2.01 0
+  rotation 0 0 1 1.5708
+  name "wall(69)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.875 -1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(76)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.375 -1.01 0
+  rotation 0 0 1 1.5708
+  name "wall(75)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2.375 -2 0
+  rotation 0 0 1 1.5708
+  name "wall(54)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2.375 -1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(55)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2.125 -1.75 0
+  rotation 0 0 1 1.5708
+  name "wall(58)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2.125 -1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(64)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.125 -2 0
   rotation 0 0 1 1.5708
   name "wall(51)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation -1.125 -0.5 0
+  translation -0.125 -1.75 0
+  rotation 0 0 1 1.5708
+  name "wall(82)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.625 -1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(62)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1.375 -1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(63)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -0.125 -1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(83)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 2.125 1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(128)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 2.125 1.75 0
+  rotation 0 0 1 1.5708
+  name "wall(131)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation 0.375 2 0
+  rotation 0 0 1 1.5708
+  name "wall(143)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -0.375 0.75 0
+  rotation 0 0 1 1.5708
+  name "wall(38)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -0.125 1 0
+  rotation 0 0 1 1.5708
+  name "wall(43)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -0.625 1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(181)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1.125 1 0
+  rotation 0 0 1 1.5708
+  name "wall(198)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -0.875 0.5 0
+  rotation 0 0 1 1.5708
+  name "wall(183)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1.375 1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(168)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1.875 1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(174)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1.385 2.25 0
+  rotation 0 0 1 1.5708
+  name "wall(161)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1.875 -0.25 0
+  rotation 0 0 1 1.5708
+  name "wall(80)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -0.365 -1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(78)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -1.375 -0.49 0
   rotation 0 0 1 1.5708
   name "wall(15)"
   size 0.01 0.25 0.1
@@ -187,51 +659,255 @@ Wall {
   size 0.01 0.25 0.1
 }
 Wall {
-  translation -0.625 -0.25 0
+  translation -0.625 9.18304e-07 0
+  rotation 0 0 1 1.5708
+  name "wall(188)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.625 -0.249999 0
+  rotation 0 0 1 1.5708
+  name "wall(191)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.125 -9.18297e-07 0
+  rotation 0 0 1 1.5708
+  name "wall(189)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.375 -1.83655e-06 0
+  rotation 0 0 1 1.5708
+  name "wall(195)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.125 -0.250001 0
+  rotation 0 0 1 1.5708
+  name "wall(190)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.875 -0.5 0
+  rotation 0 0 1 1.5708
+  name "wall(187)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.885 -0.5 0
   rotation 0 0 1 1.5708
   name "wall(52)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation -0.875 0.75 0
+  translation -2.135 -9.183e-07 0
+  rotation 0 0 1 1.5708
+  name "wall(25)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.125 1.75 0
   rotation 0 0 1 1.5708
   name "wall(17)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0.875 1 0
+  translation -1.875 1.75 0
+  rotation 0 0 1 1.5708
+  name "wall(170)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2.125 1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(172)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2.375 0.25 0
+  rotation 0 0 1 1.5708
+  name "wall(175)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.625 1.5 0
   rotation 0 0 1 1.5708
   name "wall(23)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 1.125 0.75 0
+  translation 1.125 1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(145)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.375 1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(156)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.375 1.75 0
+  rotation 0 0 1 1.5708
+  name "wall(137)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.375 1.75 0
+  rotation 0 0 1 1.5708
+  name "wall(158)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.625 1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(159)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.625 2.25 0
   rotation 0 0 1 1.5708
   name "wall(30)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 1.125 0.5 0
+  translation 1.125 0.75 0
   rotation 0 0 1 1.5708
   name "wall(31)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 1.125 -0.75 0
+  translation 0.875 -2.25 0
   rotation 0 0 1 1.5708
   name "wall(32)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0.125 0.75 0
+  translation 0.625 -2 0
   rotation 0 0 1 1.5708
-  name "wall(28)"
+  name "wall(84)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0.375 0.25 0
+  translation 1.125 -2 0
   rotation 0 0 1 1.5708
-  name "wall(43)"
+  name "wall(86)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.375 -1.75 0
+  rotation 0 0 1 1.5708
+  name "wall(87)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.125 -1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(108)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.375 -0.5 0
+  rotation 0 0 1 1.5708
+  name "wall(111)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.375 2.75486e-06 0
+  rotation 0 0 1 1.5708
+  name "wall(27)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.625 -1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(109)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.625 -2 0
+  rotation 0 0 1 1.5708
+  name "wall(91)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.875 -2.25 0
+  rotation 0 0 1 1.5708
+  name "wall(92)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.375 -2 0
+  rotation 0 0 1 1.5708
+  name "wall(93)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.375 -1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(96)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.375 -1 0
+  rotation 0 0 1 1.5708
+  name "wall(101)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.125 -1.75 0
+  rotation 0 0 1 1.5708
+  name "wall(94)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.125 -1.25 0
+  rotation 0 0 1 1.5708
+  name "wall(98)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.125 -0.75 0
+  rotation 0 0 1 1.5708
+  name "wall(102)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.125 0.25 0
+  rotation 0 0 1 1.5708
+  name "wall(120)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.125 1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(129)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.125 2.25 0
+  rotation 0 0 1 1.5708
+  name "wall(132)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.375 2 0
+  rotation 0 0 1 1.5708
+  name "wall(133)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.875 2 0
+  rotation 0 0 1 1.5708
+  name "wall(135)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.375 0.5 0
+  rotation 0 0 1 1.5708
+  name "wall(122)"
   size 0.01 0.25 0.1
 }
 Wall {
@@ -253,13 +929,13 @@ Wall {
   }
 }
 Wall {
-  translation -0.25 -0.75 0
+  translation 0.01 -0.75 0
   rotation 0 0 1 1.5708
   name "wall(2)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation 0.05 -1.245 0
+  translation -0.370001 -0.935 0
   rotation 0 0 1 1.5708
   name "wall(48)"
   size 0.01 0.1 0.1
@@ -271,72 +947,220 @@ Wall {
   }
 }
 Wall {
-  translation -0.75 -0.75 0
+  translation 0.75 -1.5 0
   rotation 0 0 1 1.5708
   name "wall(11)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation -0.5 -1.125 0
+  translation 1.74 -1.5 0
+  rotation 0 0 1 1.5708
+  name "wall(99)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 1.49 -1 0
+  rotation 0 0 1 1.5708
+  name "wall(116)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 1.99 -0.5 0
+  rotation 0 0 1 1.5708
+  name "wall(105)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 1.99 -0.25 0
+  rotation 0 0 1 1.5708
+  name "wall(118)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 2 0.75 0
+  rotation 0 0 1 1.5708
+  name "wall(123)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 1.75 0.5 0
+  rotation 0 0 1 1.5708
+  name "wall(148)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1 -1.125 0
   size 0.01 0.25 0.1
 }
 Wall {
-  translation -1 1.125 0
+  translation -1 1.375 0
   name "wall(18)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation -0.25 0.875 0
-  name "wall(26)"
+  translation 1.75 0.875 0
+  name "wall(126)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0 0.375 0
-  name "wall(38)"
+  translation 1.5 1.125 0
+  name "wall(160)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0.25 0.125 0
+  translation 1.24 2.125 0
+  name "wall(130)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.24 1.375 0
+  name "wall(144)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.49 1.125 0
+  name "wall(155)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.24 0.625 0
+  name "wall(151)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.99 0.625 0
+  name "wall(152)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.99 0.875 0
+  name "wall(153)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.74 2.375 0
+  name "wall(138)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.49 2.115 0
+  name "wall(140)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.26 2.115 0
+  name "wall(141)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.76 2.115 0
+  name "wall(142)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.51 1.855 0
+  name "wall(167)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.75 1.625 0
+  name "wall(169)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2 1.375 0
+  name "wall(173)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0 2.375 0
+  name "wall(139)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 2.25 0.875 0
+  name "wall(127)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1 -0.375 0
   name "wall(42)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation -0.25 0.125 0
+  translation 0.75 -0.375 0
+  name "wall(124)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.25 -0.365 0
   name "wall(39)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0 0.625 0
-  name "wall(27)"
-  size 0.01 0.25 0.1
-}
-Wall {
-  translation 0.5 1 0
+  translation 2 1.25 0
   name "wall(22)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation -0.75 0.75 0
+  translation 1.5 0.5 0
+  name "wall(149)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 2 2 0
   name "wall(49)"
   size 0.01 0.5 0.1
 }
 Wall {
-  translation -1 0.625 0
+  translation -0.75 0.625 0
   name "wall(19)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation -0.25 -0.875 0
+  translation -1 0.875 0
+  name "wall(200)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1.25 -0.875 0
   name "wall(9)"
   size 0.01 0.25 0.1
 }
 Wall {
-  translation 0.5 -1.125 0
+  translation -2 -0.375 0
   name "wall(1)"
   size 0.01 0.25 0.1
 }
+Wall {
+  translation -2.25 -2.125 0
+  name "wall(56)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2 -2.125 0
+  name "wall(59)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2 -1.375 0
+  name "wall(68)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2.25 -1.625 0
+  rotation 0 -1 0 -5.307179586466759e-06
+  name "wall(57)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -2.25 -0.875 0
+  rotation 0 -1 0 -5.307179586466759e-06
+  name "wall(65)"
+  size 0.01 0.75 0.1
+}
 Robot {
-  translation -0.10837975740793916 -0.21816411284486378 0.01996125576392574
+  translation -0.100069 -1.65945 0.0204412
   rotation -0.007049744271518307 -0.0001686595512170855 0.9999751360207224 0.047409832438403555
   children [
     DEF downCam Camera {
@@ -523,8 +1347,6 @@ Robot {
         boundingObject USE leftWheel
         physics Physics {
         }
-        linearVelocity -4.8224047245276125e-11 1.0174843143663583e-09 8.445574221426687e-12
-        angularVelocity -6.345485902869464e-08 -3.0106331778573806e-09 1.4657437771791595e-11
       }
     }
     HingeJoint {
@@ -562,8 +1384,6 @@ Robot {
         boundingObject USE rightWheel
         physics Physics {
         }
-        linearVelocity -4.832115373096486e-11 1.017469642427839e-09 8.445008789857113e-12
-        angularVelocity -6.345426089593355e-08 -3.010494228522914e-09 -1.452020037347388e-11
       }
     }
     DEF body Shape {
@@ -579,6 +1399,4 @@ Robot {
   boundingObject USE body
   physics Physics {
   }
-  linearVelocity -2.5329328508929865e-11 5.3390845158814e-10 -5.983785366393672e-10
-  angularVelocity 2.376092951499727e-08 1.127432932736264e-09 7.480592787916816e-14
 }
