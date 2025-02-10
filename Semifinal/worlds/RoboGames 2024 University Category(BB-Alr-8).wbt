@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.3873166377639964 -0.40164813294786783 -0.8298581802999144 4.559785626388172
-  position 0.38659392074847 -5.510305131836989 6.0716823976724985
+  orientation 0.33576629923518286 -0.2754645348616006 -0.9007664971186439 4.410974087614981
+  position 0.0474131895928193 -3.648680103946088 0.713722338222197
 }
 TexturedBackground {
 }
@@ -48,7 +48,7 @@ Wall {
     }
   }
 }
-Transform {
+Pose {
   translation -1.625 -0.625 0.0001
   children [
     Shape {
@@ -62,7 +62,7 @@ Transform {
     }
   ]
 }
-Transform {
+Pose {
   translation -1.625 -0.625 0.0002
   children [
     Shape {
@@ -76,7 +76,7 @@ Transform {
     }
   ]
 }
-Transform {
+Pose {
   translation 1.375 1.375 0.0002
   children [
     Shape {
@@ -90,7 +90,7 @@ Transform {
     }
   ]
 }
-Transform {
+Pose {
   translation 1.375 -0.125 0.0002
   children [
     Shape {
@@ -104,7 +104,7 @@ Transform {
     }
   ]
 }
-Transform {
+Pose {
   translation 1.375 1.375 0.0001
   children [
     Shape {
@@ -118,7 +118,7 @@ Transform {
     }
   ]
 }
-Transform {
+Pose {
   translation 1.375 -0.125 0.0001
   children [
     Shape {
@@ -132,7 +132,7 @@ Transform {
     }
   ]
 }
-Transform {
+Pose {
   translation -1.625 -0.625 0.0003
   children [
     Shape {
@@ -146,7 +146,7 @@ Transform {
     }
   ]
 }
-Transform {
+Pose {
   translation 1.375 -0.125 0.0003
   children [
     Shape {
@@ -160,7 +160,7 @@ Transform {
     }
   ]
 }
-Transform {
+Pose {
   translation 1.375 1.375 0.0003
   children [
     Shape {
@@ -1782,6 +1782,90 @@ Wall {
 Robot {
   translation 0.12499997042112491 -2.7499962574909476 0.019957237454473552
   children [
+    DEF led1 LED {
+      translation 0 -0.02 0.015
+      children [
+        DEF led1 Shape {
+          appearance PBRAppearance {
+            baseColor 0 1 0
+            metalness 0.1
+          }
+          geometry Capsule {
+            height 0.006
+            radius 0.002
+          }
+        }
+      ]
+      boundingObject USE led1
+      physics Physics {
+      }
+      color [
+        0 1 0
+      ]
+    }
+    DEF led2 LED {
+      translation 0 -0.01 0.015
+      children [
+        DEF led2 Shape {
+          appearance PBRAppearance {
+            baseColor 1 0.33 0
+            metalness 0.1
+          }
+          geometry Capsule {
+            height 0.006
+            radius 0.002
+          }
+        }
+      ]
+      name "led(1)"
+      boundingObject USE led2
+      physics Physics {
+      }
+      color [
+        1 0.33 0
+      ]
+    }
+    DEF led3 LED {
+      translation -0.01 -0.01 0.015
+      children [
+        DEF led3 Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            metalness 0.1
+          }
+          geometry Capsule {
+            height 0.006
+            radius 0.002
+          }
+        }
+      ]
+      name "led(2)"
+      boundingObject USE led3
+      physics Physics {
+      }
+      color [
+        1 1 0
+      ]
+    }
+    DEF led4 LED {
+      translation 0.01 -0.01 0.015
+      children [
+        DEF led4 Shape {
+          appearance PBRAppearance {
+            baseColor 1 0 0
+            metalness 0.1
+          }
+          geometry Capsule {
+            height 0.006
+            radius 0.002
+          }
+        }
+      ]
+      name "led(3)"
+      boundingObject USE led4
+      physics Physics {
+      }
+    }
     DEF downCam Camera {
       translation 8.98038e-08 0.032 -0.005
       rotation 3.69431e-07 -1 -1.0753e-06 -1.5708053071795867

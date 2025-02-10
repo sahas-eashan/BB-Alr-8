@@ -8,7 +8,7 @@ projectionMode: PERSPECTIVE
 renderingMode: PLAIN
 orthographicViewHeight: 1
 textFiles: -1
-globalOptionalRendering: DistanceSensorRays::CameraFrustums
+globalOptionalRendering: DistanceSensorRays
 consoles: Console:All:All
 renderingDevicePerspectives: robot:camera;1;1;0;0
 renderingDevicePerspectives: robot:fcam;1;1;0;0
