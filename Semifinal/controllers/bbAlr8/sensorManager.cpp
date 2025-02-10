@@ -8,7 +8,7 @@ SensorManager::~SensorManager() {}
 
 void SensorManager::initializeSensors(webots::Robot *robot)
 {
-    char sensorName[5];
+    char sensorName[16];
     for (int i = 0; i < Config::NUM_SENSORS; i++)
     {
         sprintf(sensorName, "distanceSensor%d", i);
@@ -17,7 +17,7 @@ void SensorManager::initializeSensors(webots::Robot *robot)
     }
 }
 
-void SensorManager::readSensors(double *sensorValues)
+void SensorManager::readSensors()
 {
     for (int i = 0; i < Config::NUM_SENSORS; i++)
     {
@@ -93,22 +93,59 @@ double SensorManager::calculateSteeringAdjustment()
 
 double SensorManager::frontWallDistance() const
 {
-    double distanceSensor0 = getDistance(0);
-    double distanceSensor7 = getDistance(7);
-
-    return (distanceSensor0*Config::COS10 + distanceSensor7*Config::COS10)/2;
+    return (getDistance(1) + getDistance(4))/2;
 }
 
 double SensorManager::leftWallDistance() const
 {
-    double distanceSensor5 = getDistance(5);
-
-    return distanceSensor5;
+    return getDistance(5);
 }
 
 double SensorManager::rightWallDistance() const
 {
-    double distanceSensor2 = getDistance(2);
+    return getDistance(0);
+}
 
-    return distanceSensor2;
+double SensorManager::frontRightDistance() const
+{
+    return getDistance(1);
+}
+
+double SensorManager::frontLeftDistance() const
+{
+    return getDistance(4);
+}
+
+double SensorManager::frontRight45AngledDistance() const
+{
+    return getDistance(2);
+}
+
+double SensorManager::frontLeft45AngledDistance() const
+{
+    return getDistance(3);
+}
+
+bool SensorManager::iswallFront()
+{
+    float F_Wall_Distance = frontWallDistance();
+
+    std::cout << "Front wall Distance: " << F_Wall_Distance << " cm " << std::endl;
+    return (F_Wall_Distance < Config::F_WALL_THRESHOLD) ? true : false;
+}
+
+bool SensorManager::iswallRight()
+{
+    float R_Wall_Distance = rightWallDistance();
+
+    std::cout << "Right wall Distance: " << R_Wall_Distance << " cm " << std::endl;
+    return (R_Wall_Distance < Config::R_WALL_THRESHOLD) ? true : false;
+}
+
+bool SensorManager::iswallLeft()
+{
+    float L_Wall_Distance = leftWallDistance();
+
+    std::cout << "Left wall Distance: " << L_Wall_Distance << " cm " << std::endl;
+    return (L_Wall_Distance < Config::L_WALL_THRESHOLD) ? true : false;
 }

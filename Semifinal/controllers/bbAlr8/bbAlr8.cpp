@@ -19,9 +19,10 @@ BbAlr8:: ~BbAlr8()
 void BbAlr8::initDevices()
 {
     leds.initLEDs(*this);
+    sensorManager.initializeSensors(this);
 
     // Initialize camera
-    camera = getCamera("camera");
+    camera = getCamera("fcam");
     if (camera) {
         camera->enable(Config::TIME_STEP);
         std::cout << "Camera enabled with resolution: " 
@@ -30,9 +31,6 @@ void BbAlr8::initDevices()
         std::cerr << "Warning: Camera device not found!" << std::endl;
     }
 
-    // Initialize sensors
-    // sensorManager.initializeSensors(this);
-    // std::cout << "Sensors Initialized" << std::endl;
     // motors.initializeMotors(this);
     // std::cout << "Motors Initialized" << std::endl;
 }
@@ -43,6 +41,9 @@ void BbAlr8::run()
 
     while (step(Config::TIME_STEP) != -1) {
         leds.lightEachLEDSequentially(*this);
+
+        sensorManager.readSensors();
+        std::cout<< "Front: " << sensorManager.frontWallDistance() << "  left: " << sensorManager.leftWallDistance() << "  Right: " << sensorManager.rightWallDistance()  << std::endl;
     }
 
 }

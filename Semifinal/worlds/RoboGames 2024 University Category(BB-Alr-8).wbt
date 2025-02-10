@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.3798719647443715 0.5217176063195932 0.7638769728545329 1.5259267987353424
-  position -0.015271014916345138 -3.0876843091360704 0.5099356276974173
+  orientation -0.37284445147492634 0.3889932172871483 0.8424199023699254 1.7026295994828036
+  position 0.0560948140386885 -3.802778501513508 1.0984925279496378
 }
 TexturedBackground {
 }
@@ -1882,6 +1882,7 @@ DEF BBAlr8 Robot {
           }
         }
       ]
+      name "dcam"
       boundingObject USE dcam
       physics Physics {
       }
@@ -1916,9 +1917,14 @@ DEF BBAlr8 Robot {
           }
         }
       ]
+      name "distanceSensor0"
       boundingObject USE rir
       physics Physics {
       }
+      lookupTable [
+        0 4095 0
+        0.4 0 0.04
+      ]
     }
     DEF leftIr DistanceSensor {
       translation -0.027 0.025 -0.008
@@ -1932,10 +1938,14 @@ DEF BBAlr8 Robot {
           }
         }
       ]
-      name "distance sensor(1)"
+      name "distanceSensor5"
       boundingObject USE lir
       physics Physics {
       }
+      lookupTable [
+        0 4095 0
+        0.4 0 0.04
+      ]
     }
     DEF centerLeftIr DistanceSensor {
       translation -0.019 0.031 0.009
@@ -1949,10 +1959,14 @@ DEF BBAlr8 Robot {
           }
         }
       ]
-      name "distance sensor(2)"
+      name "distanceSensor4"
       boundingObject USE clir
       physics Physics {
       }
+      lookupTable [
+        0 4095 0
+        0.4 0 0.04
+      ]
     }
     DEF centerRightIr DistanceSensor {
       translation 0.019 0.031 0.009
@@ -1966,10 +1980,14 @@ DEF BBAlr8 Robot {
           }
         }
       ]
-      name "distance sensor(3)"
+      name "distanceSensor1"
       boundingObject USE clir
       physics Physics {
       }
+      lookupTable [
+        0 4095 0
+        0.4 0 0.04
+      ]
     }
     DEF right45Ir DistanceSensor {
       translation 0.019 0.031 -0.008
@@ -1983,10 +2001,14 @@ DEF BBAlr8 Robot {
           }
         }
       ]
-      name "distance sensor(4)"
+      name "distanceSensor2"
       boundingObject USE r45ir
       physics Physics {
       }
+      lookupTable [
+        0 4095 0
+        0.4 0 0.04
+      ]
     }
     DEF left45Ir DistanceSensor {
       translation -0.019 0.031 -0.008
@@ -2000,10 +2022,14 @@ DEF BBAlr8 Robot {
           }
         }
       ]
-      name "distance sensor(5)"
+      name "distanceSensor3"
       boundingObject USE l45ir
       physics Physics {
       }
+      lookupTable [
+        0 4095 0
+        0.4 0 0.04
+      ]
     }
     DEF castor Solid {
       translation 0 0.025 -0.015
@@ -2052,8 +2078,6 @@ DEF BBAlr8 Robot {
         boundingObject USE leftWheel
         physics Physics {
         }
-        linearVelocity 7.720527286151941e-11 -1.4742468270692181e-09 3.946992026383848e-09
-        angularVelocity 9.097315151424444e-08 -1.1860290897541007e-10 -2.358216569151514e-11
       }
     }
     HingeJoint {
@@ -2091,8 +2115,6 @@ DEF BBAlr8 Robot {
         boundingObject USE rightWheel
         physics Physics {
         }
-        linearVelocity -7.719545627241278e-11 -1.4743283903884315e-09 3.947859752379707e-09
-        angularVelocity 9.097755257632148e-08 1.1881211592898043e-10 2.5154095068000506e-11
       }
     }
     DEF body Shape {

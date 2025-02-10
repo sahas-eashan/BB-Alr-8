@@ -5,31 +5,42 @@
 #include <webots/DistanceSensor.hpp>
 #include "config.hpp"
 
-class SensorManager {
+class SensorManager
+{
 public:
     SensorManager();
     ~SensorManager();
-    
-    void initializeSensors(webots::Robot* robot);
-    double getDistance(int index) const;
+
+    void initializeSensors(webots::Robot *robot);
     double getWallError() const;
     double calculateSteeringAdjustment();
-    void readSensors(double* sensorValues);
+    void readSensors();
 
-    double frontWallDistance() const;
+    double frontWallDistance() const; // averaged distance from directly front faced 2 sensors
+
+    // distance value from individiual sensor
     double leftWallDistance() const;
     double rightWallDistance() const;
+    double frontRightDistance() const;
+    double frontLeftDistance() const;
+    double frontRight45AngledDistance() const;
+    double frontLeft45AngledDistance() const;
 
+    bool iswallFront();
+    bool iswallRight();
+    bool iswallLeft();
 
 private:
-    webots::DistanceSensor* distanceSensors[Config::NUM_SENSORS];
+    webots::DistanceSensor *distanceSensors[Config::NUM_SENSORS];
     double distances[Config::NUM_SENSORS] = {0};
-    
+    double sensorValues[Config::NUM_SENSORS] = {0};
+
     // PID control variables
     double previousError = 0;
     double integral = 0;
-    
+
     double calculateSideWallError() const;
     double applyPIDControl(double error);
+    double getDistance(int index) const;
 };
 #endif

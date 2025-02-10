@@ -5,7 +5,7 @@
 #include <webots/Camera.hpp>
 #include "ledManager.hpp"
 #include "config.hpp"
-// #include "sensor_manager.hpp"
+#include "sensorManager.hpp"
 // #include "floodfill.hpp"
 // #include "motors.hpp"
 // #include "API.hpp"
@@ -23,7 +23,7 @@ public:
     void run();
 
     LEDManager leds;
-    // SensorManager sensorManager;
+    SensorManager sensorManager;
     // Motors motors;
     // Floodfill floodfill;
 
