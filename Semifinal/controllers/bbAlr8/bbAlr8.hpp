@@ -7,6 +7,7 @@
 #include "config.hpp"
 #include "sensorManager.hpp"
 #include "motors.hpp"
+#include "CameraController.hpp"
 // #include "floodfill.hpp"
 
 // #include "API.hpp"
@@ -26,6 +27,8 @@ public:
     LEDManager leds;
     SensorManager sensorManager;
     Motors motors;
+
+    char floorColor();
     // Floodfill floodfill;
 
     // bool reachedColor = false;
@@ -50,7 +53,7 @@ public:
 
 private:
 
-    webots::Camera *camera;
+    CameraController cameraController;
     void initDevices();
 
 };

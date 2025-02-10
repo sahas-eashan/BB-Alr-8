@@ -7,7 +7,7 @@
 
 using namespace webots;
 
-BbAlr8:: BbAlr8()
+BbAlr8:: BbAlr8() : cameraController(this)
 {
     initDevices();
 }
@@ -23,14 +23,7 @@ void BbAlr8::initDevices()
     motors.initializeMotors(this);
 
     // Initialize camera
-    camera = getCamera("fcam");
-    if (camera) {
-        camera->enable(Config::TIME_STEP);
-        std::cout << "Camera enabled with resolution: " 
-                  << camera->getWidth() << "x" << camera->getHeight() << std::endl;
-    } else {
-        std::cerr << "Warning: Camera device not found!" << std::endl;
-    }
+    cameraController.initializeCameras("fcam", "dcam");
 
     // std::cout << "Motors Initialized" << std::endl;
 }
@@ -49,6 +42,12 @@ void BbAlr8::run()
     // }
 
     motors.turnLeft(this);
+}
+
+char BbAlr8::floorColor() {
+    char color = cameraController.processDownCamera();
+    std::cout << "Detected floor color: " << color << std::endl;
+    return color;
 }
 
 

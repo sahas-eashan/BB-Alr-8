@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.3217111473445898 0.28040980761778855 0.9043629124781614 1.8101181582399626
-  position 0.13775050985794565 -3.7022774572414945 0.9812133269917584
+  orientation -0.26833495949728225 0.5643585358512485 0.7807021151011612 1.0983792657049425
+  position -0.8309257599581952 -3.516365057278089 0.9533902508781436
 }
 TexturedBackground {
 }
@@ -1780,8 +1780,8 @@ Wall {
   }
 }
 DEF BBAlr8 Robot {
-  translation 0.12499996898250379 -2.749989706632135 0.019961136065385517
-  rotation -0.9999999758875722 -0.0002196015801069311 3.4096833177771087e-08 0.00032754942234405443
+  translation -0.0924362096327368 -2.6266568628669518 0.019961124998277104
+  rotation -0.00036428722360358436 -0.00016358547920399026 0.9999999202673018 0.843929009269434
   children [
     DEF led1 LED {
       translation 0 -0.02 0.015
@@ -1905,6 +1905,8 @@ DEF BBAlr8 Robot {
       boundingObject USE fcam
       physics Physics {
       }
+      width 1
+      height 1
     }
     DEF rightIr DistanceSensor {
       translation 0.027 0.025 -0.008
@@ -2048,7 +2050,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -7.053817088708808e-08
+        position -7.4992553004762454
         anchor 0.03 -0.01 0
       }
       device [
@@ -2061,7 +2063,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation 0.03 -0.01 0
-        rotation -3.0950368125354637e-08 0.9999999999999989 -3.209295410361429e-08 1.5708000076550765
+        rotation 0.49602442754451076 -0.7126834658279102 0.49602625415864676 4.37996464191331
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -2081,10 +2083,13 @@ DEF BBAlr8 Robot {
         boundingObject USE leftWheel
         physics Physics {
         }
+        linearVelocity -1.5527276108669017e-16 1.466163230014612e-16 7.067859760648079e-17
+        angularVelocity -7.936941154084853e-16 -6.599191288382539e-15 1.7332615912546006e-14
       }
     }
     HingeJoint {
       jointParameters HingeJointParameters {
+        position 7.499215572489286
         anchor -0.03 -0.01 0
       }
       device [
@@ -2097,7 +2102,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation -0.03 -0.01 0
-        rotation 0 1 0 1.5707999925118306
+        rotation -0.4960137617692759 -0.7126983180240191 -0.49601558001863816 4.379984354261678
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
@@ -2120,6 +2125,8 @@ DEF BBAlr8 Robot {
         boundingObject USE rightWheel
         physics Physics {
         }
+        linearVelocity -2.3804407201097134e-17 -3.03007157918857e-15 -1.071615662770503e-22
+        angularVelocity 1.2563726358724497e-14 -1.3872771256916103e-14 1.76869719750746e-14
       }
     }
     DEF body Shape {
@@ -2136,6 +2143,6 @@ DEF BBAlr8 Robot {
   physics Physics {
   }
   controller "bbAlr8"
-  linearVelocity 1.1024335980848239e-14 -6.352477324555372e-10 9.061419327336446e-10
-  angularVelocity -3.7267600579876345e-08 1.56249731291594e-13 7.763471866742423e-13
+  linearVelocity 7.38709555856215e-17 5.550583772934979e-15 0
+  angularVelocity -7.274685244518176e-15 1.936968281781109e-15 1.7668893609273378e-14
 }
