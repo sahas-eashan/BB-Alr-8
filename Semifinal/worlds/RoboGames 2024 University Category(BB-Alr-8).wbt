@@ -10,8 +10,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.425489090949129 0.4601076003933255 0.7792689070812332 1.7438738546806167
-  position 0.30030412116117355 -3.20562722830164 0.9946666826211417
+  orientation -0.4866670085016355 0.5366764912910111 0.6892993301401347 1.8440723878935181
+  position 0.354381196309192 -3.225017337912382 3.0703035658188877
 }
 TexturedBackground {
 }
@@ -1781,8 +1781,7 @@ Wall {
   }
 }
 DEF BBAlr8 Robot {
-  translation 0.12499996898250379 -2.749989706632135 0.019961136065385517
-  rotation -0.9999999758875722 -0.0002196015801069311 3.4096833177771087e-08 0.00032754942234405443
+  translation 0.125 -2.75 0.02
   children [
     DEF led1 LED {
       translation 0 -0.02 0.015
@@ -1906,6 +1905,8 @@ DEF BBAlr8 Robot {
       boundingObject USE fcam
       physics Physics {
       }
+      width 1
+      height 1
     }
     DEF rightIr DistanceSensor {
       translation 0.027 0.025 -0.008
@@ -2087,6 +2088,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
+        position 7.499215572489286
         anchor -0.03 -0.01 0
       }
       device [
@@ -2101,7 +2103,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation -0.03 -0.01 0
-        rotation 0 1 0 1.5707999925118306
+        rotation -0.4960137617692759 -0.7126983180240191 -0.49601558001863816 4.379984354261678
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
@@ -2143,6 +2145,4 @@ DEF BBAlr8 Robot {
     ]
   }
   controller "bbAlr8"
-  linearVelocity 1.1024335980848239e-14 -6.352477324555372e-10 9.061419327336446e-10
-  angularVelocity -3.7267600579876345e-08 1.56249731291594e-13 7.763471866742423e-13
 }
