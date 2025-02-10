@@ -5,9 +5,12 @@
 #include <cmath>
 #include <thread>
 
+
+
+
 using namespace webots;
 
-BbAlr8:: BbAlr8()
+BbAlr8:: BbAlr8() : cameraController(this)
 {
     initDevices();
 }
@@ -27,14 +30,7 @@ void BbAlr8::initDevices()
     }
 
         // Initialize camera
-    camera = getCamera("camera");
-    if (camera) {
-        camera->enable(Config::TIME_STEP);
-        std::cout << "Camera enabled with resolution: " 
-                  << camera->getWidth() << "x" << camera->getHeight() << std::endl;
-    } else {
-        std::cerr << "Warning: Camera device not found!" << std::endl;
-    }
+    cameraController.initializeCameras("fcam", "camera");
 
     // Initialize sensors
     // sensorManager.initializeSensors(this);
@@ -48,6 +44,7 @@ void BbAlr8::run()
     std::cout << "E-puck robot starting..." << std::endl;
 
     while (step(Config::TIME_STEP) != -1) {
+        char color = floorColor();
         lightEachLEDSequentially();  // Light LEDs one by one and turn them off
     }
 
@@ -67,6 +64,11 @@ void BbAlr8::lightEachLEDSequentially() {
         }
     }
 
+char BbAlr8::floorColor() {
+    char color = cameraController.processDownCamera();
+    std::cout << "Detected floor color: " << color << std::endl;
+    return color;
+}
 // void Epuck::turnLeft()
 // {
 //     motors.setSpeed(-5, 5);

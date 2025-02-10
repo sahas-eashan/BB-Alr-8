@@ -1,8 +1,8 @@
 build/release/main.o: main.cpp bbAlr8.hpp \
- /usr/local/webots/include/controller/cpp/webots/Robot.hpp \
- /usr/local/webots/include/controller/cpp/webots/LED.hpp \
- /usr/local/webots/include/controller/cpp/webots/Device.hpp \
- /usr/local/webots/include/controller/cpp/webots/../../c/webots/types.h \
- /usr/local/webots/include/controller/cpp/webots/Camera.hpp \
- /usr/local/webots/include/controller/cpp/webots/../../c/webots/camera_recognition_object.h \
- config.hpp
+ C:\Program\ Files\Webots/include/controller/cpp/webots/Robot.hpp \
+ C:\Program\ Files\Webots/include/controller/cpp/webots/LED.hpp \
+ C:\Program\ Files\Webots/include/controller/cpp/webots/Device.hpp \
+ C:/Program\ Files/Webots/include/controller/c/webots/types.h config.hpp \
+ CameraController.hpp \
+ C:\Program\ Files\Webots/include/controller/cpp/webots/Camera.hpp \
+ C:/Program\ Files/Webots/include/controller/c/webots/camera_recognition_object.h
