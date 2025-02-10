@@ -1780,8 +1780,8 @@ Wall {
   }
 }
 DEF BBAlr8 Robot {
-  translation 0.12499996898250379 -2.749989706632135 0.019961136065385517
-  rotation -0.9999999758875722 -0.0002196015801069311 3.4096833177771087e-08 0.00032754942234405443
+  translation 0.12499996898250197 -2.7499897067430776 0.01996113582589836
+  rotation -0.999999975885976 -0.00021960884932257913 2.8307256016604078e-08 0.00032754006875193234
   children [
     DEF led1 LED {
       translation 0 -0.02 0.015
@@ -1790,6 +1790,7 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 0 1 0
             metalness 0.1
+            emissiveColor 0 1 0
           }
           geometry Capsule {
             height 0.006
@@ -1812,6 +1813,7 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 1 0.33 0
             metalness 0.1
+            emissiveColor 1 0.33 0
           }
           geometry Capsule {
             height 0.006
@@ -1834,6 +1836,7 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 1 1 0
             metalness 0.1
+            emissiveColor 1 1 0
           }
           geometry Capsule {
             height 0.006
@@ -1856,6 +1859,7 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 1 0 0
             metalness 0.1
+            emissiveColor 1 0 0
           }
           geometry Capsule {
             height 0.006
@@ -1885,6 +1889,8 @@ DEF BBAlr8 Robot {
       boundingObject USE dcam
       physics Physics {
       }
+      width 1
+      height 1
     }
     DEF frontCam Camera {
       translation 0 0.028 0.01
@@ -2022,7 +2028,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -7.053817088708808e-08
+        position -1.0157042106230132e-07
       }
       device [
         PositionSensor {
@@ -2031,8 +2037,8 @@ DEF BBAlr8 Robot {
         }
       ]
       endPoint Solid {
-        translation 0.029999999999999992 -0.01000010000000106 -1.507249705674325e-08
-        rotation -3.0950368125354637e-08 0.9999999999999989 -3.20929541036143e-08 1.5708000076550765
+        translation 0.029999999999999832 -0.010000100000001524 -1.476217145176605e-08
+        rotation -4.6466436100379334e-08 0.9999999999999978 -4.7609079191220753e-08 1.5708000076550765
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -2052,13 +2058,13 @@ DEF BBAlr8 Robot {
         boundingObject USE leftWheel
         physics Physics {
         }
-        linearVelocity 7.720527286151941e-11 -1.4742468270692181e-09 3.946992026383848e-09
-        angularVelocity 9.097315151424444e-08 -1.1860290897541007e-10 -2.358216569151514e-11
+        linearVelocity 8.810040883362196e-14 2.1542851305978295e-09 1.7871466076338168e-11
+        angularVelocity -1.3341472302078244e-07 -6.271990253516091e-13 3.2109234736095e-11
       }
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -1.0260664763619817e-07
+        position -1.3364049837461144e-07
       }
       device [
         PositionSensor {
@@ -2067,8 +2073,8 @@ DEF BBAlr8 Robot {
         }
       ]
       endPoint Solid {
-        translation -0.02999999999999983 -0.010000100000001077 -1.6705768812851667e-08
-        rotation -5.885844043317937e-08 0.9999999999999966 -5.8319571530604885e-08 1.570799992511834
+        translation -0.0299999999999997 -0.010000100000001566 -1.6395427202082403e-08
+        rotation -7.437530892183425e-08 0.9999999999999943 -7.383649689981132e-08 1.5707999925118277
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
@@ -2091,8 +2097,8 @@ DEF BBAlr8 Robot {
         boundingObject USE rightWheel
         physics Physics {
         }
-        linearVelocity -7.719545627241278e-11 -1.4743283903884315e-09 3.947859752379707e-09
-        angularVelocity 9.097755257632148e-08 1.1881211592898043e-10 2.5154095068000506e-11
+        linearVelocity -1.2269739219910833e-13 2.1543555253287797e-09 1.7872667619031514e-11
+        angularVelocity -1.3341865405969904e-07 -7.03464227364198e-13 -3.3656174665755636e-11
       }
     }
     DEF body Shape {
@@ -2109,6 +2115,6 @@ DEF BBAlr8 Robot {
   physics Physics {
   }
   controller "bbAlr8"
-  linearVelocity 1.1024335980848239e-14 -6.352477324555372e-10 9.061419327336446e-10
-  angularVelocity -3.7267600579876345e-08 1.56249731291594e-13 7.763471866742423e-13
+  linearVelocity -1.7044725022989367e-14 1.0568201815058828e-09 -1.2597377714883037e-09
+  angularVelocity 4.994545563328214e-08 -6.845028437474569e-13 -7.600330865121044e-13
 }
