@@ -18,15 +18,9 @@ BbAlr8:: ~BbAlr8()
 
 void BbAlr8::initDevices()
 {
-    // Initialize LEDs
-    char ledName[5];
-    for (int i = 1; i <= Config::NUM_LEDS; i++)
-    {
-        sprintf(ledName, "led%d", i);
-        leds[i-1] = getLED(ledName);
-    }
+    leds.initLEDs(*this);
 
-        // Initialize camera
+    // Initialize camera
     camera = getCamera("camera");
     if (camera) {
         camera->enable(Config::TIME_STEP);
@@ -48,24 +42,10 @@ void BbAlr8::run()
     std::cout << "E-puck robot starting..." << std::endl;
 
     while (step(Config::TIME_STEP) != -1) {
-        lightEachLEDSequentially();  // Light LEDs one by one and turn them off
+        leds.lightEachLEDSequentially(*this);
     }
 
 }
-
-void BbAlr8::lightEachLEDSequentially() {
-        // Turn on each LED one by one
-        for (int i = 1; i <= Config::NUM_LEDS; i++) {
-            leds[i-1]->set(1);  // Turn ON the LED
-            step(Config::TIME_STEP);   // Wait for some time
-        }
-
-        // Turn off each LED one by one
-        for (int i = 0; i <= Config::NUM_LEDS; i++) {
-            leds[i-1]->set(0);  // Turn OFF the LED
-            step(Config::TIME_STEP);   // Wait for some time
-        }
-    }
 
 // void Epuck::turnLeft()
 // {

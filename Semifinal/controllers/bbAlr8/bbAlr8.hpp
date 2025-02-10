@@ -1,10 +1,9 @@
-// epuck.hpp
-#ifndef EPUCK_HPP
-#define EPUCK_HPP
+#ifndef BBALR8_HPP
+#define BBALR8_HPP
 
 #include <webots/Robot.hpp>
-#include <webots/LED.hpp>
 #include <webots/Camera.hpp>
+#include "ledManager.hpp"
 #include "config.hpp"
 // #include "sensor_manager.hpp"
 // #include "floodfill.hpp"
@@ -23,7 +22,7 @@ public:
     virtual ~BbAlr8();
     void run();
 
-    void lightEachLEDSequentially();
+    LEDManager leds;
     // SensorManager sensorManager;
     // Motors motors;
     // Floodfill floodfill;
@@ -49,10 +48,8 @@ public:
     // int getCameraHeight() const;
 
 private:
-    webots::LED *leds[Config::NUM_LEDS];
 
     webots::Camera *camera;
-    
     void initDevices();
 
 };
