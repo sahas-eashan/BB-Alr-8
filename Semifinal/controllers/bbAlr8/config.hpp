@@ -7,7 +7,7 @@
 namespace Config
 {
     // Time configuration
-    static const int TIME_STEP = 32; // milliseconds
+    static const int TIME_STEP = 16; // milliseconds
 
     // Hardware configuration
     static const int NUM_SENSORS = 6;
@@ -31,10 +31,12 @@ namespace Config
     static const double Kd = 0.11;
 
     // Motors
-    const int TIME_90_TURN = 1500;//1450
-    const int TIME_PER_CELL = 1850; 
+    const int TIME_90_TURN = 157; 
+    const int TIME_180_TURN = 295;
+    const int TIME_PER_CELL = 1000; 
+    const int ENTRANCE_TIME = 700;
 
-    static constexpr double MAX_SPEED = 10.0;
+    static constexpr double MAX_SPEED = 40.0;
     constexpr double BASE_SPEED = Config::MAX_SPEED * 0.7;
     constexpr double TURN_SPEED = Config::MAX_SPEED * 0.5; 
 

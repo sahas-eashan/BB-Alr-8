@@ -7,10 +7,11 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Roughcast.proto"
 
 WorldInfo {
+  basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.3217111473445898 0.28040980761778855 0.9043629124781614 1.8101181582399626
-  position 0.13775050985794565 -3.7022774572414945 0.9812133269917584
+  orientation -0.425489090949129 0.4601076003933255 0.7792689070812332 1.7438738546806167
+  position 0.30030412116117355 -3.20562722830164 0.9946666826211417
 }
 TexturedBackground {
 }
@@ -2048,7 +2049,6 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -7.053817088708808e-08
         anchor 0.03 -0.01 0
       }
       device [
@@ -2057,11 +2057,13 @@ DEF BBAlr8 Robot {
         }
         RotationalMotor {
           name "leftMotor"
+          maxVelocity 100
+          maxTorque 100
         }
       ]
       endPoint Solid {
         translation 0.03 -0.01 0
-        rotation -3.0950368125354637e-08 0.9999999999999989 -3.209295410361429e-08 1.5708000076550765
+        rotation 4.318587497856146e-09 1 3.176131339929724e-09 1.5708000076550757
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -2093,6 +2095,8 @@ DEF BBAlr8 Robot {
         }
         DEF rightMotor RotationalMotor {
           name "rightMotor"
+          maxVelocity 100
+          maxTorque 100
         }
       ]
       endPoint Solid {
@@ -2134,6 +2138,9 @@ DEF BBAlr8 Robot {
   ]
   boundingObject USE body
   physics Physics {
+    centerOfMass [
+      0 0 0
+    ]
   }
   controller "bbAlr8"
   linearVelocity 1.1024335980848239e-14 -6.352477324555372e-10 9.061419327336446e-10
