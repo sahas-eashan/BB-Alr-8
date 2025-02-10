@@ -10,8 +10,8 @@ namespace Config
     static const int TIME_STEP = 32; // milliseconds
 
     // Hardware configuration
-    static const int NUM_SENSORS = 8;
-    static const int NUM_LEDS = 10;
+    static const int NUM_SENSORS = 6;
+    static const int NUM_LEDS = 4;
 
     // Sensors
     static const int STABILIZING_THRESHOLD = 50;
@@ -39,10 +39,8 @@ namespace Config
     constexpr double TURN_SPEED = Config::MAX_SPEED * 0.5; 
 
     // Floodfill
-    const int MAZE_LENGTH = 10;
-    const int MAZE_WIDTH = 10;
-    //
-    const std::pair<int, int> cellOrder[5] = { {7, 6}, {5, 0}, {7, 3}, {8, 4}, {0, 3} }; //{x, y}
+    const int MAZE_LENGTH = 20;
+    const int MAZE_WIDTH = 20;
 
 
     typedef enum Heading
@@ -66,8 +64,6 @@ namespace Config
     const float L_WALL_THRESHOLD = 25;
     const float F_WALL_THRESHOLD = 17;
     const float R_WALL_THRESHOLD = 25;
-
-    const float COS10 = 0.98480775301;
 
 }
 #endif

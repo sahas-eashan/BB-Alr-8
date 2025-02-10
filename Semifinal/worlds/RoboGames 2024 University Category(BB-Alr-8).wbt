@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.33576629923518286 -0.2754645348616006 -0.9007664971186439 4.410974087614981
-  position 0.0474131895928193 -3.648680103946088 0.713722338222197
+  orientation -0.3798719647443715 0.5217176063195932 0.7638769728545329 1.5259267987353424
+  position -0.015271014916345138 -3.0876843091360704 0.5099356276974173
 }
 TexturedBackground {
 }
@@ -344,7 +344,7 @@ Wall {
   size 0.01 0.5 0.1
 }
 Wall {
-  translation -0.009998 -2.25 0
+  translation 2e-06 -2.25 0
   rotation 0 0 1 1.5708
   name "wall(50)"
   size 0.01 1 0.1
@@ -1779,8 +1779,9 @@ Wall {
     }
   }
 }
-Robot {
-  translation 0.12499997042112491 -2.7499962574909476 0.019957237454473552
+DEF BBAlr8 Robot {
+  translation 0.12499996898250379 -2.749989706632135 0.019961136065385517
+  rotation -0.9999999758875722 -0.0002196015801069311 3.4096833177771087e-08 0.00032754942234405443
   children [
     DEF led1 LED {
       translation 0 -0.02 0.015
@@ -1796,6 +1797,7 @@ Robot {
           }
         }
       ]
+      name "led1"
       boundingObject USE led1
       physics Physics {
       }
@@ -1817,7 +1819,7 @@ Robot {
           }
         }
       ]
-      name "led(1)"
+      name "led2"
       boundingObject USE led2
       physics Physics {
       }
@@ -1839,7 +1841,7 @@ Robot {
           }
         }
       ]
-      name "led(2)"
+      name "led3"
       boundingObject USE led3
       physics Physics {
       }
@@ -1861,7 +1863,7 @@ Robot {
           }
         }
       ]
-      name "led(3)"
+      name "led4"
       boundingObject USE led4
       physics Physics {
       }
@@ -2020,7 +2022,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -4.0210654422587594e-08
+        position -7.053817088708808e-08
       }
       device [
         PositionSensor {
@@ -2029,8 +2031,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.02999999999999999 -0.010000100000000595 -1.5375775254139927e-08
-        rotation -1.578666570867554e-08 0.9999999999999998 -1.6929195871364086e-08 1.5708000076550763
+        translation 0.029999999999999992 -0.01000010000000106 -1.507249705674325e-08
+        rotation -3.0950368125354637e-08 0.9999999999999989 -3.20929541036143e-08 1.5708000076550765
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -2050,11 +2052,13 @@ Robot {
         boundingObject USE leftWheel
         physics Physics {
         }
+        linearVelocity 7.720527286151941e-11 -1.4742468270692181e-09 3.946992026383848e-09
+        angularVelocity 9.097315151424444e-08 -1.1860290897541007e-10 -2.358216569151514e-11
       }
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -7.227863420746126e-08
+        position -1.0260664763619817e-07
       }
       device [
         PositionSensor {
@@ -2063,8 +2067,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.029999999999999846 -0.01000010000000057 -1.7009051979940417e-08
-        rotation -4.3694489305665326e-08 0.9999999999999981 -4.3155564816236516e-08 1.570799992511833
+        translation -0.02999999999999983 -0.010000100000001077 -1.6705768812851667e-08
+        rotation -5.885844043317937e-08 0.9999999999999966 -5.8319571530604885e-08 1.570799992511834
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
@@ -2087,6 +2091,8 @@ Robot {
         boundingObject USE rightWheel
         physics Physics {
         }
+        linearVelocity -7.719545627241278e-11 -1.4743283903884315e-09 3.947859752379707e-09
+        angularVelocity 9.097755257632148e-08 1.1881211592898043e-10 2.5154095068000506e-11
       }
     }
     DEF body Shape {
@@ -2102,4 +2108,7 @@ Robot {
   boundingObject USE body
   physics Physics {
   }
+  controller "bbAlr8"
+  linearVelocity 1.1024335980848239e-14 -6.352477324555372e-10 9.061419327336446e-10
+  angularVelocity -3.7267600579876345e-08 1.56249731291594e-13 7.763471866742423e-13
 }

@@ -39,7 +39,7 @@
 ###
 ### ---- C++ Sources ----
 ### if your program uses several C++ source files:
-CXX_SOURCES = epuck.cpp main.cpp sensor_manager.cpp motors.cpp floodfill.cpp API.cpp solver.cpp CameraController.cpp
+CXX_SOURCES = bbAlr8.cpp main.cpp 
 ###
 ### ---- Compilation options ----
 ### if special compilation flags are necessary:
