@@ -1790,6 +1790,7 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 0 1 0
             metalness 0.1
+            emissiveColor 0 1 0
           }
           geometry Capsule {
             height 0.006
@@ -1812,6 +1813,7 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 1 0.33 0
             metalness 0.1
+            emissiveColor 1 0.33 0
           }
           geometry Capsule {
             height 0.006
@@ -1834,6 +1836,7 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 1 1 0
             metalness 0.1
+            emissiveColor 1 1 0
           }
           geometry Capsule {
             height 0.006
@@ -1856,6 +1859,7 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 1 0 0
             metalness 0.1
+            emissiveColor 1 0 0
           }
           geometry Capsule {
             height 0.006
@@ -1886,6 +1890,8 @@ DEF BBAlr8 Robot {
       boundingObject USE dcam
       physics Physics {
       }
+      width 1
+      height 1
     }
     DEF frontCam Camera {
       translation 0 0.028 0.01

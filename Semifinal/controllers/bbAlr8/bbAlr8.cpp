@@ -5,8 +5,12 @@
 #include <cmath>
 #include <thread>
 
+
+
+
 using namespace webots;
 
+BbAlr8:: BbAlr8() : cameraController(this)
 BbAlr8:: BbAlr8() : cameraController(this)
 {
     initDevices();
