@@ -39,7 +39,7 @@
 ###
 ### ---- C++ Sources ----
 ### if your program uses several C++ source files:
-CXX_SOURCES = bbAlr8.cpp main.cpp ledManager.cpp sensorManager.cpp
+CXX_SOURCES = bbAlr8.cpp main.cpp ledManager.cpp sensorManager.cpp motors.cpp
 ###
 ### ---- Compilation options ----
 ### if special compilation flags are necessary:

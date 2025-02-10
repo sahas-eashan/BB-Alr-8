@@ -20,6 +20,7 @@ void BbAlr8::initDevices()
 {
     leds.initLEDs(*this);
     sensorManager.initializeSensors(this);
+    motors.initializeMotors(this);
 
     // Initialize camera
     camera = getCamera("fcam");
@@ -31,7 +32,6 @@ void BbAlr8::initDevices()
         std::cerr << "Warning: Camera device not found!" << std::endl;
     }
 
-    // motors.initializeMotors(this);
     // std::cout << "Motors Initialized" << std::endl;
 }
 
@@ -39,89 +39,18 @@ void BbAlr8::run()
 {
     std::cout << "E-puck robot starting..." << std::endl;
 
-    while (step(Config::TIME_STEP) != -1) {
-        leds.lightEachLEDSequentially(*this);
+    // while (step(Config::TIME_STEP) != -1) {
+    //     leds.lightEachLEDSequentially(*this);
 
-        sensorManager.readSensors();
-        std::cout<< "Front: " << sensorManager.frontWallDistance() << "  left: " << sensorManager.leftWallDistance() << "  Right: " << sensorManager.rightWallDistance()  << std::endl;
-    }
+    //     sensorManager.readSensors();
+    //     std::cout<< "Front: " << sensorManager.frontWallDistance() << "  left: " << sensorManager.leftWallDistance() << "  Right: " << sensorManager.rightWallDistance()  << std::endl;
 
+    //     motors.setSpeed(-10, -10);
+    // }
+
+    motors.turnLeft(this);
 }
 
-// void Epuck::turnLeft()
-// {
-//     motors.setSpeed(-5, 5);
-//     step(Config::TIME_90_TURN);
-//     motors.stop();
-// }
-
-// void Epuck::turnRight()
-// {
-//     motors.setSpeed(Config::TURN_SPEED, -Config::TURN_SPEED);
-//     step(Config::TIME_90_TURN);
-//     motors.stop();
-// }
-
-// void Epuck::turn180()
-// {
-//     motors.setSpeed(Config::TURN_SPEED, -Config::TURN_SPEED);
-//     step(Config::TIME_90_TURN * 2);
-//     motors.stop();
-// }
-
-// void Epuck::moveForward(int cells, double *sensorValues)
-// {
-//     int totalTime = cells * Config::TIME_PER_CELL;
-//     auto startTime = std::chrono::steady_clock::now();
-
-//     while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() < totalTime)
-//     {
-//         sensorManager.readSensors(sensorValues);
-//         if (sensorManager.frontWallDistance() < 11){ break; }
-//         double correction = sensorManager.calculateSteeringAdjustment();
-//         motors.setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
-
-//         step(Config::TIME_STEP);
-//     }
-
-//     if (iswallFront())
-//     {
-//         while (sensorManager.frontWallDistance() > 11)
-//         {
-//             sensorManager.readSensors(sensorValues);
-//             double correction = sensorManager.calculateSteeringAdjustment();
-//             motors.setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
-
-//             step(Config::TIME_STEP);
-//         }
-//     }
-
-//     motors.stop();
-// }
-
-// bool Epuck::iswallFront()
-// {
-//     sensorManager.readSensors(sensorValues);
-//     float F_Wall_Distance = sensorManager.frontWallDistance();
-//     //std::cout << "Front wall Distance: " << F_Wall_Distance << " cm " << std::endl;
-//     return (F_Wall_Distance < Config::F_WALL_THRESHOLD) ? true : false;
-// }
-
-// bool Epuck::iswallRight()
-// {
-//     sensorManager.readSensors(sensorValues);
-//     float R_Wall_Distance = sensorManager.rightWallDistance();
-//     //std::cout << "Right wall Distance: " << R_Wall_Distance << " cm " << std::endl;
-//     return (R_Wall_Distance < Config::R_WALL_THRESHOLD) ? true : false;
-// }
-
-// bool Epuck::iswallLeft()
-// {
-//     sensorManager.readSensors(sensorValues);
-//     float L_Wall_Distance = sensorManager.leftWallDistance();
-//     //std::cout << "Left wall Distance: " << L_Wall_Distance << " cm " << std::endl;
-//     return (L_Wall_Distance < Config::L_WALL_THRESHOLD) ? true : false;
-// }
 
 // void Epuck::turnToHeading(Config::Heading targetHeading)
 // {

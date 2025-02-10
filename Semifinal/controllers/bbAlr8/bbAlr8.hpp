@@ -6,8 +6,9 @@
 #include "ledManager.hpp"
 #include "config.hpp"
 #include "sensorManager.hpp"
+#include "motors.hpp"
 // #include "floodfill.hpp"
-// #include "motors.hpp"
+
 // #include "API.hpp"
 // #include "solver.hpp"
 
@@ -24,7 +25,7 @@ public:
 
     LEDManager leds;
     SensorManager sensorManager;
-    // Motors motors;
+    Motors motors;
     // Floodfill floodfill;
 
     // bool reachedColor = false;

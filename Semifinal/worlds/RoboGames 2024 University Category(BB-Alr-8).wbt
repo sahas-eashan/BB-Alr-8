@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.37284445147492634 0.3889932172871483 0.8424199023699254 1.7026295994828036
-  position 0.0560948140386885 -3.802778501513508 1.0984925279496378
+  orientation -0.3217111473445898 0.28040980761778855 0.9043629124781614 1.8101181582399626
+  position 0.13775050985794565 -3.7022774572414945 0.9812133269917584
 }
 TexturedBackground {
 }
@@ -2049,16 +2049,19 @@ DEF BBAlr8 Robot {
     HingeJoint {
       jointParameters HingeJointParameters {
         position -7.053817088708808e-08
+        anchor 0.03 -0.01 0
       }
       device [
         PositionSensor {
+          name "leftEncoder"
         }
         RotationalMotor {
+          name "leftMotor"
         }
       ]
       endPoint Solid {
-        translation 0.029999999999999992 -0.01000010000000106 -1.507249705674325e-08
-        rotation -3.0950368125354637e-08 0.9999999999999989 -3.20929541036143e-08 1.5708000076550765
+        translation 0.03 -0.01 0
+        rotation -3.0950368125354637e-08 0.9999999999999989 -3.209295410361429e-08 1.5708000076550765
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -2082,17 +2085,19 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -1.0260664763619817e-07
+        anchor -0.03 -0.01 0
       }
       device [
-        PositionSensor {
+        DEF rightEncoder PositionSensor {
+          name "rightEncoder"
         }
-        RotationalMotor {
+        DEF rightMotor RotationalMotor {
+          name "rightMotor"
         }
       ]
       endPoint Solid {
-        translation -0.02999999999999983 -0.010000100000001077 -1.6705768812851667e-08
-        rotation -5.885844043317937e-08 0.9999999999999966 -5.8319571530604885e-08 1.570799992511834
+        translation -0.03 -0.01 0
+        rotation 0 1 0 1.5707999925118306
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
