@@ -34,7 +34,7 @@ namespace Config
     const int TIME_90_TURN = 157; 
     const int TIME_180_TURN = 295;
     const int TIME_PER_CELL = 1000; 
-    const int ENTRANCE_TIME = 700;
+    const int ENTRANCE_TIME = 800;
 
     static constexpr double MAX_SPEED = 40.0;
     constexpr double BASE_SPEED = Config::MAX_SPEED * 0.7;

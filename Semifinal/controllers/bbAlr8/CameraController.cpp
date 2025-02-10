@@ -103,7 +103,6 @@ char CameraController::processFrontCamera() {
     std::cerr << "Error: Failed to get camera image!" << std::endl;
     return 'E';
   }
-  char color = 'U';
   // Process the entire image
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
