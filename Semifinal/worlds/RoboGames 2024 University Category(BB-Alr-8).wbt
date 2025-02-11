@@ -10,8 +10,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.4866670085016355 0.5366764912910111 0.6892993301401347 1.8440723878935181
-  position 0.354381196309192 -3.225017337912382 3.0703035658188877
+  orientation -0.040112827773626014 0.27547687887483174 0.9604704317434165 0.3275653387073362
+  position -1.189466683157686 -2.969580992760854 0.4958725293512317
 }
 TexturedBackground {
 }
@@ -1790,7 +1790,6 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 0 1 0
             metalness 0.1
-            emissiveColor 0 1 0
           }
           geometry Capsule {
             height 0.006
@@ -1813,7 +1812,6 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 1 0.33 0
             metalness 0.1
-            emissiveColor 1 0.33 0
           }
           geometry Capsule {
             height 0.006
@@ -1836,7 +1834,6 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 1 1 0
             metalness 0.1
-            emissiveColor 1 1 0
           }
           geometry Capsule {
             height 0.006
@@ -1859,7 +1856,6 @@ DEF BBAlr8 Robot {
           appearance PBRAppearance {
             baseColor 1 0 0
             metalness 0.1
-            emissiveColor 1 0 0
           }
           geometry Capsule {
             height 0.006
@@ -1893,9 +1889,29 @@ DEF BBAlr8 Robot {
       width 1
       height 1
     }
+    Camera {
+      translation 0 0.03 0
+      rotation 0 0 1 1.5707996938995747
+      children [
+        DEF scancam Shape {
+          appearance PBRAppearance {
+          }
+          geometry Capsule {
+            height 0.001
+            radius 0.005
+          }
+        }
+      ]
+      name "scancam"
+      boundingObject USE scancam
+      physics Physics {
+      }
+      fieldOfView 1.7854
+      height 1
+    }
     DEF frontCam Camera {
       translation 0 0.028 0.01
-      rotation 0.5773519358512958 0.5773519358512958 0.5773469358518515 2.0944
+      rotation 0.5773519358512961 0.5773519358512961 0.5773469358518516 2.0943999999999994
       children [
         DEF fcam Shape {
           appearance PBRAppearance {
@@ -1911,8 +1927,8 @@ DEF BBAlr8 Robot {
       boundingObject USE fcam
       physics Physics {
       }
-      width 1
-      height 1
+      width 256
+      height 128
     }
     DEF rightIr DistanceSensor {
       translation 0.027 0.025 -0.008

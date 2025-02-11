@@ -20,9 +20,10 @@ CameraController::CameraController(webots::Robot *robot) : robot(robot) {
 //   }
 // }
 
-void CameraController::initializeCameras(const std::string& frontCamName, const std::string& downCamName) {
+void CameraController::initializeCameras(const std::string& frontCamName, const std::string& downCamName, const std::string& scanCamName) {
     frontCamera = robot->getCamera(frontCamName);
     downCamera = robot->getCamera(downCamName);
+    scanCamera = robot->getCamera(scanCamName);
     
     if (frontCamera) {
         frontCamera->enable(timeStep);
@@ -37,6 +38,14 @@ void CameraController::initializeCameras(const std::string& frontCamName, const 
     } else {
         std::cerr << "ERROR: Failed to initialize down camera!" << std::endl;
     }
+
+        if (scanCamera) {
+        scanCamera->enable(timeStep);
+        std::cout << "Scan camera initialized successfully" << std::endl;
+    } else {
+        std::cerr << "ERROR: Failed to initialize scan camera!" << std::endl;
+    }
+
 }
 
 char CameraController::processDownCamera() {

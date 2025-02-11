@@ -10,6 +10,7 @@ class CameraController {
 private:
     webots::Camera *frontCamera;
     webots::Camera *downCamera;
+    webots::Camera *scanCamera;
     webots::Robot *robot;
     int width, height;
     int timeStep;
@@ -17,7 +18,7 @@ private:
 public:
     CameraController(webots::Robot *robot);
     ~CameraController();
-    void initializeCameras(const std::string& frontCamName, const std::string& downCamName);
+    void initializeCameras(const std::string& frontCamName, const std::string& downCamName, const std::string& scanCamName);
     char processFrontCamera();
     char processDownCamera();
 };

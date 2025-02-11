@@ -23,7 +23,7 @@ void BbAlr8::initDevices()
     motors.initializeMotors(this);
 
     // Initialize camera
-    cameraController.initializeCameras("fcam", "dcam");
+    cameraController.initializeCameras("fcam", "dcam", "scancam");
 
     // std::cout << "Motors Initialized" << std::endl;
 }
