@@ -41,7 +41,10 @@ void BbAlr8::run()
     motors.moveForward(this, sensorManager, 2);
     motors.turnLeft(this);
     motors.moveForward(this, sensorManager, 2);
-
+    motors.turnRight(this);
+    motors.moveForward(this, sensorManager, 2);
+    motors.turnRight(this);
+    motors.moveForward(this, sensorManager, 1);
     // while (step(Config::TIME_STEP) != -1)
     // {
     //     leds.lightEachLEDSequentially(*this);
@@ -55,4 +58,3 @@ char BbAlr8::floorColor()
     std::cout << "Detected floor color: " << color << std::endl;
     return color;
 }
-

@@ -27,7 +27,7 @@ namespace Config
     static const double MAX_INTEGRAL = 1.0; // Anti-windup limit
     static const int ALIGN_DISTANCE = 11;
 
-    static const double Kp = 0.07;
+    static const double Kp = 0.6;
     static const double Ki = 0.01;
     static const double Kd = 0.11;
 
