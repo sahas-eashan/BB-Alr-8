@@ -85,18 +85,6 @@ char CameraController::processDownCamera() {
         return 'U';
     }
 
-
- // Process the entire image
- // for (int y = 0; y < height; y++) {
-  //  for (int x = 0; x < width; x++) {
-      // int red = camera->imageGetRed(image, width, x, y);
-      // int green = camera->imageGetGreen(image, width, x, y);
-      // int blue = camera->imageGetBlue(image, width, x, y);
-      
-      // Here you can add your image processing logic
-
-      // For example, detect specific colors, shapes, or objects
-   // }
   
   return 'U';
 }

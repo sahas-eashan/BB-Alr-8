@@ -1,6 +1,7 @@
 #include "motors.hpp"
 #include <thread>
 
+
 Motors::Motors() {}
 
 Motors::~Motors() {}
@@ -23,7 +24,7 @@ void Motors::setSpeed(double leftSpeed, double rightSpeed)
     rightSpeed = clamp(rightSpeed, -Config::MAX_SPEED, Config::MAX_SPEED);
 
     leftMotor->setVelocity(-leftSpeed);
-    rightMotor->setVelocity(-rightSpeed); // negative because motor direction is inverted
+    rightMotor->setVelocity(-rightSpeed); //negative because motor direction is inverted
 }
 
 void Motors::stop()
@@ -52,7 +53,7 @@ void Motors::turn180(webots::Robot *robot)
     stop();
 }
 
-void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager, int cells)
+void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager ,int cells)
 {
     int totalTime = cells * Config::TIME_PER_CELL;
     auto startTime = std::chrono::steady_clock::now();
@@ -71,7 +72,8 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager, int 
 
         robot->step(Config::TIME_STEP);
     }
-
+    
+    sensorManager.readSensors();
     if (sensorManager.iswallFront())
     {
         while (sensorManager.frontWallDistance() > Config::ALIGN_DISTANCE)
@@ -85,73 +87,32 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager, int 
     }
 
     stop();
-
-    // if (sensorManager.iswallFront())
-    // {
-    //     // Align the robot with the wall
-    //     while (true)
-    //     {
-    //         sensorManager.readSensors();
-    //         double rightDistance = sensorManager.frontRightDistance();
-    //         double leftDistance = sensorManager.frontLeftDistance();
-    //         double error2 = rightDistance - leftDistance;
-    //         std::cout << "Error: " << error2 << std::endl;
-
-    //         if (abs(error2) < 0.05 && sensorManager.frontWallDistance() < Config::ALIGN_DISTANCE) // Adjust the threshold as needed
-    //             break;
-
-    //         double correction2 = error2 * 10; // adjust as necessary
-    //         double leftSpeed = correction2;
-    //         double rightSpeed = -correction2;
-
-    //         setSpeed(leftSpeed, rightSpeed);
-    //         robot->step(Config::TIME_STEP);
-    //     }
-    // }
-
-    // stop();
 }
 
 void Motors::enterMaze(webots::Robot *robot, SensorManager sensorManager)
 {
-    setSpeed(Config::BASE_SPEED, Config::BASE_SPEED);
+    int totalTime = Config::TIME_PER_CELL *2;
+    auto startTime = std::chrono::steady_clock::now();
 
-    while (true)
+    while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() < totalTime)
     {
         sensorManager.readSensors();
-
-        // Check if there's a wall in front
-        if (sensorManager.iswallFront())
-        {
-            stop();
-
-            // Align the robot with the wall
-            while (true)
-            {
-                sensorManager.readSensors();
-                double rightDistance = sensorManager.frontRightDistance();
-                double leftDistance = sensorManager.frontLeftDistance();
-                double error = rightDistance - leftDistance;
-                std::cout << "Error: " << error << std::endl;
-
-                if (abs(error) < 0.02 && sensorManager.frontWallDistance() < Config::ALIGN_DISTANCE) // Adjust the threshold as needed
-                    break;
-
-                double correction = error * 0.3; // 0.5 is the gain, adjust as necessary
-                double leftSpeed = Config::BASE_SPEED + correction;
-                double rightSpeed = Config::BASE_SPEED - correction;
-
-                setSpeed(leftSpeed, rightSpeed);
-                robot->step(Config::TIME_STEP);
-            }
-
-            stop();
-            break;
-        }
-
-        // Continue moving forward
+        if (sensorManager.frontWallDistance() < 11){ break; }
+        setSpeed(Config::BASE_SPEED , Config::BASE_SPEED );
         robot->step(Config::TIME_STEP);
     }
+
+    if (sensorManager.iswallFront())
+    {
+        while (sensorManager.frontWallDistance() > 11)
+        {
+            sensorManager.readSensors();
+            setSpeed(Config::BASE_SPEED, Config::BASE_SPEED );
+            robot->step(Config::TIME_STEP);
+        }
+    }
+
+    stop();
 }
 
 void Motors::delay(int ms)

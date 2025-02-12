@@ -23,19 +23,19 @@ namespace Config
 
     static const double IDEAL_WALL_DISTANCE = 8.2; // Desired distance from wall in cm
     static const int MAX_WALL_DISTANCE = 30;
-    static const double MAX_STEERING = 4; // Maximum steering adjustment
+    static const double MAX_STEERING = 1.6; // Maximum steering adjustment
     static const double MAX_INTEGRAL = 1.0; // Anti-windup limit
-    static const double ALIGN_DISTANCE = 11;
+    static const int ALIGN_DISTANCE = 11;
 
-    static const double Kp = 2.5;
-    static const double Ki = 0.08;
-    static const double Kd = 0.15;
+    static const double Kp = 0.07;
+    static const double Ki = 0.01;
+    static const double Kd = 0.11;
 
     // Motors
     const int TIME_90_TURN = 157; 
     const int TIME_180_TURN = 295;
     const int TIME_PER_CELL = 480; 
-    const int ENTRANCE_TIME = 800;
+
 
     static constexpr double MAX_SPEED = 40.0;
     constexpr double BASE_SPEED = Config::MAX_SPEED * 0.7;
@@ -64,7 +64,7 @@ namespace Config
 
     // Threshold values for detecting walls
     const float L_WALL_THRESHOLD = 25;
-    const float F_WALL_THRESHOLD = 20;
+    const float F_WALL_THRESHOLD = 17;
     const float R_WALL_THRESHOLD = 25;
 
 }

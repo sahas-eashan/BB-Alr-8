@@ -31,6 +31,7 @@ public:
 
     char floorColor();
 
+
 private:
     void initDevices();
 
