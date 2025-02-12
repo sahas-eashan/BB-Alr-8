@@ -51,11 +51,11 @@ double SensorManager::calculateSideWallError() const
     }
     // If only left wall is detected
     else if (leftWallDistance < Config::MAX_WALL_DISTANCE) {
-        return (Config::IDEAL_WALL_DISTANCE - leftWallDistance);
+        return 2* (Config::IDEAL_WALL_DISTANCE - leftWallDistance);
     }
     // If only right wall is detected
     else if (rightWallDistance < Config::MAX_WALL_DISTANCE) {
-        return (rightWallDistance - Config::IDEAL_WALL_DISTANCE);
+        return 2* (rightWallDistance - Config::IDEAL_WALL_DISTANCE);
     }
     
     return 0.0; // No walls detected
@@ -93,6 +93,7 @@ double SensorManager::calculateSteeringAdjustment()
 
 double SensorManager::frontWallDistance() const
 {
+    std::cout << (getDistance(1) + getDistance(4))/2 << std::endl;
     return (getDistance(1) + getDistance(4))/2;
 }
 

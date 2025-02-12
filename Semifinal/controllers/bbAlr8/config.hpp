@@ -23,18 +23,19 @@ namespace Config
 
     static const double IDEAL_WALL_DISTANCE = 8.2; // Desired distance from wall in cm
     static const int MAX_WALL_DISTANCE = 30;
-    static const double MAX_STEERING = 4; // Maximum steering adjustment
+    static const double MAX_STEERING = 1.6; // Maximum steering adjustment
     static const double MAX_INTEGRAL = 1.0; // Anti-windup limit
+    static const int ALIGN_DISTANCE = 11;
 
-    static const double Kp = 2.5;
-    static const double Ki = 0.08;
-    static const double Kd = 0.15;
+    static const double Kp = 0.6;
+    static const double Ki = 0.01;
+    static const double Kd = 0.11;
 
     // Motors
     const int TIME_90_TURN = 157; 
     const int TIME_180_TURN = 295;
     const int TIME_PER_CELL = 480; 
-    const int ENTRANCE_TIME = 800;
+
 
     static constexpr double MAX_SPEED = 40.0;
     constexpr double BASE_SPEED = Config::MAX_SPEED * 0.7;
@@ -43,7 +44,6 @@ namespace Config
     // Floodfill
     const int MAZE_LENGTH = 20;
     const int MAZE_WIDTH = 20;
-
 
     typedef enum Heading
     {

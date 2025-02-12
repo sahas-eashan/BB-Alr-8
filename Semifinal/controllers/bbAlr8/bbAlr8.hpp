@@ -30,27 +30,7 @@ public:
     CameraController cameraController;
 
     char floorColor();
-    // Floodfill floodfill;
 
-    // bool reachedColor = false;
-
-    // Config::Heading heading;
-    // Position position;
-
-    // bool iswallFront();
-    // bool iswallRight();
-    // bool iswallLeft();
-
-    // double sensorValues[Config::NUM_SENSORS] = {0};
-
-    // void moveForward(int cells, double *sensorValues);
-    //  void turnLeft();
-    // void turnRight();
-    // void turn180();
-
-    // const unsigned char* getCameraImage();
-    // int getCameraWidth() const;
-    // int getCameraHeight() const;
 
 private:
     void initDevices();
