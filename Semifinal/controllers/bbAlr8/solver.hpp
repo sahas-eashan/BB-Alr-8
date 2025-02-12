@@ -2,9 +2,11 @@
 #define SOLVER_H
 
 #include <array>
+#include <vector>
+
 
 enum class Heading { NORTH, EAST, SOUTH, WEST };
-enum class Action { LEFT, FORWARD, RIGHT, IDLE };
+enum class Action { LEFT, FORWARD, RIGHT, IDLE, ALLEXPLORED };
 
 // Maze constants
 constexpr int MAZE_SIZE = 20;
@@ -48,17 +50,33 @@ public:
         return distances; 
     }
 
+    void setTarget(Coordinate target) {
+        targetCoordinate = target;
+        resetDistances(target);
+    }
+
+    void setStart(Coordinate start) {
+        position = start;
+        resetDistances(targetCoordinate);
+    }
+
+    
+
+
 private:
     std::array<std::array<unsigned int, MAZE_SIZE>, MAZE_SIZE> maze;
     std::array<std::array<int, MAZE_SIZE>, MAZE_SIZE> distances;
     Coordinate position;
+    Coordinate targetCoordinate;
     Heading heading;
     bool reachedCenter;
+
+    bool exploredAll;
 
     void initialize();
     void updateMaze();
     void updateDistances();
-    void resetDistances();
+    void resetDistances(Coordinate target);
     int xyToSquare(int x, int y) const;
     Coordinate squareToCoord(int square) const;
     bool isWallInDirection(int x, int y, Heading direction) const;
@@ -69,6 +87,10 @@ private:
     std::array<std::array<int, MAZE_SIZE>, MAZE_SIZE> visitCount{};  
     bool explorationMode{true}; 
     bool allCellsExplored();
+
+
+
+    
 };
 
 #endif

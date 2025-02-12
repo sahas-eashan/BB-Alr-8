@@ -5,7 +5,7 @@
 #include <algorithm>
 
 MazeSolver::MazeSolver() 
-    : maze{}, distances{}, position{0, 0}, heading{Heading::NORTH}, reachedCenter{false} {
+    : maze{}, distances{}, position{10, 0}, heading{Heading::NORTH}, reachedCenter{false} {
     initialize();
 }
 
@@ -22,7 +22,7 @@ void MazeSolver::initialize() {
     maze[MAZE_SIZE - 1][0] = WallConfig::ES;
     maze[MAZE_SIZE - 1][MAZE_SIZE - 1] = WallConfig::NE;
 
-    resetDistances();
+    resetDistances({0,0});
 
 }
 
@@ -33,68 +33,68 @@ void MazeSolver::updateMaze() {
 
     switch (heading) {
     case Heading::NORTH:
-        if (API::wallFront()) {
+        if (API_wallFront()) {
             walls |= WallConfig::N;
             if (y + 1 != MAZE_SIZE)
                 maze[x][y + 1] |= WallConfig::S;
         }
-        if (API::wallLeft()) {
+        if (API_wallLeft()) {
             walls |= WallConfig::W;
             if (x - 1 >= 0)
                 maze[x - 1][y] |= WallConfig::E;
         }
-        if (API::wallRight()) {
+        if (API_wallRight()) {
             walls |= WallConfig::E;
             if (x + 1 != MAZE_SIZE)
                 maze[x + 1][y] |= WallConfig::W;
         }
         break;
     case Heading::EAST:
-        if (API::wallFront()) {
+        if (API_wallFront()) {
             walls |= WallConfig::E;
             if (x + 1 != MAZE_SIZE)
                 maze[x + 1][y] |= WallConfig::W;
         }
-        if (API::wallLeft()) {
+        if (API_wallLeft()) {
             walls |= WallConfig::N;
             if (y + 1 != MAZE_SIZE)
                 maze[x][y + 1] |= WallConfig::S;
         }
-        if (API::wallRight()) {
+        if (API_wallRight()) {
             walls |= WallConfig::S;
             if (y - 1 >= 0)
                 maze[x][y - 1] |= WallConfig::N;
         }
         break;
     case Heading::SOUTH:
-        if (API::wallFront()) {
+        if (API_wallFront()) {
             walls |= WallConfig::S;
             if (y - 1 >= 0)
                 maze[x][y - 1] |= WallConfig::N;
         }
-        if (API::wallLeft()) {
+        if (API_wallLeft()) {
             walls |= WallConfig::E;
             if (x + 1 != MAZE_SIZE)
                 maze[x + 1][y] |= WallConfig::W;
         }
-        if (API::wallRight()) {
+        if (API_wallRight()) {
             walls |= WallConfig::W;
             if (x - 1 >= 0)
                 maze[x - 1][y] |= WallConfig::E;
         }
         break;
     case Heading::WEST:
-        if (API::wallFront()) {
+        if (API_wallFront()) {
             walls |= WallConfig::W;
             if (x - 1 >= 0)
                 maze[x - 1][y] |= WallConfig::E;
         }
-        if (API::wallLeft()) {
+        if (API_wallLeft()) {
             walls |= WallConfig::S;
             if (y - 1 >= 0)
                 maze[x][y - 1] |= WallConfig::N;
         }
-        if (API::wallRight()) {
+        if (API_wallRight()) {
             walls |= WallConfig::N;
             if (y + 1 != MAZE_SIZE)
                 maze[x][y + 1] |= WallConfig::S;
@@ -103,12 +103,6 @@ void MazeSolver::updateMaze() {
     }
 
     maze[x][y] |= walls;
-
-    // Update walls in UI
-    if (maze[x][y] & WallConfig::N) API::setWall(x, y, 'n');
-    if (maze[x][y] & WallConfig::E) API::setWall(x, y, 'e');
-    if (maze[x][y] & WallConfig::S) API::setWall(x, y, 's');
-    if (maze[x][y] & WallConfig::W) API::setWall(x, y, 'w');
 }
 
 int MazeSolver::xyToSquare(int x, int y) const {
@@ -119,25 +113,14 @@ Coordinate MazeSolver::squareToCoord(int square) const {
     return {square % MAZE_SIZE, square / MAZE_SIZE};
 }
 
-void MazeSolver::resetDistances() {
+void MazeSolver::resetDistances(Coordinate target) {
     // Initially set all distances to -1 (invalid distance)
     for (auto& row : distances) {
         row.fill(-1);
     }
 
-    // Set goal distances based on whether center has been reached
-    if (!reachedCenter) {
-        if (MAZE_SIZE % 2 == 0) {
-            distances[MAZE_SIZE/2][MAZE_SIZE/2] = 0;
-            distances[MAZE_SIZE/2 - 1][MAZE_SIZE/2] = 0;
-            distances[MAZE_SIZE/2][MAZE_SIZE/2 - 1] = 0;
-            distances[MAZE_SIZE/2 - 1][MAZE_SIZE/2 - 1] = 0;
-        } else {
-            distances[MAZE_SIZE/2][MAZE_SIZE/2] = 0;
-        }
-    } else {
-        distances[0][0] = 0;  // Go back to start
-    }
+    // Set goal distances based on the target coordinate
+    distances[target.x][target.y] = 0;
 }
 
 bool MazeSolver::isWallInDirection(int x, int y, Heading direction) const {
@@ -151,7 +134,7 @@ bool MazeSolver::isWallInDirection(int x, int y, Heading direction) const {
 }
 
 void MazeSolver::updateDistances() {
-    resetDistances();
+    resetDistances(targetCoordinate);
     std::queue<int> squares;
 
     // Add goal squares to queue
@@ -224,13 +207,10 @@ void MazeSolver::updatePosition(Action nextAction) {
 
 Action MazeSolver::solve() {
     // Check if center reached or returned to start
-    if (!reachedCenter && distances[position.x][position.y] == 0) {
-        reachedCenter = true;
-    } else if (reachedCenter && distances[position.x][position.y] == 0) {
-        reachedCenter = false;
+    if (position.x == targetCoordinate.x && position.y == targetCoordinate.y) {
+        return Action::IDLE;
     }
 
-    //Action testaction = tremauxSearch();
     updateMaze();
     updateDistances();
 
@@ -255,17 +235,18 @@ Action MazeSolver::explore(){
 
     
     if(allCellsExplored()){
-        API::debugLog("All cells explored!");
-        return Action::IDLE;
+        //API::debugLog("All cells explored!");
+        return Action::ALLEXPLORED;
     }
 
     visitCount[position.x][position.y]++;
     
 
-    char color = visitCount[position.x][position.y] == 1 ? 'G' : visitCount[position.x][position.y] == 2 ? 'O' : 'R';  
-    API::setColor(position.x, position.y, color);
+    //char color = visitCount[position.x][position.y] == 1 ? 'G' : visitCount[position.x][position.y] == 2 ? 'O' : 'R';  
+    //API::setColor(position.x, position.y, color);
 
     updateMaze();
+    updateDistances();
     Action action = tremauxSearch();
     updateHeading(action);
     updatePosition(action);
@@ -276,7 +257,7 @@ Action MazeSolver::explore(){
 }
 
 Action MazeSolver::tremauxSearch(){
-    unsigned int leastVisits = std::numeric_limits<unsigned int>::max();
+    int leastVisits = std::numeric_limits<int>::max();
     Action optimalMove = Action::IDLE;
 
     // visitCount[position.x][position.y]++;
@@ -286,7 +267,7 @@ Action MazeSolver::tremauxSearch(){
 
     if (explorationMode && allCellsExplored()) {
         explorationMode = false;
-        API::debugLog("Switching to return mode - all cells visited");
+        //API::debugLog("Switching to return mode - all cells visited");
     }
 
     if (heading == Heading::NORTH){
@@ -296,7 +277,7 @@ Action MazeSolver::tremauxSearch(){
             visitCount[position.x][position.y + 1] < leastVisits) {
             leastVisits = visitCount[position.x][position.y + 1];
             optimalMove = Action::FORWARD;
-            API::debugLog("Debug Point" + std::to_string(leastVisits));
+            //API::debugLog("Debug Point" + std::to_string(leastVisits));
             
         }
         // Check right (East)
@@ -384,7 +365,7 @@ Action MazeSolver::tremauxSearch(){
         }
     }
     // Handle dead ends
-    if (leastVisits == std::numeric_limits<unsigned int>::max()) {
+    if (leastVisits == std::numeric_limits<int>::max()) {
         optimalMove = Action::RIGHT;
     }
     if(optimalMove == Action::FORWARD){
@@ -395,7 +376,7 @@ Action MazeSolver::tremauxSearch(){
 }
 
 Action MazeSolver::floodFill() const {
-    unsigned int leastDistance = std::numeric_limits<unsigned int>::max();
+    int leastDistance = std::numeric_limits<int>::max();
     Action optimalMove = Action::IDLE;
 
     // Check relative positions based on current heading
@@ -493,22 +474,23 @@ Action MazeSolver::floodFill() const {
     }
 
     // Handle dead ends
-    if (leastDistance == std::numeric_limits<unsigned int>::max()) {
+    if (leastDistance == std::numeric_limits<int>::max()) {
         optimalMove = Action::RIGHT;
-        API::debugLog("Dead end detected");
+       // API::debugLog("Dead end detected");
     }
-    API::debugLog("Least distance: " + std::to_string(leastDistance));
+    //API::debugLog("Least distance: " + std::to_string(leastDistance));
     return optimalMove;
 }
 
 // [Rest of the code remains the same]
 
-Action MazeSolver::leftWallFollower() {
-    if (API::wallFront()) {
-        if (API::wallLeft()) {
-            return Action::RIGHT;
-        }
-        return Action::LEFT;
-    }
-    return Action::FORWARD;
-}
+// Action MazeSolver::leftWallFollower() {
+//     if (API::wallFront()) {
+//         if (API::wallLeft()) {
+//             return Action::RIGHT;
+//         }
+//         return Action::LEFT;
+//     }
+//     return Action::FORWARD;
+// }
+

@@ -33,23 +33,29 @@ void BbAlr8::run()
     std::cout << "E-puck robot starting..." << std::endl;
 
     motors.enterMaze(this, sensorManager);
-    motors.turnLeft(this);
-    motors.moveForward(this, sensorManager, 3);
-    motors.turnRight(this);
-    motors.moveForward(this, sensorManager, 2);
-    motors.turnRight(this);
-    motors.moveForward(this, sensorManager, 2);
-    motors.turnLeft(this);
-    motors.moveForward(this, sensorManager, 2);
-    motors.turnRight(this);
-    motors.moveForward(this, sensorManager, 2);
-    motors.turnRight(this);
-    motors.moveForward(this, sensorManager, 1);
-    // while (step(Config::TIME_STEP) != -1)
-    // {
-    //     leds.lightEachLEDSequentially(*this);
-    //     floorColor();
-    // }
+    // motors.turnLeft(this);
+    // motors.moveForward(this, sensorManager, 3);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 2);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 2);
+    // motors.turnLeft(this);
+    // motors.moveForward(this, sensorManager, 2);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 2);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 1);
+    std::cout << "inside the maze" << std::endl;
+
+    exploreMaze();
+    while (step(Config::TIME_STEP) != -1)
+    {
+        // leds.lightEachLEDSequentially(*this);
+        // floorColor();
+    }
+
+    //API_moveForward();
+    
 }
 
 char BbAlr8::floorColor()
@@ -57,4 +63,39 @@ char BbAlr8::floorColor()
     char color = cameraController.processDownCamera();
     std::cout << "Detected floor color: " << color << std::endl;
     return color;
+}
+
+bool BbAlr8::iswallFront()
+{
+    sensorManager.readSensors();
+    return sensorManager.iswallFront();
+}
+
+bool BbAlr8::iswallRight()
+{
+    sensorManager.readSensors();
+    return sensorManager.iswallRight();
+}
+
+bool BbAlr8::iswallLeft()
+{
+    sensorManager.readSensors();
+    return sensorManager.iswallLeft();
+}
+
+void BbAlr8::moveForward()
+{
+    motors.moveForward(this, sensorManager, 1);
+}
+
+void BbAlr8::turnLeft(){
+    motors.turnLeft(this);
+}
+
+void BbAlr8::turnRight(){
+    motors.turnRight(this);
+}
+
+void BbAlr8::turn180(){
+    motors.turn180(this);
 }

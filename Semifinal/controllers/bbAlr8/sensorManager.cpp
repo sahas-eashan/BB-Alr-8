@@ -93,7 +93,7 @@ double SensorManager::calculateSteeringAdjustment()
 
 double SensorManager::frontWallDistance() const
 {
-    std::cout << (getDistance(1) + getDistance(4))/2 << std::endl;
+    //std::cout << (getDistance(1) + getDistance(4))/2 << std::endl;
     return (getDistance(1) + getDistance(4))/2;
 }
 

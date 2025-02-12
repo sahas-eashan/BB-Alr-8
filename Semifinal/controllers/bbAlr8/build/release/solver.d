@@ -1,4 +1,4 @@
-build/release/bbAlr8.o: bbAlr8.cpp bbAlr8.hpp \
+build/release/solver.o: solver.cpp solver.hpp API.hpp bbAlr8.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/Robot.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/Camera.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/Device.hpp \
@@ -10,4 +10,4 @@ build/release/bbAlr8.o: bbAlr8.cpp bbAlr8.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/DistanceSensor.hpp \
  motors.hpp \
  C:\Program\ Files\Webots/include/controller/cpp/webots/Motor.hpp \
- CameraController.hpp API.hpp solver.hpp
+ CameraController.hpp
