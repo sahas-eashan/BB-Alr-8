@@ -21,19 +21,19 @@ namespace Config
     static const int MAX_DISTANCE = 35; // cm
     static const int MIN_DISTANCE = 0;
 
-    static const double IDEAL_WALL_DISTANCE = 9; // Desired distance from wall in cm
+    static const double IDEAL_WALL_DISTANCE = 8.2; // Desired distance from wall in cm
     static const int MAX_WALL_DISTANCE = 30;
-    static const double MAX_STEERING = 1.6; // Maximum steering adjustment
+    static const double MAX_STEERING = 4; // Maximum steering adjustment
     static const double MAX_INTEGRAL = 1.0; // Anti-windup limit
 
-    static const double Kp = 0.07;
-    static const double Ki = 0.01;
-    static const double Kd = 0.11;
+    static const double Kp = 2.5;
+    static const double Ki = 0.08;
+    static const double Kd = 0.15;
 
     // Motors
     const int TIME_90_TURN = 157; 
     const int TIME_180_TURN = 295;
-    const int TIME_PER_CELL = 1000; 
+    const int TIME_PER_CELL = 480; 
     const int ENTRANCE_TIME = 800;
 
     static constexpr double MAX_SPEED = 40.0;

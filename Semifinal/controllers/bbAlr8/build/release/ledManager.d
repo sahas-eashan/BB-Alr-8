@@ -1,5 +1,6 @@
 build/release/ledManager.o: ledManager.cpp ledManager.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/Robot.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/LED.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/Device.hpp \
- C:/Program\ Files/Webots/include/controller/c/webots/types.h config.hpp
+ /usr/local/webots/include/controller/cpp/webots/Robot.hpp \
+ /usr/local/webots/include/controller/cpp/webots/LED.hpp \
+ /usr/local/webots/include/controller/cpp/webots/Device.hpp \
+ /usr/local/webots/include/controller/cpp/webots/../../c/webots/types.h \
+ config.hpp

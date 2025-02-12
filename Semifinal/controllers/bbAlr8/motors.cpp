@@ -85,7 +85,7 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager ,int 
 
 void Motors::enterMaze(webots::Robot *robot, SensorManager sensorManager)
 {
-    int totalTime = Config::ENTRANCE_TIME;
+    int totalTime = Config::TIME_PER_CELL*2;
     auto startTime = std::chrono::steady_clock::now();
 
     while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() < totalTime)

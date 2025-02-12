@@ -30,18 +30,21 @@ void BbAlr8::initDevices()
 
 void BbAlr8::run()
 {
-    std::cout << "E-puck robot starting..." << std::endl;
+    std::cout << "BB-Alr-8 robot starting..." << std::endl;
 
-    motors.enterMaze(this, sensorManager);
-    motors.turnLeft(this);
-    motors.moveForward(this, sensorManager, 4);
-    motors.turnRight(this);
-    motors.moveForward(this, sensorManager, 2);
+    
+    // motors.enterMaze(this, sensorManager);
+    // motors.turnLeft(this);
+    motors.moveForward(this, sensorManager, 3);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 2);
 
     while (step(Config::TIME_STEP) != -1)
     {
-        leds.lightEachLEDSequentially(*this);
-        floorColor();
+        //leds.lightEachLEDSequentially(*this);
+        //sensorManager.readSensors();
+        //std::cout << sensorManager.leftWallDistance() << "  " << sensorManager.rightWallDistance() << std::endl;
+        //floorColor();
     }
 }
 
