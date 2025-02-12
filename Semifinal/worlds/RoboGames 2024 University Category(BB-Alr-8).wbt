@@ -10,8 +10,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation 0.5883382645913564 -0.5877068379484226 -0.5553906364409625 4.152651170480279
-  position 0.03838997563650375 -2.0010361692483016 5.753831292134329
+  orientation -0.49100089540933145 0.4819333435836374 0.7257123211366405 1.906078250456652
+  position 0.20443926895874007 -3.6896900681358726 3.1244456754995236
 }
 TexturedBackground {
 }
@@ -1781,8 +1781,7 @@ Wall {
   }
 }
 DEF BBAlr8 Robot {
-  translation 0.169134 -2.96465 0.01974
-  rotation 0.015167397695507857 0.015433697655046985 -0.999765848098363 -0.017915307179586115
+  translation 0.125 -2.75 0.0199599
   children [
     DEF led1 LED {
       translation 0 -0.02 0.015
@@ -1796,6 +1795,7 @@ DEF BBAlr8 Robot {
             height 0.006
             radius 0.002
           }
+          castShadows FALSE
         }
       ]
       name "led1"
@@ -1818,6 +1818,7 @@ DEF BBAlr8 Robot {
             height 0.006
             radius 0.002
           }
+          castShadows FALSE
         }
       ]
       name "led2"
@@ -1840,6 +1841,7 @@ DEF BBAlr8 Robot {
             height 0.006
             radius 0.002
           }
+          castShadows FALSE
         }
       ]
       name "led3"
@@ -1862,6 +1864,7 @@ DEF BBAlr8 Robot {
             height 0.006
             radius 0.002
           }
+          castShadows FALSE
         }
       ]
       name "led4"
@@ -1870,7 +1873,7 @@ DEF BBAlr8 Robot {
       }
     }
     DEF downCam Camera {
-      translation 8.98038e-08 0.032 -0.005
+      translation 0 0.031 -0.008
       rotation 3.69431e-07 -1 -1.0753e-06 -1.5708053071795867
       children [
         DEF dcam Shape {
@@ -1879,8 +1882,9 @@ DEF BBAlr8 Robot {
           }
           geometry Capsule {
             height 0.005
-            radius 0.005
+            radius 0.003
           }
+          castShadows FALSE
         }
       ]
       name "dcam"
@@ -1890,17 +1894,19 @@ DEF BBAlr8 Robot {
       width 1
       height 1
     }
-    Camera {
+    DEF scancam Camera {
       translation 0 0.03 0
       rotation 0 0 1 1.5707996938995747
       children [
         DEF scancam Shape {
           appearance PBRAppearance {
+            baseColor 0 1 0
           }
           geometry Capsule {
             height 0.001
-            radius 0.005
+            radius 0.003
           }
+          castShadows FALSE
         }
       ]
       name "scancam"
@@ -1911,25 +1917,27 @@ DEF BBAlr8 Robot {
       height 1
     }
     DEF frontCam Camera {
-      translation 0 0.028 0.01
-      rotation 0.5773519358512961 0.5773519358512961 0.5773469358518516 2.0943999999999994
+      translation 0 0.029 0.01
+      rotation -4.2638199999214016e-06 -4.322939999920311e-06 -0.9999999999815661 -1.5707953071795862
       children [
         DEF fcam Shape {
           appearance PBRAppearance {
             baseColor 1 0 0
           }
           geometry Capsule {
-            height 0.005
-            radius 0.005
+            height 0.002
+            radius 0.004
           }
+          castShadows FALSE
         }
       ]
       name "fcam"
       boundingObject USE fcam
       physics Physics {
       }
+      fieldOfView 2.7854
       width 256
-      height 128
+      height 256
     }
     DEF rightIr DistanceSensor {
       translation 0.027 0.025 -0.008
@@ -1940,6 +1948,7 @@ DEF BBAlr8 Robot {
           geometry Box {
             size 0.005 0.005 0.01
           }
+          castShadows FALSE
         }
       ]
       name "distanceSensor0"
@@ -1961,6 +1970,7 @@ DEF BBAlr8 Robot {
           geometry Box {
             size 0.005 0.005 0.01
           }
+          castShadows FALSE
         }
       ]
       name "distanceSensor5"
@@ -1982,6 +1992,7 @@ DEF BBAlr8 Robot {
           geometry Box {
             size 0.005 0.005 0.01
           }
+          castShadows FALSE
         }
       ]
       name "distanceSensor4"
@@ -2003,6 +2014,7 @@ DEF BBAlr8 Robot {
           geometry Box {
             size 0.005 0.005 0.01
           }
+          castShadows FALSE
         }
       ]
       name "distanceSensor1"
@@ -2024,6 +2036,7 @@ DEF BBAlr8 Robot {
           geometry Box {
             size 0.005 0.005 0.01
           }
+          castShadows FALSE
         }
       ]
       name "distanceSensor2"
@@ -2045,6 +2058,7 @@ DEF BBAlr8 Robot {
           geometry Box {
             size 0.005 0.005 0.01
           }
+          castShadows FALSE
         }
       ]
       name "distanceSensor3"
@@ -2065,6 +2079,7 @@ DEF BBAlr8 Robot {
           geometry Sphere {
             radius 0.005
           }
+          castShadows FALSE
         }
       ]
       boundingObject USE castor
@@ -2073,7 +2088,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -115.4354471095042
+        position -118.8741595266347
         anchor 0.03 -0.01 0
       }
       device [
@@ -2088,7 +2103,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation 0.03 -0.01 0
-        rotation -0.6772073144909458 0.28771014890951113 -0.6772098075297109 2.5813067750481924
+        rotation -0.24297707709924998 -0.9391080054542074 -0.2429779703926383 4.6496018088949205
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -2102,6 +2117,7 @@ DEF BBAlr8 Robot {
               height 0.01
               radius 0.02
             }
+            castShadows FALSE
           }
         ]
         name "leftWheel"
@@ -2112,7 +2128,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -109.40817707762776
+        position -104.45224427283975
         anchor -0.03 -0.01 0
       }
       device [
@@ -2127,7 +2143,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation -0.03 -0.01 0
-        rotation 0.6935626244477212 -0.1947774250071513 0.6935651668565636 3.5263289715624846
+        rotation -0.6790282194641716 -0.27899457693245056 -0.6790307085939483 3.6857430186670848
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
@@ -2144,6 +2160,7 @@ DEF BBAlr8 Robot {
               height 0.01
               radius 0.02
             }
+            castShadows FALSE
           }
         ]
         name "rightWheel"
@@ -2160,6 +2177,7 @@ DEF BBAlr8 Robot {
       geometry Box {
         size 0.05 0.06 0.03
       }
+      castShadows FALSE
     }
   ]
   boundingObject USE body

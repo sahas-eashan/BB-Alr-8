@@ -65,7 +65,7 @@ char CameraController::processDownCamera() {
   int g = downCamera->imageGetGreen(image, downCamera->getWidth(), 0, 0);
   int b = downCamera->imageGetBlue(image, downCamera->getWidth(), 0, 0);
   
-  std::cout << "Pixel (0,0) RGB values: R=" << r << " G=" << g << " B=" << b << std::endl;
+  //std::cout << "Pixel (0,0) RGB values: R=" << r << " G=" << g << " B=" << b << std::endl;
 
  //   r  g  b
  //R 70 11 15
