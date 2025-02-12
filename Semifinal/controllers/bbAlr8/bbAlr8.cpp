@@ -37,6 +37,10 @@ void BbAlr8::run()
     motors.moveForward(this, sensorManager, 4);
     motors.turnRight(this);
     motors.moveForward(this, sensorManager, 2);
+    motors.turnRight(this);
+    motors.moveForward(this, sensorManager, 2);
+    motors.turnLeft(this);
+    motors.moveForward(this, sensorManager, 4);
 
     while (step(Config::TIME_STEP) != -1)
     {
