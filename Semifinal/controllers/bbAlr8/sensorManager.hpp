@@ -26,9 +26,9 @@ public:
     double frontRight45AngledDistance() const;
     double frontLeft45AngledDistance() const;
 
-    bool iswallFront();
-    bool iswallRight();
-    bool iswallLeft();
+    bool isWallFront();
+    bool isWallRight();
+    bool isWallLeft();
 
 private:
     webots::DistanceSensor *distanceSensors[Config::NUM_SENSORS];

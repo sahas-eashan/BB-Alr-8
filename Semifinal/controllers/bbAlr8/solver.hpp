@@ -40,7 +40,7 @@ class MazeSolver {
 public:
     MazeSolver();
     Action solve();
-    Action leftWallFollower();
+    //Action leftWallFollower();
     Action tremauxSearch();
     Action explore();
     //std::stack<int> path;

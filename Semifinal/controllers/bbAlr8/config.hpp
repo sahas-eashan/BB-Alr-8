@@ -32,14 +32,14 @@ namespace Config
     static const double Kd = 0.11;
 
     // Motors
-    const int TIME_90_TURN = 157; 
-    const int TIME_180_TURN = 295;
-    const int TIME_PER_CELL = 480; 
+    const int TIME_90_TURN = 420; 
+    const int TIME_180_TURN = 710;
+    const int TIME_PER_CELL = 585; 
 
 
-    static constexpr double MAX_SPEED = 40.0;
+    static constexpr double MAX_SPEED = 40.0; //40
     constexpr double BASE_SPEED = Config::MAX_SPEED * 0.7;
-    constexpr double TURN_SPEED = Config::MAX_SPEED * 0.5; 
+    constexpr double TURN_SPEED = Config::MAX_SPEED * 0.2; 
 
     // Floodfill
     const int MAZE_LENGTH = 20;

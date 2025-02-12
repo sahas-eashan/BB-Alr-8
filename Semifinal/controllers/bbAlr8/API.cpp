@@ -20,19 +20,19 @@ bool API_wallLeft() {
 }
 
 void API_moveForward() {
-    BbAlr8::getInstance().moveForward();
+    BbAlr8::getInstance().move_Forward();
 }
 
 void API_turnLeft() {
-    BbAlr8::getInstance().turnLeft();
+    BbAlr8::getInstance().turn_Left();
 }
 
 void API_turnRight() {
-    BbAlr8::getInstance().turnRight();
+    BbAlr8::getInstance().turn_Right();
 }
 
 void API_turn180() {
-    BbAlr8::getInstance().turn180();
+    BbAlr8::getInstance().turn_180();
 }
 
 
@@ -40,6 +40,11 @@ void exploreMaze() {
     std::cout << "Starting to explore the maze....." << std::endl;
 
     MazeSolver explorer;
+
+    //API_moveForward();
+    //API_turnRight();
+    //API_turn180();  
+
     //explorer.setStart({10, 0});
     explorer.setTarget({10, 0});
 
@@ -70,7 +75,7 @@ void exploreMaze() {
             default:
                 break;  
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     std::cout << "Exploration complete!" << std::endl;
     std::cout << "Returning to start....." << std::endl;

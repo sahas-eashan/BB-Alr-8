@@ -31,10 +31,10 @@ class BbAlr8 : public webots::Robot {
         bool iswallRight();
         bool iswallLeft();
 
-        void moveForward();
-        void turnLeft();
-        void turnRight();
-        void turn180();
+        void move_Forward();
+        void turn_Left();
+        void turn_Right();
+        void turn_180();
     
     private:
         BbAlr8();  // Private constructor to enforce singleton

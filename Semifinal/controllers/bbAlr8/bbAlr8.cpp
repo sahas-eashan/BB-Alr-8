@@ -30,7 +30,7 @@ void BbAlr8::initDevices()
 
 void BbAlr8::run()
 {
-    std::cout << "E-puck robot starting..." << std::endl;
+    std::cout << "BB-Alr-8 robot starting..." << std::endl;
 
     motors.enterMaze(this, sensorManager);
     // motors.turnLeft(this);
@@ -48,14 +48,13 @@ void BbAlr8::run()
     std::cout << "inside the maze" << std::endl;
 
     exploreMaze();
-    while (step(Config::TIME_STEP) != -1)
-    {
+    // while (step(Config::TIME_STEP) != -1)
+    // {
         // leds.lightEachLEDSequentially(*this);
         // floorColor();
-    }
+    //}
 
-    //API_moveForward();
-    
+    //API_moveForward(); 
 }
 
 char BbAlr8::floorColor()
@@ -68,34 +67,34 @@ char BbAlr8::floorColor()
 bool BbAlr8::iswallFront()
 {
     sensorManager.readSensors();
-    return sensorManager.iswallFront();
+    return sensorManager.isWallFront();
 }
 
 bool BbAlr8::iswallRight()
 {
     sensorManager.readSensors();
-    return sensorManager.iswallRight();
+    return sensorManager.isWallRight();
 }
 
 bool BbAlr8::iswallLeft()
 {
     sensorManager.readSensors();
-    return sensorManager.iswallLeft();
+    return sensorManager.isWallLeft();
 }
 
-void BbAlr8::moveForward()
+void BbAlr8::move_Forward()
 {
     motors.moveForward(this, sensorManager, 1);
 }
 
-void BbAlr8::turnLeft(){
+void BbAlr8::turn_Left(){
     motors.turnLeft(this);
 }
 
-void BbAlr8::turnRight(){
+void BbAlr8::turn_Right(){
     motors.turnRight(this);
 }
 
-void BbAlr8::turn180(){
+void BbAlr8::turn_180(){
     motors.turn180(this);
 }
