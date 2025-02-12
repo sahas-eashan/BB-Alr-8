@@ -25,6 +25,7 @@ namespace Config
     static const int MAX_WALL_DISTANCE = 30;
     static const double MAX_STEERING = 4; // Maximum steering adjustment
     static const double MAX_INTEGRAL = 1.0; // Anti-windup limit
+    static const double ALIGN_DISTANCE = 11;
 
     static const double Kp = 2.5;
     static const double Ki = 0.08;
@@ -43,7 +44,6 @@ namespace Config
     // Floodfill
     const int MAZE_LENGTH = 20;
     const int MAZE_WIDTH = 20;
-
 
     typedef enum Heading
     {
@@ -64,7 +64,7 @@ namespace Config
 
     // Threshold values for detecting walls
     const float L_WALL_THRESHOLD = 25;
-    const float F_WALL_THRESHOLD = 17;
+    const float F_WALL_THRESHOLD = 20;
     const float R_WALL_THRESHOLD = 25;
 
 }

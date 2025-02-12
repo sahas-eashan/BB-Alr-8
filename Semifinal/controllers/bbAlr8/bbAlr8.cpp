@@ -37,18 +37,20 @@ void BbAlr8::run()
     motors.moveForward(this, sensorManager, 4);
     motors.turnRight(this);
     motors.moveForward(this, sensorManager, 2);
-    motors.turnRight(this);
-    motors.moveForward(this, sensorManager, 2);
-    motors.turnLeft(this);
-    motors.moveForward(this, sensorManager, 4);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 2);
+    // motors.turnLeft(this);
+    // motors.moveForward(this, sensorManager, 4);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 3);
 
-    while (step(Config::TIME_STEP) != -1)
-    {
+    // while (step(Config::TIME_STEP) != -1)
+    // {
         //leds.lightEachLEDSequentially(*this);
         //sensorManager.readSensors();
         //std::cout << sensorManager.leftWallDistance() << "  " << sensorManager.rightWallDistance() << std::endl;
         //floorColor();
-    }
+    // }
 }
 
 char BbAlr8::floorColor()
@@ -57,19 +59,3 @@ char BbAlr8::floorColor()
     std::cout << "Detected floor color: " << color << std::endl;
     return color;
 }
-
-//
-// const unsigned char* Epuck::getCameraImage() {
-//     if (camera) {
-//         return camera->getImage();
-//     }
-//     return nullptr;
-// }
-
-// int Epuck::getCameraWidth() const {
-//     return camera ? camera->getWidth() : 0;
-// }
-
-// int Epuck::getCameraHeight() const {
-//     return camera ? camera->getHeight() : 0;
-// }

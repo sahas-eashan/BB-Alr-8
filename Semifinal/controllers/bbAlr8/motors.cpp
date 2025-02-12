@@ -1,7 +1,6 @@
 #include "motors.hpp"
 #include <thread>
 
-
 Motors::Motors() {}
 
 Motors::~Motors() {}
@@ -24,7 +23,7 @@ void Motors::setSpeed(double leftSpeed, double rightSpeed)
     rightSpeed = clamp(rightSpeed, -Config::MAX_SPEED, Config::MAX_SPEED);
 
     leftMotor->setVelocity(-leftSpeed);
-    rightMotor->setVelocity(-rightSpeed); //negative because motor direction is inverted
+    rightMotor->setVelocity(-rightSpeed); // negative because motor direction is inverted
 }
 
 void Motors::stop()
@@ -62,68 +61,83 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager, int 
     {
         sensorManager.readSensors();
 
-        if (sensorManager.frontWallDistance() < 11) {
+        if (sensorManager.frontWallDistance() < Config::ALIGN_DISTANCE)
+        {
             break;
         }
 
         double correction = sensorManager.calculateSteeringAdjustment();
         setSpeed(Config::BASE_SPEED + correction, Config::BASE_SPEED - correction);
 
-        if (sensorManager.iswallFront()) {
-            stop();
-
-            // Align the robot with the wall
-            while (true) {
-                sensorManager.readSensors();
-                double rightDistance = sensorManager.frontRightDistance();
-                double leftDistance = sensorManager.frontLeftDistance();
-                double error = rightDistance - leftDistance;
-                std::cout << "Error: " << error << std::endl;
-
-                if ((abs(error) < 0.2 || sensorManager.frontWallDistance() < 12 ) && sensorManager.frontWallDistance() < 12)  // Adjust the threshold as needed
-                    break;
-
-                double correction = error * 0.5; // Adjust the gain as necessary
-                double leftSpeed = Config::BASE_SPEED - correction;
-                double rightSpeed = Config::BASE_SPEED + correction;
-
-                setSpeed(leftSpeed, rightSpeed);
-                robot->step(Config::TIME_STEP);
-            }
-
-            stop();
-            break;
-        }
-
         robot->step(Config::TIME_STEP);
     }
 
+    if (sensorManager.iswallFront())
+    {
+        while (sensorManager.frontWallDistance() > Config::ALIGN_DISTANCE)
+        {
+            sensorManager.readSensors();
+            double correction = sensorManager.calculateSteeringAdjustment();
+            setSpeed(Config::BASE_SPEED + correction, Config::BASE_SPEED - correction);
+
+            robot->step(Config::TIME_STEP);
+        }
+    }
+
     stop();
+
+    // if (sensorManager.iswallFront())
+    // {
+    //     // Align the robot with the wall
+    //     while (true)
+    //     {
+    //         sensorManager.readSensors();
+    //         double rightDistance = sensorManager.frontRightDistance();
+    //         double leftDistance = sensorManager.frontLeftDistance();
+    //         double error2 = rightDistance - leftDistance;
+    //         std::cout << "Error: " << error2 << std::endl;
+
+    //         if (abs(error2) < 0.05 && sensorManager.frontWallDistance() < Config::ALIGN_DISTANCE) // Adjust the threshold as needed
+    //             break;
+
+    //         double correction2 = error2 * 10; // adjust as necessary
+    //         double leftSpeed = correction2;
+    //         double rightSpeed = -correction2;
+
+    //         setSpeed(leftSpeed, rightSpeed);
+    //         robot->step(Config::TIME_STEP);
+    //     }
+    // }
+
+    // stop();
 }
 
 void Motors::enterMaze(webots::Robot *robot, SensorManager sensorManager)
 {
     setSpeed(Config::BASE_SPEED, Config::BASE_SPEED);
 
-    while (true) {
+    while (true)
+    {
         sensorManager.readSensors();
 
         // Check if there's a wall in front
-        if (sensorManager.iswallFront()) {
+        if (sensorManager.iswallFront())
+        {
             stop();
 
             // Align the robot with the wall
-            while (true) {
+            while (true)
+            {
                 sensorManager.readSensors();
                 double rightDistance = sensorManager.frontRightDistance();
                 double leftDistance = sensorManager.frontLeftDistance();
                 double error = rightDistance - leftDistance;
                 std::cout << "Error: " << error << std::endl;
 
-                if ((abs(error) < 0.2 || sensorManager.frontWallDistance() < 12 ) && sensorManager.frontWallDistance() < 15)  // Adjust the threshold as needed
+                if (abs(error) < 0.02 && sensorManager.frontWallDistance() < Config::ALIGN_DISTANCE) // Adjust the threshold as needed
                     break;
 
-                double correction = error * 6; // 0.5 is the gain, adjust as necessary
+                double correction = error * 0.3; // 0.5 is the gain, adjust as necessary
                 double leftSpeed = Config::BASE_SPEED + correction;
                 double rightSpeed = Config::BASE_SPEED - correction;
 
@@ -139,10 +153,6 @@ void Motors::enterMaze(webots::Robot *robot, SensorManager sensorManager)
         robot->step(Config::TIME_STEP);
     }
 }
-
-
- 
-
 
 void Motors::delay(int ms)
 {
