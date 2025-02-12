@@ -48,7 +48,10 @@ void exploreMaze() {
     //explorer.setStart({10, 0});
     explorer.setTarget({10, 0});
 
+    int i =0;
     while (true) {
+        i++;
+        std::cout << i << std::endl;
         Action action = explorer.explore();
         //std::cout <<" Next Move: " << action << std::endl;
         if (action == Action::ALLEXPLORED) {

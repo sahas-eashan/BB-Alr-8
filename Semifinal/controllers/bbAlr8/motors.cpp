@@ -108,7 +108,6 @@ void Motors::enterMaze(webots::Robot *robot, SensorManager sensorManager)
         while (sensorManager.frontWallDistance() > 11)
         {
             sensorManager.readSensors();
-            std::cout << sensorManager.frontWallDistance() << std::endl;
             setSpeed(Config::BASE_SPEED, Config::BASE_SPEED );
             robot->step(Config::TIME_STEP);
         }

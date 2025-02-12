@@ -32,12 +32,12 @@ namespace Config
     static const double Kd = 0.11;
 
     // Motors
-    const int TIME_90_TURN = 420; 
-    const int TIME_180_TURN = 710;
-    const int TIME_PER_CELL = 585; 
+    const int TIME_90_TURN = 350; 
+    const int TIME_180_TURN = 680;
+    const int TIME_PER_CELL = 700; 
 
 
-    static constexpr double MAX_SPEED = 40.0; //40
+    static constexpr double MAX_SPEED = 40.0; 
     constexpr double BASE_SPEED = Config::MAX_SPEED * 0.7;
     constexpr double TURN_SPEED = Config::MAX_SPEED * 0.2; 
 

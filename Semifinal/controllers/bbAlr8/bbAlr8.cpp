@@ -33,18 +33,7 @@ void BbAlr8::run()
     std::cout << "BB-Alr-8 robot starting..." << std::endl;
 
     motors.enterMaze(this, sensorManager);
-    // motors.turnLeft(this);
-    // motors.moveForward(this, sensorManager, 3);
-    // motors.turnRight(this);
-    // motors.moveForward(this, sensorManager, 2);
-    // motors.turnRight(this);
-    // motors.moveForward(this, sensorManager, 2);
-    // motors.turnLeft(this);
-    // motors.moveForward(this, sensorManager, 2);
-    // motors.turnRight(this);
-    // motors.moveForward(this, sensorManager, 2);
-    // motors.turnRight(this);
-    // motors.moveForward(this, sensorManager, 1);
+
     std::cout << "inside the maze" << std::endl;
 
     exploreMaze();
@@ -54,7 +43,6 @@ void BbAlr8::run()
         // floorColor();
     //}
 
-    //API_moveForward(); 
 }
 
 char BbAlr8::floorColor()

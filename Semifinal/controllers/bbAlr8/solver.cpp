@@ -5,7 +5,7 @@
 #include <algorithm>
 
 MazeSolver::MazeSolver()
-    : maze{}, distances{}, position{0, 0}, heading{Heading::NORTH}, reachedCenter{false}
+    : maze{}, distances{}, position{10, 0}, heading{Heading::NORTH}, reachedCenter{false}
 {
     initialize();
 }
