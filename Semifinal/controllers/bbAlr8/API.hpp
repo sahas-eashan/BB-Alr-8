@@ -2,14 +2,24 @@
 #define API_H
 
 #include <string>
+#include "bbAlr8.hpp"
+#include "sensorManager.hpp"
+#include "motors.hpp"
+#include "solver.hpp"
+
+class BbAlr8;
+
+void API_moveForward();
+void API_turnLeft();
+void API_turnRight();
+void API_turn180();
+
 
 bool API_wallFront();
-bool API_wallRight(Epuck& epuck);
-bool API_wallLeft(Epuck& epuck);
-void API_moveForward(Epuck& epuck, double* sensorValues);
-void API_turnRight(Epuck& epuck);
-void API_turnLeft(Epuck& epuck);
+bool API_wallRight();
+bool API_wallLeft();
 
-void go(Epuck& epuck, double* sensorValues);
+void exploreMaze();
+
 
 #endif // API_H

@@ -64,7 +64,7 @@ namespace Config
 
     // Threshold values for detecting walls
     const float L_WALL_THRESHOLD = 25;
-    const float F_WALL_THRESHOLD = 17;
+    const float F_WALL_THRESHOLD = 25;
     const float R_WALL_THRESHOLD = 25;
 
     const float COS10 = 0.98480775301;

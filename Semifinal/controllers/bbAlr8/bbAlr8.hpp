@@ -10,7 +10,7 @@
 #include "CameraController.hpp"
 // #include "floodfill.hpp"
 
-// #include "API.hpp"
+#include "API.hpp"
 // #include "solver.hpp"
 
 
@@ -19,22 +19,36 @@ struct Position {
 };
 
 class BbAlr8 : public webots::Robot {
-public:
-    BbAlr8();
-    virtual ~BbAlr8();
-    void run();
+    public:
+        static BbAlr8& getInstance() {
+            static BbAlr8 instance;
+            return instance;
+        }
+    
+        void run();
+        char floorColor();
+        bool iswallFront();
+        bool iswallRight();
+        bool iswallLeft();
 
-    LEDManager leds;
-    SensorManager sensorManager;
-    Motors motors;
-    CameraController cameraController;
-
-    char floorColor();
-
-
-private:
-    void initDevices();
-
-};
+        void move_Forward();
+        void turn_Left();
+        void turn_Right();
+        void turn_180();
+    
+    private:
+        BbAlr8();  // Private constructor to enforce singleton
+        ~BbAlr8(); // Private destructor
+        BbAlr8(const BbAlr8&) = delete; // Delete copy constructor
+        BbAlr8& operator=(const BbAlr8&) = delete; // Delete assignment operator
+    
+        void initDevices();
+    
+        LEDManager leds;
+        SensorManager sensorManager;
+        Motors motors;
+        CameraController cameraController;
+    };
+    
 
 #endif 

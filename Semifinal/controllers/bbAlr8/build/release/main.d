@@ -8,4 +8,4 @@ build/release/main.o: main.cpp bbAlr8.hpp \
  config.hpp sensorManager.hpp \
  /usr/local/webots/include/controller/cpp/webots/DistanceSensor.hpp \
  motors.hpp /usr/local/webots/include/controller/cpp/webots/Motor.hpp \
- CameraController.hpp
+ CameraController.hpp API.hpp solver.hpp

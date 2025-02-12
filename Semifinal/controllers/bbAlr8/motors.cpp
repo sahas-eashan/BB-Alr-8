@@ -74,7 +74,7 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager ,int 
     }
     
     sensorManager.readSensors();
-    if (sensorManager.iswallFront())
+    if (sensorManager.isWallFront())
     {
         while (sensorManager.frontWallDistance() > Config::ALIGN_DISTANCE)
         {
@@ -91,18 +91,19 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager ,int 
 
 void Motors::enterMaze(webots::Robot *robot, SensorManager sensorManager)
 {
-    int totalTime = Config::TIME_PER_CELL *2;
+    int totalTime = Config::TIME_PER_CELL * 2;
     auto startTime = std::chrono::steady_clock::now();
 
     while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() < totalTime)
     {
         sensorManager.readSensors();
+        std::cout << sensorManager.frontWallDistance() << std::endl;
         if (sensorManager.frontWallDistance() < 11){ break; }
         setSpeed(Config::BASE_SPEED , Config::BASE_SPEED );
         robot->step(Config::TIME_STEP);
     }
 
-    if (sensorManager.iswallFront())
+    if (sensorManager.isWallFront())
     {
         while (sensorManager.frontWallDistance() > 11)
         {

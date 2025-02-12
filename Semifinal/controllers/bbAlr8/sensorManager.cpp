@@ -93,7 +93,7 @@ double SensorManager::calculateSteeringAdjustment()
 
 double SensorManager::frontWallDistance() const
 {
-    std::cout << (getDistance(1) + getDistance(4))/2 << std::endl;
+    //std::cout << (getDistance(1) + getDistance(4))/2 << std::endl;
     return (getDistance(1) + getDistance(4))/2;
 }
 
@@ -127,7 +127,7 @@ double SensorManager::frontLeft45AngledDistance() const
     return getDistance(3);
 }
 
-bool SensorManager::iswallFront()
+bool SensorManager::isWallFront()
 {
     float F_Wall_Distance = frontWallDistance();
 
@@ -135,7 +135,7 @@ bool SensorManager::iswallFront()
     return (F_Wall_Distance < Config::F_WALL_THRESHOLD) ? true : false;
 }
 
-bool SensorManager::iswallRight()
+bool SensorManager::isWallRight()
 {
     float R_Wall_Distance = rightWallDistance();
 
@@ -143,7 +143,7 @@ bool SensorManager::iswallRight()
     return (R_Wall_Distance < Config::R_WALL_THRESHOLD) ? true : false;
 }
 
-bool SensorManager::iswallLeft()
+bool SensorManager::isWallLeft()
 {
     float L_Wall_Distance = leftWallDistance();
 
