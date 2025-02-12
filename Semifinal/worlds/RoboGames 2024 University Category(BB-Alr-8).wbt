@@ -10,8 +10,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.040112827773626014 0.27547687887483174 0.9604704317434165 0.3275653387073362
-  position -1.189466683157686 -2.969580992760854 0.4958725293512317
+  orientation 0.5883382645913564 -0.5877068379484226 -0.5553906364409625 4.152651170480279
+  position 0.03838997563650375 -2.0010361692483016 5.753831292134329
 }
 TexturedBackground {
 }
@@ -1781,7 +1781,8 @@ Wall {
   }
 }
 DEF BBAlr8 Robot {
-  translation 0.125 -2.75 0.02
+  translation 0.169134 -2.96465 0.01974
+  rotation 0.015167397695507857 0.015433697655046985 -0.999765848098363 -0.017915307179586115
   children [
     DEF led1 LED {
       translation 0 -0.02 0.015
@@ -2072,6 +2073,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
+        position -115.4354471095042
         anchor 0.03 -0.01 0
       }
       device [
@@ -2086,7 +2088,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation 0.03 -0.01 0
-        rotation 4.318587497856146e-09 1 3.176131339929724e-09 1.5708000076550757
+        rotation -0.6772073144909458 0.28771014890951113 -0.6772098075297109 2.5813067750481924
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -2110,7 +2112,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 7.499215572489286
+        position -109.40817707762776
         anchor -0.03 -0.01 0
       }
       device [
@@ -2125,7 +2127,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation -0.03 -0.01 0
-        rotation -0.4960137617692759 -0.7126983180240191 -0.49601558001863816 4.379984354261678
+        rotation 0.6935626244477212 -0.1947774250071513 0.6935651668565636 3.5263289715624846
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
