@@ -69,5 +69,7 @@ namespace Config
 
     const int GREEN_PIXEL_COUNT = 19;
 
+    const int DELAY_TIME  = 3000;
+
 }
 #endif

@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cmath>
 #include <thread>
+#include <set>
 
 using namespace webots;
 
@@ -36,8 +37,8 @@ void BbAlr8::run()
 
     std::cout << "inside the maze" << std::endl;
 
-    exploreMaze();
-    // Create rescue algorithm instance and calculate path
+    // exploreMaze();
+    //  Create rescue algorithm instance and calculate path
     RescueRunAlgo rescueAlgo;
     rescueAlgo.findOptimalRoute();
 
@@ -47,11 +48,33 @@ void BbAlr8::run()
         const auto &path = rescueAlgo.getOptimalPath();
         Point currentPos = path[0]; // Start position
         int currentHeading = 0;     // Start facing NORTH
+
+        std::set<Point> visitedSurvivors;
+
         size_t i = 1;
         while (i < path.size())
         {
             Point nextPos = path[i];
             auto movement = rescueAlgo.getNextMovement(currentPos, nextPos, currentHeading);
+
+            // Check if the current position is a survivor's location and hasn't been visited yet
+            for (const auto &survivor : rescueAlgo.survivors)
+            {
+                if (currentPos == survivor && visitedSurvivors.find(survivor) == visitedSurvivors.end())
+                {
+                    visitedSurvivors.insert(survivor); // Mark survivor as visited
+
+                    leds.lightGreenOn();
+                    // Delay for 3 seconds
+                    int delaySteps = (Config::DELAY_TIME / Config::TIME_STEP);
+                    for (int i = 0; i < delaySteps; i++)
+                    {
+                        step(Config::TIME_STEP);
+                    }
+                    leds.lightGreenOff();
+                    break; // Exit the loop early since we found a match
+                }
+            }
 
             // Execute the movement command
             switch (movement.command)
@@ -86,12 +109,11 @@ void BbAlr8::run()
         }
     }
 
-    while (step(Config::TIME_STEP) != -1)
-    {
-        // leds.lightEachLEDSequentially(*this);
-        // floorColor();
-    }
-
+    // while (step(Config::TIME_STEP) != -1)
+    // {
+    // leds.lightEachLEDSequentially(*this);
+    // floorColor();
+    // }
 }
 
 int8_t BbAlr8::getFloorColor()
@@ -101,7 +123,7 @@ int8_t BbAlr8::getFloorColor()
 
     if (it != colorMap.end())
     {
-        it->second.value != 0? std::cout << it->second.name << " Detected" << std::endl : std::cout << " ";
+        it->second.value != 0 ? std::cout << it->second.name << " Detected" << std::endl : std::cout << " ";
         updateLEDs(it->second.value);
         return it->second.value;
     }
@@ -113,9 +135,11 @@ int8_t BbAlr8::getFloorColor()
 bool BbAlr8::see_Survivor()
 {
     int green_pixels = cameraController.processScanCamera();
-    
-    if (green_pixels > Config::GREEN_PIXEL_COUNT){
-        std::cout << std::endl << green_pixels <<  "  Green pixels detected "  << std::endl;
+
+    if (green_pixels > Config::GREEN_PIXEL_COUNT)
+    {
+        std::cout << std::endl
+                  << green_pixels << "  Green pixels detected " << std::endl;
         return true;
     }
     return false;

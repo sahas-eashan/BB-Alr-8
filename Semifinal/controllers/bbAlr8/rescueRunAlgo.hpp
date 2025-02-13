@@ -14,6 +14,15 @@ struct Point
     {
         return x == other.x && y == other.y;
     }
+
+    bool operator<(const Point &other) const
+    {
+        if (x != other.x)
+        {
+            return x < other.x;
+        }
+        return y < other.y;
+    }
 };
 
 struct PathInfo
@@ -50,21 +59,6 @@ public:
 
     Movement getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading) const;
 
-private:
-    std::vector<Point> optimalPath;
-    // Maze data and constants
-    const int MAZE_S = 20; // MAZE_SIZE
-    const int NORTH = 8;   // 1000
-    const int SOUTH = 4;   // 0100
-    const int EAST = 2;    // 0010
-    const int WEST = 1;    // 0001
-
-    // std::vector<Point> redNodes;
-    // std::vector<Point> orangeNodes;
-    // std::vector<Point> yellowNodes;
-    // std::vector<Point> survivors;
-    // Point startPoint;
-
     // Maze data as 2D array
     // North = 8, South = 4, East = 2, West = 1
     const std::vector<std::vector<int>> maze = {
@@ -94,6 +88,21 @@ private:
     std::vector<Point> yellowNodes = {};
     std::vector<Point> survivors = {{19, 6}, {18, 17}, {0, 11}};
     Point startPoint = {10, 0};
+
+private:
+    std::vector<Point> optimalPath;
+    // Maze data and constants
+    const int MAZE_S = 20; // MAZE_SIZE
+    const int NORTH = 8;   // 1000
+    const int SOUTH = 4;   // 0100
+    const int EAST = 2;    // 0010
+    const int WEST = 1;    // 0001
+
+    // std::vector<Point> redNodes;
+    // std::vector<Point> orangeNodes;
+    // std::vector<Point> yellowNodes;
+    // std::vector<Point> survivors;
+    // Point startPoint;
 
     PathInfo findShortestPath(Point start, Point end);
     bool canMove(int x, int y, int direction);
