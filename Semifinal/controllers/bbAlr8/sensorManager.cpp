@@ -21,7 +21,8 @@ void SensorManager::readSensors()
 {
     for (int i = 0; i < Config::NUM_SENSORS; i++)
     {
-        double averagedReading = (distanceSensors[i]->getValue() + sensorValues[i]) / 2; //applying a moving average filter of 2 value window 
+        //double averagedReading = (distanceSensors[i]->getValue() + sensorValues[i]) / 2; //applying a moving average filter of 2 value window 
+        double averagedReading = distanceSensors[i]->getValue() ;
         sensorValues[i] = abs(averagedReading - sensorValues[i]) > Config::STABILIZING_THRESHOLD ? 
                          averagedReading : sensorValues[i];  // threshold filtering for stabilizing
         
@@ -42,8 +43,8 @@ double SensorManager::getDistance(int index) const
 
 double SensorManager::calculateSideWallError() const
 {
-    double leftWallDistance = distances[2];  
-    double rightWallDistance = distances[5]; 
+    double leftWallDistance = distances[5];  
+    double rightWallDistance = distances[0]; 
     
     // If both walls are detected
     if (leftWallDistance < Config::MAX_WALL_DISTANCE && rightWallDistance < Config::MAX_WALL_DISTANCE) {
@@ -131,7 +132,7 @@ bool SensorManager::isWallFront()
 {
     float F_Wall_Distance = frontWallDistance();
 
-    std::cout << "Front wall Distance: " << F_Wall_Distance << " cm " << std::endl;
+    //std::cout << "Front wall Distance: " << F_Wall_Distance << " cm " << std::endl;
     return (F_Wall_Distance < Config::F_WALL_THRESHOLD) ? true : false;
 }
 
@@ -139,7 +140,7 @@ bool SensorManager::isWallRight()
 {
     float R_Wall_Distance = rightWallDistance();
 
-    std::cout << "Right wall Distance: " << R_Wall_Distance << " cm " << std::endl;
+    //std::cout << "Right wall Distance: " << R_Wall_Distance << " cm " << std::endl;
     return (R_Wall_Distance < Config::R_WALL_THRESHOLD) ? true : false;
 }
 
@@ -147,6 +148,6 @@ bool SensorManager::isWallLeft()
 {
     float L_Wall_Distance = leftWallDistance();
 
-    std::cout << "Left wall Distance: " << L_Wall_Distance << " cm " << std::endl;
+    //std::cout << "Left wall Distance: " << L_Wall_Distance << " cm " << std::endl;
     return (L_Wall_Distance < Config::L_WALL_THRESHOLD) ? true : false;
 }

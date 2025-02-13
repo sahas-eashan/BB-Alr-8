@@ -14,7 +14,7 @@ namespace Config
     static const int NUM_LEDS = 4;
 
     // Sensors
-    static const int STABILIZING_THRESHOLD = 50;
+    static const int STABILIZING_THRESHOLD = 10;
     static const int SENSOR_MAX = 4095;
     static const int SENSOR_MIN = 0;
 

@@ -68,7 +68,7 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager ,int 
         }
 
         double correction = sensorManager.calculateSteeringAdjustment();
-        setSpeed(Config::BASE_SPEED + correction, Config::BASE_SPEED - correction);
+        setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
 
         robot->step(Config::TIME_STEP);
     }
@@ -80,7 +80,7 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager ,int 
         {
             sensorManager.readSensors();
             double correction = sensorManager.calculateSteeringAdjustment();
-            setSpeed(Config::BASE_SPEED + correction, Config::BASE_SPEED - correction);
+            setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
 
             robot->step(Config::TIME_STEP);
         }
@@ -97,7 +97,7 @@ void Motors::enterMaze(webots::Robot *robot, SensorManager sensorManager)
     while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() < totalTime)
     {
         sensorManager.readSensors();
-        std::cout << sensorManager.frontWallDistance() << std::endl;
+        //std::cout << sensorManager.frontWallDistance() << std::endl;
         if (sensorManager.frontWallDistance() < 11){ break; }
         setSpeed(Config::BASE_SPEED , Config::BASE_SPEED );
         robot->step(Config::TIME_STEP);

@@ -37,6 +37,11 @@ void BbAlr8::run()
     std::cout << "inside the maze" << std::endl;
 
     exploreMaze();
+    // while(step(Config::TIME_STEP) != -1){
+    //     sensorManager.readSensors();
+    //     std:: cout << " Left : " << sensorManager.leftWallDistance() << "Front : " << sensorManager.frontWallDistance() << " right : "  << sensorManager.rightWallDistance() << std::endl;
+    // }
+    
     // while (step(Config::TIME_STEP) != -1)
     // {
         // leds.lightEachLEDSequentially(*this);

@@ -1957,7 +1957,7 @@ DEF BBAlr8 Robot {
       }
       lookupTable [
         0 4095 0
-        0.4 0 0.04
+        0.35 0 0
       ]
     }
     DEF leftIr DistanceSensor {
@@ -1979,7 +1979,7 @@ DEF BBAlr8 Robot {
       }
       lookupTable [
         0 4095 0
-        0.4 0 0.04
+        0.35 0 0
       ]
     }
     DEF centerLeftIr DistanceSensor {
@@ -2001,7 +2001,7 @@ DEF BBAlr8 Robot {
       }
       lookupTable [
         0 4095 0
-        0.4 0 0.04
+        0.35 0 0
       ]
     }
     DEF centerRightIr DistanceSensor {
@@ -2023,7 +2023,7 @@ DEF BBAlr8 Robot {
       }
       lookupTable [
         0 4095 0
-        0.4 0 0.04
+        0.35 0 0
       ]
     }
     DEF right45Ir DistanceSensor {
@@ -2045,7 +2045,7 @@ DEF BBAlr8 Robot {
       }
       lookupTable [
         0 4095 0
-        0.4 0 0.04
+        0.35 0 0
       ]
     }
     DEF left45Ir DistanceSensor {
@@ -2067,7 +2067,7 @@ DEF BBAlr8 Robot {
       }
       lookupTable [
         0 4095 0
-        0.4 0 0.04
+        0.35 0 0
       ]
     }
     DEF castor Solid {

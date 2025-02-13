@@ -1,5 +1,6 @@
 #include "solver.hpp"
 #include "API.hpp"
+#include <bitset>
 #include <limits>
 #include <queue>
 #include <algorithm>
@@ -119,6 +120,7 @@ void MazeSolver::updateMaze()
     }
 
     maze[x][y] |= walls;
+    std::cout << "x : " << x << "  y : " << y << "  " << std::bitset<4>(maze[x][y]) << std::endl;
 }
 
 int MazeSolver::xyToSquare(int x, int y) const
