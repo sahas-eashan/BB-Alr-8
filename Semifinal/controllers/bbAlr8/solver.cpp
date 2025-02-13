@@ -276,6 +276,25 @@ bool MazeSolver::allCellsExplored()
     return true;
 }
 
+void MazeSolver::updateColour()
+{
+    int8_t color = API_getColour();
+    int x = position.x;
+    int y = position.y;
+
+    if (colorInfo[x][y] != 4)
+    { // Only update if it's unknown
+        if (color == 3)
+        {
+            markDangerZone(x, y);
+        }
+        else
+        {
+            colorInfo[x][y] = color;
+        }
+    }
+}
+
 Action MazeSolver::explore()
 {
 
@@ -292,6 +311,7 @@ Action MazeSolver::explore()
 
     updateMaze();
     updateDistances();
+    updateColour();
     Action action = tremauxSearch();
     updateHeading(action);
     updatePosition(action);
@@ -562,14 +582,32 @@ Action MazeSolver::floodFill() const
     return optimalMove;
 }
 
-// [Rest of the code remains the same]
+void MazeSolver::markDangerZone(int x, int y)
+{
+    if (x < 0 || x + 4 >= MAZE_SIZE || y < 0 || y + 4 >= MAZE_SIZE)
+    {
+        std::cerr << "Danger zone out of bounds at (" << x << ", " << y << ")\n";
+        return;
+    }
 
-// Action MazeSolver::leftWallFollower() {
-//     if (API::wallFront()) {
-//         if (API::wallLeft()) {
-//             return Action::RIGHT;
-//         }
-//         return Action::LEFT;
-//     }
-//     return Action::FORWARD;
-// }
+    // Mark outer layer (5x5 border)
+    for (int i = x; i < x + 5; i++)
+    {
+        for (int j = y; j < y + 5; j++)
+        {
+            colorInfo[i][j] = 1;
+        }
+    }
+
+    // Mark inner layer (3x3)
+    for (int i = x + 1; i < x + 4; i++)
+    {
+        for (int j = y + 1; j < y + 4; j++)
+        {
+            colorInfo[i][j] = 2;
+        }
+    }
+
+    // Mark center cell (1x1)
+    colorInfo[x + 2][y + 2] = 3;
+}

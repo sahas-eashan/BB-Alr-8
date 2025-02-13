@@ -21,5 +21,6 @@ bool API_wallLeft();
 
 void exploreMaze();
 
+int8_t API_getColour();
 
 #endif // API_H

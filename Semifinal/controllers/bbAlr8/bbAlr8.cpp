@@ -41,20 +41,55 @@ void BbAlr8::run()
     //     sensorManager.readSensors();
     //     std:: cout << " Left : " << sensorManager.leftWallDistance() << "Front : " << sensorManager.frontWallDistance() << " right : "  << sensorManager.rightWallDistance() << std::endl;
     // }
-    
+
     // while (step(Config::TIME_STEP) != -1)
     // {
-        // leds.lightEachLEDSequentially(*this);
-        // floorColor();
+    // leds.lightEachLEDSequentially(*this);
+    // floorColor();
     //}
-
 }
 
-char BbAlr8::floorColor()
+int8_t BbAlr8::getFloorColor()
 {
     char color = cameraController.processDownCamera();
-    std::cout << "Detected floor color: " << color << std::endl;
-    return color;
+    auto it = colorMap.find(color);
+
+    if (it != colorMap.end())
+    {
+        std::cout << it->second.name << " Detected" << std::endl;
+        updateLEDs(it->second.value);
+        return it->second.value;
+    }
+
+    std::cout << "Unknown Color" << std::endl;
+    return -1;
+}
+
+void BbAlr8::updateLEDs(int8_t colorValue)
+{
+    leds.lightRedOff();
+    leds.lightYellowOff();
+    leds.lightOrangeOff();
+
+    switch (colorValue)
+    {
+    case 3:
+        leds.lightRedOn();
+        break;
+    case 2:
+        leds.lightRedOn();
+        break;
+    case 1:
+        leds.lightYellowOn();
+        break;
+    case 4:
+        leds.lightRedOn();
+        leds.lightYellowOn();
+        leds.lightOrangeOn();
+        break;
+    default:
+        break;
+    }
 }
 
 bool BbAlr8::iswallFront()
@@ -80,14 +115,17 @@ void BbAlr8::move_Forward()
     motors.moveForward(this, sensorManager, 1);
 }
 
-void BbAlr8::turn_Left(){
+void BbAlr8::turn_Left()
+{
     motors.turnLeft(this);
 }
 
-void BbAlr8::turn_Right(){
+void BbAlr8::turn_Right()
+{
     motors.turnRight(this);
 }
 
-void BbAlr8::turn_180(){
+void BbAlr8::turn_180()
+{
     motors.turn180(this);
 }

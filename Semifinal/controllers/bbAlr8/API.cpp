@@ -103,6 +103,8 @@ void exploreMaze() {
                 break; 
         }
     }
+}
 
-
+int8_t API_getColour(){
+    return BbAlr8::getInstance().getFloorColor();
 }

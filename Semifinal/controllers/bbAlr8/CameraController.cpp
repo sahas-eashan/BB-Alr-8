@@ -81,10 +81,7 @@ char CameraController::processDownCamera() {
         return 'Y';
     } else if (r >= 230 && g >= 230 && b >= 230) {
         return 'W';
-    } else {
-        return 'U';
     }
-
   
   return 'U';
 }

@@ -8,6 +8,8 @@
 #include "sensorManager.hpp"
 #include "motors.hpp"
 #include "CameraController.hpp"
+#include <unordered_map>
+
 // #include "floodfill.hpp"
 
 #include "API.hpp"
@@ -18,6 +20,20 @@ struct Position {
     int x_mapped, y_mapped;   // Mapped grid coordinates
 };
 
+struct ColorInfo {
+    std::string name;
+    int8_t value;
+};
+
+// Define a color mapping
+const std::unordered_map<char, ColorInfo> colorMap = {
+    {'R', {"Red", 3}},
+    {'O', {"Orange", 2}},
+    {'Y', {"Yellow", 1}},
+    {'W', {"White", 0}},
+    {'U', {"Shadow", 4}}
+};
+
 class BbAlr8 : public webots::Robot {
     public:
         static BbAlr8& getInstance() {
@@ -26,7 +42,7 @@ class BbAlr8 : public webots::Robot {
         }
     
         void run();
-        char floorColor();
+        int8_t getFloorColor();
         bool iswallFront();
         bool iswallRight();
         bool iswallLeft();
@@ -43,6 +59,7 @@ class BbAlr8 : public webots::Robot {
         BbAlr8& operator=(const BbAlr8&) = delete; // Delete assignment operator
     
         void initDevices();
+        void updateLEDs(int8_t colorValue);
     
         LEDManager leds;
         SensorManager sensorManager;

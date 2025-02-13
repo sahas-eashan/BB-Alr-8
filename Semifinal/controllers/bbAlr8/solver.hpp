@@ -65,6 +65,7 @@ public:
 
 private:
     std::array<std::array<unsigned int, MAZE_SIZE>, MAZE_SIZE> maze;
+    std::vector<std::vector<int>> colorInfo = std::vector<std::vector<int>>(MAZE_SIZE, std::vector<int>(MAZE_SIZE, 4)); //init the colour array to unknown for all cells
     std::array<std::array<int, MAZE_SIZE>, MAZE_SIZE> distances;
     Coordinate position;
     Coordinate targetCoordinate;
@@ -83,12 +84,13 @@ private:
     void updateHeading(Action nextAction);
     void updatePosition(Action nextAction);
     Action floodFill() const;
+    void updateColour();
 
     std::array<std::array<int, MAZE_SIZE>, MAZE_SIZE> visitCount{};  
     bool explorationMode{true}; 
     bool allCellsExplored();
 
-
+    void markDangerZone(int x, int y);
 
     
 };
