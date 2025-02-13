@@ -37,9 +37,8 @@ void BbAlr8::run()
 
     std::cout << "inside the maze" << std::endl;
 
-    // exploreMaze();
-    //  Create rescue algorithm instance and calculate path
-    RescueRunAlgo rescueAlgo;
+    exploreMaze();
+
     rescueAlgo.findOptimalRoute();
 
     // Follow the calculated path
@@ -208,4 +207,38 @@ void BbAlr8::turn_Right()
 void BbAlr8::turn_180()
 {
     motors.turn180(this);
+}
+
+void BbAlr8::addRedNode(int x, int y)
+{
+    rescueAlgo.redNodes.push_back({y, x});
+    std::cout << "Updated redNodes: ";
+    for (const auto &node : rescueAlgo.redNodes)
+    {
+        std::cout << "(" << node.x << ", " << node.y << ") ";
+    }
+    std::cout << std::endl;
+}
+
+void BbAlr8::addOrangeNode(int x, int y)
+{
+    rescueAlgo.orangeNodes.push_back({y, x});
+    std::cout << "Updated orangeNodes: ";
+    for (const auto& node : rescueAlgo.orangeNodes)
+    {
+        std::cout << "(" << node.x << ", " << node.y << ") ";
+    }
+    std::cout << std::endl;
+}
+
+bool BbAlr8::isRedNode(int x, int y) const
+{
+    Point p = {y, x}; // Note: Point format is {y, x}
+    return std::find(rescueAlgo.redNodes.begin(), rescueAlgo.redNodes.end(), p) != rescueAlgo.redNodes.end();
+}
+
+bool BbAlr8::isOrangeNode(int x, int y) const
+{
+    Point p = {y, x}; // Note: Point format is {y, x}
+    return std::find(rescueAlgo.orangeNodes.begin(), rescueAlgo.orangeNodes.end(), p) != rescueAlgo.orangeNodes.end();
 }

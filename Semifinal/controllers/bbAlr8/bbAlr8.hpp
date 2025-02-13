@@ -56,6 +56,11 @@ public:
     void turn_Right();
     void turn_180();
 
+    void addRedNode(int x, int y);
+    void addOrangeNode(int x, int y);
+    bool isRedNode(int x, int y) const;
+    bool isOrangeNode(int x, int y) const;
+
 private:
     BbAlr8();                                   // Private constructor to enforce singleton
     ~BbAlr8();                                  // Private destructor
@@ -69,6 +74,7 @@ private:
     SensorManager sensorManager;
     Motors motors;
     CameraController cameraController;
+    RescueRunAlgo rescueAlgo;
 };
 
 #endif

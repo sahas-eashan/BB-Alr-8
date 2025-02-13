@@ -35,6 +35,21 @@ void API_turn180() {
     BbAlr8::getInstance().turn_180();
 }
 
+void API_add_RedNode(int x, int y){
+    BbAlr8::getInstance().addRedNode(x , y);
+}
+
+void API_add_OrangeNode(int x, int y){
+    BbAlr8::getInstance().addOrangeNode(x , y);
+}
+
+bool API_is_RedNode(int x, int y) {
+    return BbAlr8::getInstance().isRedNode(x, y);
+}
+
+bool API_is_OrangeNode(int x, int y) {
+    return BbAlr8::getInstance().isOrangeNode(x, y);
+}
 
 void exploreMaze() {
     std::cout << "Starting to explore the maze....." << std::endl;
