@@ -1,7 +1,6 @@
 #include "motors.hpp"
 #include <thread>
 
-
 Motors::Motors() {}
 
 Motors::~Motors() {}
@@ -24,7 +23,7 @@ void Motors::setSpeed(double leftSpeed, double rightSpeed)
     rightSpeed = clamp(rightSpeed, -Config::MAX_SPEED, Config::MAX_SPEED);
 
     leftMotor->setVelocity(-leftSpeed);
-    rightMotor->setVelocity(-rightSpeed); //negative because motor direction is inverted
+    rightMotor->setVelocity(-rightSpeed); // negative because motor direction is inverted
 }
 
 void Motors::stop()
@@ -53,13 +52,14 @@ void Motors::turn180(webots::Robot *robot)
     stop();
 }
 
-void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager ,int cells)
+void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager, int cells)
 {
-    int totalTime = cells * Config::TIME_PER_CELL;
-    auto startTime = std::chrono::steady_clock::now();
+    int targetCount = cells * 13;
+    int initialCount = std::abs(sensorManager.getRightEncoderCount());
 
-    while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() < totalTime)
+    while (std::abs(sensorManager.getRightEncoderCount()) - initialCount < targetCount)
     {
+        // std::cout << "encoder count: " << sensorManager.getRightEncoderCount() - initialCount << std::endl;
         sensorManager.readSensors();
 
         if (sensorManager.frontWallDistance() < Config::ALIGN_DISTANCE)
@@ -72,14 +72,13 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager ,int 
 
         robot->step(Config::TIME_STEP);
     }
-    
+
     sensorManager.readSensors();
     if (sensorManager.isWallFront())
     {
         while (sensorManager.frontWallDistance() > Config::ALIGN_DISTANCE)
         {
             sensorManager.readSensors();
-            //std::cout << sensorManager.frontWallDistance() << std::endl;
             double correction = sensorManager.calculateSteeringAdjustment();
             setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
 
@@ -98,9 +97,12 @@ void Motors::enterMaze(webots::Robot *robot, SensorManager sensorManager)
     while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() < totalTime)
     {
         sensorManager.readSensors();
-        //std::cout << sensorManager.frontWallDistance() << std::endl;
-        if (sensorManager.frontWallDistance() < 11){ break; }
-        setSpeed(Config::BASE_SPEED , Config::BASE_SPEED );
+        // std::cout << sensorManager.frontWallDistance() << std::endl;
+        if (sensorManager.frontWallDistance() < 11)
+        {
+            break;
+        }
+        setSpeed(Config::BASE_SPEED, Config::BASE_SPEED);
         robot->step(Config::TIME_STEP);
     }
 
@@ -109,7 +111,7 @@ void Motors::enterMaze(webots::Robot *robot, SensorManager sensorManager)
         while (sensorManager.frontWallDistance() > 11)
         {
             sensorManager.readSensors();
-            setSpeed(Config::BASE_SPEED, Config::BASE_SPEED );
+            setSpeed(Config::BASE_SPEED, Config::BASE_SPEED);
             robot->step(Config::TIME_STEP);
         }
     }

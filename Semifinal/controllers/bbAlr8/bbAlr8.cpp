@@ -36,7 +36,7 @@ void BbAlr8::run()
 
     std::cout << "inside the maze" << std::endl;
 
-    // exploreMaze();
+    exploreMaze();
     // Create rescue algorithm instance and calculate path
     RescueRunAlgo rescueAlgo;
     rescueAlgo.findOptimalRoute();
@@ -58,21 +58,21 @@ void BbAlr8::run()
             {
             case RescueRunAlgo::Command::MOVE_FORWARD:
                 std::cout << "Moving forward" << std::endl;
-                moveForward();
+                move_Forward();
                 break;
             case RescueRunAlgo::Command::TURN_LEFT:
                 std::cout << "Turning left" << std::endl;
-                turnLeft();
+                turn_Left();
                 currentHeading = (currentHeading + 3) % 4;
                 break;
             case RescueRunAlgo::Command::TURN_RIGHT:
                 std::cout << "Turning right" << std::endl;
-                turnRight();
+                turn_Right();
                 currentHeading = (currentHeading + 1) % 4;
                 break;
             case RescueRunAlgo::Command::TURN_180:
                 std::cout << "Turning 180" << std::endl;
-                turn180();
+                turn_180();
                 currentHeading = (currentHeading + 2) % 4;
                 break;
             }

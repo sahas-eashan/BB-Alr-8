@@ -3,6 +3,7 @@
 
 #include <webots/Robot.hpp>
 #include <webots/DistanceSensor.hpp>
+#include <webots/PositionSensor.hpp>
 #include "config.hpp"
 
 class SensorManager
@@ -29,8 +30,12 @@ public:
     bool isWallFront();
     bool isWallRight();
     bool isWallLeft();
-
+    int getRightEncoderCount();
+    int getLeftEncoderCount();
+    
 private:
+    webots::PositionSensor *rightEncoder;
+    webots::PositionSensor *leftEncoder;
     webots::DistanceSensor *distanceSensors[Config::NUM_SENSORS];
     double distances[Config::NUM_SENSORS] = {0};
     double sensorValues[Config::NUM_SENSORS] = {0};
