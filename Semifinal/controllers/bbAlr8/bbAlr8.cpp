@@ -36,13 +36,15 @@ void BbAlr8::run()
 
     std::cout << "inside the maze" << std::endl;
 
-    exploreMaze();
+    // exploreMaze();
     // Create rescue algorithm instance and calculate path
     RescueRunAlgo rescueAlgo;
+    rescueAlgo.setDefaults();
     rescueAlgo.findOptimalRoute();
 
     // Follow the calculated path
-    if (rescueAlgo.hasPathCalculated())
+    if (!rescueAlgo.hasPathCalculated())
+        return;
     {
         const auto &path = rescueAlgo.getOptimalPath();
         Point currentPos = path[0]; // Start position

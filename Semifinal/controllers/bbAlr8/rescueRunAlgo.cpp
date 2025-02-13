@@ -26,9 +26,9 @@ void RescueRunAlgo::log(const std::string &text)
     std::cerr << text << std::endl;
 }
 
-void RescueRunAlgo::setMaze(const vector<vector<int>> &maze)
+void RescueRunAlgo::setMaze(const std::vector<std::vector<int>> &nesw_maze)
 {
-    auto nsew_maze = convertNESWtoNSEW(maze);
+    auto nsew_maze = convertNESWtoNSEW(nesw_maze);
     this->maze = nsew_maze;
 }
 
@@ -38,17 +38,17 @@ void RescueRunAlgo::setDefaults()
     this->maze = nsew_maze;
 }
 
-void RescueRunAlgo::setRedNodes(const vector<Point> &redNodes)
+void RescueRunAlgo::setRedNodes(const std::vector<Point> &redNodes)
 {
     this->redNodes = redNodes;
 }
 
-void RescueRunAlgo::setOrangeNodes(const vector<Point> &orangeNodes)
+void RescueRunAlgo::setOrangeNodes(const std::vector<Point> &orangeNodes)
 {
     this->orangeNodes = orangeNodes;
 }
 
-void RescueRunAlgo::setYellowNodes(const vector<Point> &yellowNodes)
+void RescueRunAlgo::setYellowNodes(const std::vector<Point> &yellowNodes)
 {
     this->yellowNodes = yellowNodes;
 }
@@ -58,16 +58,16 @@ void RescueRunAlgo::setStartPoint(const Point &startPoint)
     this->startPoint = startPoint;
 }
 
-void RescueRunAlgo::setSurvivors(const vector<Point> &survivors)
+void RescueRunAlgo::setSurvivors(const std::vector<Point> &survivors)
 {
     this->survivors = survivors;
 }
 
-vector<vector<int>> convertNESWtoNSEW(const vector<vector<int>> &neswMatrix)
+std::vector<std::vector<int>> RescueRunAlgo::convertNESWtoNSEW(const std::vector<std::vector<int>> &neswMatrix)
 {
     int rows = neswMatrix.size();
     int cols = neswMatrix[0].size();
-    vector<vector<int>> nsewMatrix(rows, vector<int>(cols));
+    std::vector<std::vector<int>> nsewMatrix(rows, std::vector<int>(cols));
 
     for (int i = 0; i < rows; ++i)
     {

@@ -28,13 +28,13 @@ public:
     void findOptimalRoute();
     RescueRunAlgo();
     ~RescueRunAlgo();
-    void setMaze(const vector<vector<int>> &maze);
+    void setMaze(const std::vector<std::vector<int>> &maze);
     void setDefaults();
-    void setRedNodes(const vector<Point> &redNodes);
-    void setOrangeNodes(const vector<Point> &orangeNodes);
-    void setYellowNodes(const vector<Point> &yellowNodes);
+    void setRedNodes(const std::vector<Point> &redNodes);
+    void setOrangeNodes(const std::vector<Point> &orangeNodes);
+    void setYellowNodes(const std::vector<Point> &yellowNodes);
     void setStartPoint(const Point &startPoint);
-    void setSurvivors(const vector<Point> &survivors);
+    void setSurvivors(const std::vector<Point> &survivors);
 
     // Add getter for the calculated path
     const std::vector<Point> &getOptimalPath() const { return optimalPath; }
@@ -75,7 +75,7 @@ private:
     // Maze data as 2D array
     // This maze represent NESW , we will convert it to NSEW later
     // North = 8, South = 2, East = 4, West = 1
-    const std::vector<std::vector<int>> maze = {
+    std::vector<std::vector<int>> maze = {
         {3, 2, 10, 10, 6, 3, 6, 3, 10, 10, 14, 11, 2, 10, 6, 3, 2, 10, 2, 6},
         {13, 5, 7, 3, 12, 5, 13, 9, 6, 3, 10, 6, 9, 6, 9, 4, 9, 6, 5, 13},
         {3, 8, 4, 1, 10, 12, 3, 2, 4, 9, 6, 5, 3, 4, 7, 9, 6, 5, 9, 6},
@@ -103,6 +103,7 @@ private:
     std::vector<Point> survivors = {{19, 6}, {18, 17}, {0, 11}};
     Point startPoint = {10, 0};
 
+    std::vector<std::vector<int>> convertNESWtoNSEW(const std::vector<std::vector<int>> &neswMatrix);
     PathInfo findShortestPath(Point start, Point end);
     bool canMove(int x, int y, int direction);
     std::vector<std::vector<int>> calculateAllPairDistances();
