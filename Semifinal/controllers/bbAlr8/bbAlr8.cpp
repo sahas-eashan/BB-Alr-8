@@ -33,55 +33,30 @@ void BbAlr8::run()
     std::cout << "E-puck robot starting..." << std::endl;
 
     motors.enterMaze(this, sensorManager);
+    // motors.turnLeft(this);
+    // motors.moveForward(this, sensorManager, 3);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 2);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 2);
+    // motors.turnLeft(this);
+    // motors.moveForward(this, sensorManager, 2);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 2);
+    // motors.turnRight(this);
+    // motors.moveForward(this, sensorManager, 1);
     std::cout << "inside the maze" << std::endl;
 
-    // Create rescue algorithm instance and calculate path
-    RescueRunAlgo rescueAlgo;
-    rescueAlgo.findOptimalRoute();
-
-    // Follow the calculated path
-    // if (rescueAlgo.hasPathCalculated())
-    // {
-    //     const auto &path = rescueAlgo.getOptimalPath();
-    //     Point currentPos = path[0]; // Start position
-    //     int currentHeading = 0;     // Start facing NORTH
-
-    //     for (size_t i = 1; i < path.size(); i++)
-    //     {
-    //         Point nextPos = path[i];
-    //         auto movement = rescueAlgo.getNextMovement(currentPos, nextPos, currentHeading);
-
-    //         // Execute the movement command
-    //         switch (movement.command)
-    //         {
-    //         case RescueRunAlgo::Command::MOVE_FORWARD:
-    //             moveForward();
-    //             break;
-    //         case RescueRunAlgo::Command::TURN_LEFT:
-    //             turnLeft();
-    //             currentHeading = (currentHeading + 3) % 4;
-    //             break;
-    //         case RescueRunAlgo::Command::TURN_RIGHT:
-    //             turnRight();
-    //             currentHeading = (currentHeading + 1) % 4;
-    //             break;
-    //         case RescueRunAlgo::Command::TURN_180:
-    //             turn180();
-    //             currentHeading = (currentHeading + 2) % 4;
-    //             break;
-    //         }
-
-    //         if (movement.command == RescueRunAlgo::Command::MOVE_FORWARD)
-    //         {
-    //             currentPos = movement.nextPosition;
-    //         }
-    //     }
-    // }
-
+    // exploreMaze();
+    RescueRunAlgo rescueRunAlgo = RescueRunAlgo();
+    rescueRunAlgo.findOptimalRoute();
     while (step(Config::TIME_STEP) != -1)
     {
-        // Keep the simulation running
+        // leds.lightEachLEDSequentially(*this);
+        // floorColor();
     }
+
+    // API_moveForward();
 }
 
 char BbAlr8::floorColor()
