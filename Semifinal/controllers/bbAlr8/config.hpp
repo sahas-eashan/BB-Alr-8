@@ -21,13 +21,13 @@ namespace Config
     static const int MAX_DISTANCE = 35; // cm
     static const int MIN_DISTANCE = 0;
 
-    static const double IDEAL_WALL_DISTANCE = 8.2; // Desired distance from wall in cm
+    static const double IDEAL_WALL_DISTANCE = 9.3; // Desired distance from wall in cm
     static const int MAX_WALL_DISTANCE = 30;
     static const double MAX_STEERING = 1.6; // Maximum steering adjustment
     static const double MAX_INTEGRAL = 1.0; // Anti-windup limit
     static const int ALIGN_DISTANCE = 11;
 
-    static const double Kp = 0.6;
+    static const double Kp = 0.7;
     static const double Ki = 0.01;
     static const double Kd = 0.11;
 
@@ -63,9 +63,9 @@ namespace Config
     } Action;
 
     // Threshold values for detecting walls
-    const float L_WALL_THRESHOLD = 25;
+    const float L_WALL_THRESHOLD = 23;
     const float F_WALL_THRESHOLD = 17;
-    const float R_WALL_THRESHOLD = 25;
+    const float R_WALL_THRESHOLD = 23;
 
 }
 #endif
