@@ -37,16 +37,11 @@ void BbAlr8::run()
     std::cout << "inside the maze" << std::endl;
 
     exploreMaze();
+
     // while(step(Config::TIME_STEP) != -1){
     //     sensorManager.readSensors();
     //     std:: cout << " Left : " << sensorManager.leftWallDistance() << "Front : " << sensorManager.frontWallDistance() << " right : "  << sensorManager.rightWallDistance() << std::endl;
     // }
-
-    // while (step(Config::TIME_STEP) != -1)
-    // {
-    // leds.lightEachLEDSequentially(*this);
-    // floorColor();
-    //}
 }
 
 int8_t BbAlr8::getFloorColor()
@@ -56,7 +51,7 @@ int8_t BbAlr8::getFloorColor()
 
     if (it != colorMap.end())
     {
-        std::cout << it->second.name << " Detected" << std::endl;
+        it->second.value != 0? std::cout << it->second.name << " Detected" << std::endl : std::cout << " ";
         updateLEDs(it->second.value);
         return it->second.value;
     }

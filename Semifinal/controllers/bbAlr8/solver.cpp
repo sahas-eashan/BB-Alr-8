@@ -120,7 +120,7 @@ void MazeSolver::updateMaze()
     }
 
     maze[x][y] |= walls;
-    std::cout << "x : " << x << "  y : " << y << "  " << std::bitset<4>(maze[x][y]) << std::endl;
+    std::cout << "x : " << x << "  y : " << y << "  " << std::bitset<4>(maze[x][y]) << "  ";
 }
 
 int MazeSolver::xyToSquare(int x, int y) const

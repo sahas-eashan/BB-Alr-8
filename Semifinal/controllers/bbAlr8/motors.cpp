@@ -79,6 +79,7 @@ void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager ,int 
         while (sensorManager.frontWallDistance() > Config::ALIGN_DISTANCE)
         {
             sensorManager.readSensors();
+            //std::cout << sensorManager.frontWallDistance() << std::endl;
             double correction = sensorManager.calculateSteeringAdjustment();
             setSpeed(Config::BASE_SPEED - correction, Config::BASE_SPEED + correction);
 

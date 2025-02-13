@@ -25,7 +25,7 @@ namespace Config
     static const int MAX_WALL_DISTANCE = 30;
     static const double MAX_STEERING = 1.6; // Maximum steering adjustment
     static const double MAX_INTEGRAL = 1.0; // Anti-windup limit
-    static const int ALIGN_DISTANCE = 11;
+    static const int ALIGN_DISTANCE = 10;
 
     static const double Kp = 0.7;
     static const double Ki = 0.01;
@@ -34,7 +34,7 @@ namespace Config
     // Motors
     const int TIME_90_TURN = 350; 
     const int TIME_180_TURN = 680;
-    const int TIME_PER_CELL = 710; 
+    const int TIME_PER_CELL = 510; 
 
 
     static constexpr double MAX_SPEED = 40.0; 
@@ -64,7 +64,7 @@ namespace Config
 
     // Threshold values for detecting walls
     const float L_WALL_THRESHOLD = 23;
-    const float F_WALL_THRESHOLD = 15;
+    const float F_WALL_THRESHOLD = 16;
     const float R_WALL_THRESHOLD = 23;
 
 }

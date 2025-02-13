@@ -10,8 +10,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.49100089540933145 0.4819333435836374 0.7257123211366405 1.906078250456652
-  position 0.20443926895874007 -3.6896900681358726 3.1244456754995236
+  orientation -0.5609272641641814 0.5614346818557249 0.6084009387951729 2.049713390291644
+  position 0.26721235133831633 -3.030131637874496 3.217388621583204
 }
 TexturedBackground {
 }
@@ -1983,7 +1983,7 @@ DEF BBAlr8 Robot {
       ]
     }
     DEF centerLeftIr DistanceSensor {
-      translation -0.019 0.031 0.009
+      translation -0.01 0.031 0.009
       rotation 0 0 -1 -1.5707953071795862
       children [
         DEF clir Shape {
@@ -2005,7 +2005,7 @@ DEF BBAlr8 Robot {
       ]
     }
     DEF centerRightIr DistanceSensor {
-      translation 0.019 0.031 0.009
+      translation 0.01 0.031 0.009
       rotation 0 0 -1 -1.5707953071795862
       children [
         DEF clir Shape {
