@@ -157,11 +157,11 @@ PathInfo RescueRunAlgo::findShortestPath(Point start, Point end)
             {
                 if (isPointIn(newPoint, redNodes))
                 {
-                    stepCost *= 100;
+                    stepCost *= 1000;
                 }
                 if (isPointIn(newPoint, orangeNodes))
                 {
-                    stepCost *= 10;
+                    stepCost *= 5000;
                 }
                 else if (isPointIn(newPoint, yellowNodes))
                 {
@@ -315,10 +315,19 @@ void RescueRunAlgo::findOptimalRoute()
     }
 }
 
-RescueRunAlgo::Movement RescueRunAlgo::getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading) const
+RescueRunAlgo::Movement RescueRunAlgo::getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading)
 {
     Movement movement;
     movement.nextPosition = nextPos;
+
+    // Check if current position is a survivor point
+    auto isSurvivor = std::find(survivors.begin(), survivors.end(), currentPos);
+    if (isSurvivor != survivors.end())
+    {
+        survivors.erase(isSurvivor);
+        movement.command = Command::WAIT;
+        return movement;
+    }
 
     // Determine target heading based on movement direction
     int targetHeading;

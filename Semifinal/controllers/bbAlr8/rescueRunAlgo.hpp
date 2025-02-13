@@ -46,7 +46,8 @@ public:
         MOVE_FORWARD,
         TURN_LEFT,
         TURN_RIGHT,
-        TURN_180
+        TURN_180,
+        WAIT
     };
 
     struct Movement
@@ -55,7 +56,7 @@ public:
         Point nextPosition;
     };
 
-    Movement getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading) const;
+    Movement getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading);
 
 private:
     std::vector<Point> optimalPath;
@@ -93,7 +94,7 @@ private:
         {3, 10, 12, 9, 2, 2, 14, 9, 10, 6, 3, 12, 3, 2, 8, 4, 1, 12, 9, 12},
         {1, 6, 3, 2, 8, 4, 7, 3, 6, 5, 5, 3, 12, 1, 6, 1, 8, 6, 11, 6},
         {5, 6, 12, 3, 10, 10, 4, 5, 5, 13, 5, 9, 6, 1, 0, 12, 3, 8, 10, 12},
-        {5, 1, 10, 12, 7, 3, 8, 12, 9, 10, 8, 10, 8, 4, 1, 6, 1, 14, 6, 14},
+        {5, 1, 10, 12, 7, 3, 8, 12, 9, 10, 12, 11, 8, 4, 1, 6, 1, 14, 6, 14},
         {1, 8, 10, 10, 12, 9, 6, 3, 6, 3, 2, 6, 3, 8, 12, 5, 9, 6, 9, 6},
         {9, 10, 10, 10, 10, 10, 8, 8, 8, 12, 9, 8, 12, 11, 10, 8, 10, 8, 10, 12}};
 

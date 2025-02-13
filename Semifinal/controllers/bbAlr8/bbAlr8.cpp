@@ -77,6 +77,11 @@ void BbAlr8::run()
                 turn_180();
                 currentHeading = (currentHeading + 2) % 4;
                 break;
+            case RescueRunAlgo::Command::WAIT:
+                std::cout << "Found survivor! Waiting for 3 seconds..." << std::endl;
+                // Wait for 3 seconds (3000 milliseconds)
+                step(3000);
+                break;
             }
 
             if (movement.command == RescueRunAlgo::Command::MOVE_FORWARD)
