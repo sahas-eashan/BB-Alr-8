@@ -67,11 +67,11 @@ private:
         {1, 8, 12, 12, 10, 9, 6, 5, 6, 5, 4, 6, 5, 8, 10, 3, 9, 6, 9, 6},
         {9, 12, 12, 12, 12, 12, 8, 8, 8, 10, 9, 8, 10, 13, 12, 8, 12, 8, 12, 10}};
 
-    std::vector<Point> redNodes = {{7, 3}, {9, 15}, {15, 15}};
-    std::vector<Point> orangeNodes = {{6, 2}, {6, 3}, {6, 4}, {7, 2}, {7, 4}, {8, 2}, {8, 3}, {8, 4}, {8, 14}, {8, 15}, {8, 16}, {9, 14}, {9, 16}, {10, 14}, {10, 15}, {10, 16}, {14, 14}, {14, 15}, {14, 16}, {15, 14}, {15, 16}, {16, 14}, {16, 15}, {16, 16}};
+    std::vector<Point> redNodes = {{3, 7}, {15, 9}, {15, 15}};
+    std::vector<Point> orangeNodes = {{2, 6}, {3, 6}, {4, 6}, {2, 7}, {4, 7}, {2, 8}, {3, 8}, {4, 8}, {14, 8}, {15, 8}, {16, 8}, {14, 9}, {16, 9}, {14, 10}, {15, 10}, {16, 10}, {14, 14}, {15, 14}, {16, 14}, {14, 15}, {16, 15}, {14, 16}, {15, 16}, {16, 16}};
     std::vector<Point> yellowNodes = {};
-    std::vector<Point> survivors = {{6, 19}, {17, 18}, {11, 0}};
-    Point startPoint = {0, 10};
+    std::vector<Point> survivors = {{19, 6}, {18, 17}, {0, 11}};
+    Point startPoint = {10, 0};
 
     PathInfo findShortestPath(Point start, Point end);
     bool canMove(int x, int y, int direction);
