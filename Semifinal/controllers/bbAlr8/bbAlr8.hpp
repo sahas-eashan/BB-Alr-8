@@ -9,18 +9,20 @@
 #include "motors.hpp"
 #include "CameraController.hpp"
 #include <unordered_map>
+#include "rescueRunAlgo.hpp"
 
 // #include "floodfill.hpp"
 
 #include "API.hpp"
 // #include "solver.hpp"
 
-
-struct Position {
-    int x_mapped, y_mapped;   // Mapped grid coordinates
+struct Position
+{
+    int x_mapped, y_mapped; // Mapped grid coordinates
 };
 
-struct ColorInfo {
+struct ColorInfo
+{
     std::string name;
     int8_t value;
 };
@@ -31,42 +33,42 @@ const std::unordered_map<char, ColorInfo> colorMap = {
     {'O', {"Orange", 2}},
     {'Y', {"Yellow", 1}},
     {'W', {"White", 0}},
-    {'U', {"Shadow", 4}}
+    {'U', {"Shadow", 4}}};
+
+class BbAlr8 : public webots::Robot
+{
+public:
+    static BbAlr8 &getInstance()
+    {
+        static BbAlr8 instance;
+        return instance;
+    }
+
+    void run();
+    int8_t getFloorColor();
+    bool see_Survivor();
+    bool iswallFront();
+    bool iswallRight();
+    bool iswallLeft();
+
+    void move_Forward();
+    void turn_Left();
+    void turn_Right();
+    void turn_180();
+
+private:
+    BbAlr8();                                   // Private constructor to enforce singleton
+    ~BbAlr8();                                  // Private destructor
+    BbAlr8(const BbAlr8 &) = delete;            // Delete copy constructor
+    BbAlr8 &operator=(const BbAlr8 &) = delete; // Delete assignment operator
+
+    void initDevices();
+    void updateLEDs(int8_t colorValue);
+
+    LEDManager leds;
+    SensorManager sensorManager;
+    Motors motors;
+    CameraController cameraController;
 };
 
-class BbAlr8 : public webots::Robot {
-    public:
-        static BbAlr8& getInstance() {
-            static BbAlr8 instance;
-            return instance;
-        }
-    
-        void run();
-        int8_t getFloorColor();
-        bool see_Survivor();
-        bool iswallFront();
-        bool iswallRight();
-        bool iswallLeft();
-
-        void move_Forward();
-        void turn_Left();
-        void turn_Right();
-        void turn_180();
-    
-    private:
-        BbAlr8();  // Private constructor to enforce singleton
-        ~BbAlr8(); // Private destructor
-        BbAlr8(const BbAlr8&) = delete; // Delete copy constructor
-        BbAlr8& operator=(const BbAlr8&) = delete; // Delete assignment operator
-    
-        void initDevices();
-        void updateLEDs(int8_t colorValue);
-    
-        LEDManager leds;
-        SensorManager sensorManager;
-        Motors motors;
-        CameraController cameraController;
-    };
-    
-
-#endif 
+#endif
