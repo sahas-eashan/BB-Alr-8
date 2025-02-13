@@ -1,13 +1,11 @@
 build/release/API.o: API.cpp API.hpp bbAlr8.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/Robot.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/Camera.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/Device.hpp \
- C:/Program\ Files/Webots/include/controller/c/webots/types.h \
- C:/Program\ Files/Webots/include/controller/c/webots/camera_recognition_object.h \
- ledManager.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/LED.hpp \
+ D:\Apps\Webots/include/controller/cpp/webots/Robot.hpp \
+ D:\Apps\Webots/include/controller/cpp/webots/Camera.hpp \
+ D:\Apps\Webots/include/controller/cpp/webots/Device.hpp \
+ D:/Apps/Webots/include/controller/c/webots/types.h \
+ D:/Apps/Webots/include/controller/c/webots/camera_recognition_object.h \
+ ledManager.hpp D:\Apps\Webots/include/controller/cpp/webots/LED.hpp \
  config.hpp sensorManager.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/DistanceSensor.hpp \
- motors.hpp \
- C:\Program\ Files\Webots/include/controller/cpp/webots/Motor.hpp \
- CameraController.hpp solver.hpp
+ D:\Apps\Webots/include/controller/cpp/webots/DistanceSensor.hpp \
+ motors.hpp D:\Apps\Webots/include/controller/cpp/webots/Motor.hpp \
+ CameraController.hpp rescueRunAlgo.hpp solver.hpp
