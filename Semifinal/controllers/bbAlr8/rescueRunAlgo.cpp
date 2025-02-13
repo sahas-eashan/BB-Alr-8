@@ -224,24 +224,72 @@ void RescueRunAlgo::findOptimalRoute()
     log("Total distance: " + std::to_string(tspResult.distance) + " steps");
     log("Route: ");
 
-    // Draw the complete route
+    // Clear previous path
+    optimalPath.clear();
+
+    // Build the complete path including intermediate points
     for (size_t i = 0; i < tspResult.path.size() - 1; i++)
     {
         Point current = tspResult.path[i];
         Point next = tspResult.path[i + 1];
 
-        // Find and draw the path between consecutive points
+        // Find path between consecutive points
         PathInfo pathSegment = findShortestPath(current, next);
+
+        // Add all points except the last one (to avoid duplicates)
+        optimalPath.insert(optimalPath.end(),
+                           pathSegment.path.begin(),
+                           pathSegment.path.end() - 1);
+
+        // Log the path
         for (const auto &point : pathSegment.path)
         {
-            // Don't color start point or survivors
-            if (!(point == startPoint) &&
-                std::find(survivors.begin(), survivors.end(), point) == survivors.end())
-            {
-                // API::setColor(point.x, point.y, 'G');
-            }
             log("(" + std::to_string(point.x) + "," + std::to_string(point.y) + ") ");
         }
         log("\n");
     }
+    // Add the final point
+    if (!tspResult.path.empty())
+    {
+        optimalPath.push_back(tspResult.path.back());
+    }
+}
+
+RescueRunAlgo::Movement RescueRunAlgo::getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading) const
+{
+    Movement movement;
+    movement.nextPosition = nextPos;
+
+    // Determine target heading based on movement direction
+    int targetHeading;
+    if (nextPos.x > currentPos.x)
+        targetHeading = 1; // EAST
+    else if (nextPos.x < currentPos.x)
+        targetHeading = 3; // WEST
+    else if (nextPos.y < currentPos.y)
+        targetHeading = 2; // SOUTH
+    else
+        targetHeading = 0; // NORTH
+
+    // Calculate turn needed
+    int turnNeeded = (targetHeading - currentHeading + 4) % 4;
+
+    // Determine command based on turn needed
+    switch (turnNeeded)
+    {
+    case 0: // Already facing correct direction
+        movement.command = Command::MOVE_FORWARD;
+        break;
+    case 1: // Need to turn right
+        movement.command = Command::TURN_RIGHT;
+        break;
+    case 2: // Need to turn 180
+        movement.command = Command::TURN_180;
+        break;
+    case 3: // Need to turn left
+        movement.command = Command::TURN_LEFT;
+        break;
+    }
+
+    return movement;
 }

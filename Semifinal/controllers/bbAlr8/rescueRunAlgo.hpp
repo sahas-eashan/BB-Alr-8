@@ -29,7 +29,29 @@ public:
     RescueRunAlgo();
     ~RescueRunAlgo();
 
+    // Add getter for the calculated path
+    const std::vector<Point> &getOptimalPath() const { return optimalPath; }
+    bool hasPathCalculated() const { return !optimalPath.empty(); }
+
+    // Add movement commands structure
+    enum class Command
+    {
+        MOVE_FORWARD,
+        TURN_LEFT,
+        TURN_RIGHT,
+        TURN_180
+    };
+
+    struct Movement
+    {
+        Command command;
+        Point nextPosition;
+    };
+
+    Movement getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading) const;
+
 private:
+    std::vector<Point> optimalPath;
     // Maze data and constants
     const int MAZE_S = 20; // MAZE_SIZE
     const int NORTH = 8;   // 1000

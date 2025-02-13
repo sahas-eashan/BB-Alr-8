@@ -48,8 +48,55 @@ void BbAlr8::run()
     std::cout << "inside the maze" << std::endl;
 
     // exploreMaze();
-    RescueRunAlgo rescueRunAlgo = RescueRunAlgo();
-    rescueRunAlgo.findOptimalRoute();
+    // Create rescue algorithm instance and calculate path
+    RescueRunAlgo rescueAlgo;
+    rescueAlgo.findOptimalRoute();
+
+    // Follow the calculated path
+    if (rescueAlgo.hasPathCalculated())
+    {
+        const auto &path = rescueAlgo.getOptimalPath();
+        Point currentPos = path[0]; // Start position
+        int currentHeading = 0;     // Start facing NORTH
+        size_t i = 1;
+        while (i < path.size())
+        {
+            Point nextPos = path[i];
+            auto movement = rescueAlgo.getNextMovement(currentPos, nextPos, currentHeading);
+
+            // Execute the movement command
+            switch (movement.command)
+            {
+            case RescueRunAlgo::Command::MOVE_FORWARD:
+                std::cout << "Moving forward" << std::endl;
+                moveForward();
+                break;
+            case RescueRunAlgo::Command::TURN_LEFT:
+                std::cout << "Turning left" << std::endl;
+                turnLeft();
+                currentHeading = (currentHeading + 3) % 4;
+                break;
+            case RescueRunAlgo::Command::TURN_RIGHT:
+                std::cout << "Turning right" << std::endl;
+                turnRight();
+                currentHeading = (currentHeading + 1) % 4;
+                break;
+            case RescueRunAlgo::Command::TURN_180:
+                std::cout << "Turning 180" << std::endl;
+                turn180();
+                currentHeading = (currentHeading + 2) % 4;
+                break;
+            }
+
+            if (movement.command == RescueRunAlgo::Command::MOVE_FORWARD)
+            {
+                // std::cout << "Next position: " << movement.nextPosition.x << "," << movement.nextPosition.y << std::endl;
+                currentPos = nextPos;
+                i++;
+            }
+        }
+    }
+
     while (step(Config::TIME_STEP) != -1)
     {
         // leds.lightEachLEDSequentially(*this);
