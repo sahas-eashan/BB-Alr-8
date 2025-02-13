@@ -43,6 +43,7 @@ class BbAlr8 : public webots::Robot {
     
         void run();
         int8_t getFloorColor();
+        bool see_Survivor();
         bool iswallFront();
         bool iswallRight();
         bool iswallLeft();

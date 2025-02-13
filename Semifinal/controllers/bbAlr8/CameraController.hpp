@@ -19,7 +19,7 @@ public:
     CameraController(webots::Robot *robot);
     ~CameraController();
     void initializeCameras(const std::string& frontCamName, const std::string& downCamName, const std::string& scanCamName);
-    char processFrontCamera();
+    int processScanCamera();
     char processDownCamera();
 };
 

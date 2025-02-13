@@ -39,8 +39,9 @@ void BbAlr8::run()
     exploreMaze();
 
     // while(step(Config::TIME_STEP) != -1){
-    //     sensorManager.readSensors();
-    //     std:: cout << " Left : " << sensorManager.leftWallDistance() << "Front : " << sensorManager.frontWallDistance() << " right : "  << sensorManager.rightWallDistance() << std::endl;
+    //     see_Survivor();
+        //sensorManager.readSensors();
+        //std:: cout << " Left : " << sensorManager.leftWallDistance() << "Front : " << sensorManager.frontWallDistance() << " right : "  << sensorManager.rightWallDistance() << std::endl;
     // }
 }
 
@@ -58,6 +59,17 @@ int8_t BbAlr8::getFloorColor()
 
     std::cout << "Unknown Color" << std::endl;
     return -1;
+}
+
+bool BbAlr8::see_Survivor()
+{
+    int green_pixels = cameraController.processScanCamera();
+    
+    if (green_pixels > Config::GREEN_PIXEL_COUNT){
+        std::cout << std::endl << green_pixels <<  "  Green pixels detected "  << std::endl;
+        return true;
+    }
+    return false;
 }
 
 void BbAlr8::updateLEDs(int8_t colorValue)

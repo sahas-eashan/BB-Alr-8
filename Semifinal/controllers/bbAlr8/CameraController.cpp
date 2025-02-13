@@ -6,20 +6,6 @@ CameraController::CameraController(webots::Robot *robot) : robot(robot) {
   downCamera = nullptr;
 }
 
-// void CameraController::initializeCamera(const std::string &cameraName) {
-//   camera = robot->getCamera(cameraName);
-//   if (camera) {
-//     camera->enable(timeStep);
-//     width = camera->getWidth();
-//     height = camera->getHeight();
-//     std::cout << "Camera " << cameraName << " initialized successfully." << std::endl;
-//     std::cout << "Camera resolution: " << width << "x" << height << std::endl;
-//   } else {
-//     std::cerr << "Error: Camera " << cameraName << " not found!" << std::endl;
-//     exit(1);
-//   }
-// }
-
 void CameraController::initializeCameras(const std::string& frontCamName, const std::string& downCamName, const std::string& scanCamName) {
     frontCamera = robot->getCamera(frontCamName);
     downCamera = robot->getCamera(downCamName);
@@ -81,38 +67,46 @@ char CameraController::processDownCamera() {
         return 'Y';
     } else if (r >= 230 && g >= 230 && b >= 230) {
         return 'W';
+    } else {
+        return 'U';
     }
+
   
   return 'U';
 }
 
-char CameraController::processFrontCamera() {
-  if (!frontCamera) {
+int CameraController::processScanCamera() {
+  if (!scanCamera) {
     std::cerr << "Error: Front camera not initialized!" << std::endl;
-    return 'E';
+    return 0;
   }
 
-  const unsigned char *image = frontCamera->getImage();
+  const unsigned char *image = scanCamera->getImage();
   if (!image) {
     std::cerr << "Error: Failed to get camera image!" << std::endl;
-    return 'E';
+    return 0;
   }
+  
   // Process the entire image
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
-      // int red = camera->imageGetRed(image, width, x, y);
-      // int green = camera->imageGetGreen(image, width, x, y);
-      // int blue = camera->imageGetBlue(image, width, x, y);
-      
-      // Here you can add your image processing logic
+  int h = scanCamera->getHeight();
+  int w = scanCamera->getWidth();
+  int green_count = 0;
+  
+  for (int y = 0; y < h; y++) {
+    for (int x = 0; x < w; x++) {
+      int r = scanCamera->imageGetRed(image, scanCamera->getWidth(), x, y);  // Fixed coordinates
+      int g = scanCamera->imageGetGreen(image, scanCamera->getWidth(), x, y);
+      int b = scanCamera->imageGetBlue(image, scanCamera->getWidth(), x, y);
 
-      // For example, detect specific colors, shapes, or objects
+      //std::cout << "  R=" << r << " G=" << g << " B=" << b <<  std::endl;
+
+      if (r <= 50 && g >= 220 && b <= 50) {
+        green_count++;
+      }
     }
   }
-  return 'W';
-  
+  return green_count;
 }
 
-CameraController::~CameraController() {
-  // Cleanup if necessary
+CameraController::~CameraController() { 
 }

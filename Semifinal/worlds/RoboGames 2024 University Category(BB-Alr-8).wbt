@@ -10,8 +10,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.5609272641641814 0.5614346818557249 0.6084009387951729 2.049713390291644
-  position 0.26721235133831633 -3.030131637874496 3.217388621583204
+  orientation -0.2832921101204107 0.31857110863116905 0.9045761599163628 1.5578143743538788
+  position 0.32313894064763526 -4.498672273015588 1.5093239163053191
 }
 TexturedBackground {
 }
@@ -2070,7 +2070,7 @@ DEF BBAlr8 Robot {
         0.35 0 0
       ]
     }
-    DEF castor Solid {
+    DEF castorFront Solid {
       translation 0 0.025 -0.015
       children [
         DEF castor Shape {
@@ -2082,6 +2082,23 @@ DEF BBAlr8 Robot {
           castShadows FALSE
         }
       ]
+      boundingObject USE castor
+      physics Physics {
+      }
+    }
+    DEF castorBack Solid {
+      translation 0 -0.025 -0.0141
+      children [
+        DEF castor Shape {
+          appearance PBRAppearance {
+          }
+          geometry Sphere {
+            radius 0.005
+          }
+          castShadows FALSE
+        }
+      ]
+      name "solid(1)"
       boundingObject USE castor
       physics Physics {
       }

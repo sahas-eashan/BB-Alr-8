@@ -67,5 +67,7 @@ namespace Config
     const float F_WALL_THRESHOLD = 16;
     const float R_WALL_THRESHOLD = 23;
 
+    const int GREEN_PIXEL_COUNT = 19;
+
 }
 #endif
