@@ -91,7 +91,6 @@ void BbAlr8::run()
         // leds.lightEachLEDSequentially(*this);
         // floorColor();
     }
-
 }
 
 int8_t BbAlr8::getFloorColor()
@@ -101,7 +100,7 @@ int8_t BbAlr8::getFloorColor()
 
     if (it != colorMap.end())
     {
-        it->second.value != 0? std::cout << it->second.name << " Detected" << std::endl : std::cout << " ";
+        it->second.value != 0 ? std::cout << it->second.name << " Detected" << std::endl : std::cout << " ";
         updateLEDs(it->second.value);
         return it->second.value;
     }
@@ -113,9 +112,11 @@ int8_t BbAlr8::getFloorColor()
 bool BbAlr8::see_Survivor()
 {
     int green_pixels = cameraController.processScanCamera();
-    
-    if (green_pixels > Config::GREEN_PIXEL_COUNT){
-        std::cout << std::endl << green_pixels <<  "  Green pixels detected "  << std::endl;
+
+    if (green_pixels > Config::GREEN_PIXEL_COUNT)
+    {
+        std::cout << std::endl
+                  << green_pixels << "  Green pixels detected " << std::endl;
         return true;
     }
     return false;

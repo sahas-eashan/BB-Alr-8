@@ -26,6 +26,66 @@ void RescueRunAlgo::log(const std::string &text)
     std::cerr << text << std::endl;
 }
 
+void RescueRunAlgo::setMaze(const vector<vector<int>> &maze)
+{
+    auto nsew_maze = convertNESWtoNSEW(maze);
+    this->maze = nsew_maze;
+}
+
+void RescueRunAlgo::setDefaults()
+{
+    auto nsew_maze = convertNESWtoNSEW(maze);
+    this->maze = nsew_maze;
+}
+
+void RescueRunAlgo::setRedNodes(const vector<Point> &redNodes)
+{
+    this->redNodes = redNodes;
+}
+
+void RescueRunAlgo::setOrangeNodes(const vector<Point> &orangeNodes)
+{
+    this->orangeNodes = orangeNodes;
+}
+
+void RescueRunAlgo::setYellowNodes(const vector<Point> &yellowNodes)
+{
+    this->yellowNodes = yellowNodes;
+}
+
+void RescueRunAlgo::setStartPoint(const Point &startPoint)
+{
+    this->startPoint = startPoint;
+}
+
+void RescueRunAlgo::setSurvivors(const vector<Point> &survivors)
+{
+    this->survivors = survivors;
+}
+
+vector<vector<int>> convertNESWtoNSEW(const vector<vector<int>> &neswMatrix)
+{
+    int rows = neswMatrix.size();
+    int cols = neswMatrix[0].size();
+    vector<vector<int>> nsewMatrix(rows, vector<int>(cols));
+
+    for (int i = 0; i < rows; ++i)
+    {
+        for (int j = 0; j < cols; ++j)
+        {
+            int value = neswMatrix[i][j];
+            int n = (value & 8);      // North remains the same
+            int e = (value & 4) >> 1; // East moves to South (bit shift right)
+            int s = (value & 2) << 1; // South moves to East (bit shift left)
+            int w = (value & 1);      // West remains the same
+
+            nsewMatrix[i][j] = n | e | s | w;
+        }
+    }
+
+    return nsewMatrix;
+}
+
 // Implements Dijkstra's algorithm with danger zone penalties
 PathInfo RescueRunAlgo::findShortestPath(Point start, Point end)
 {
