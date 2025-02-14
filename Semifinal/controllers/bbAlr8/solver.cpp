@@ -282,14 +282,14 @@ void MazeSolver::updateColour()
     int x = position.x;
     int y = position.y;
 
-    // Only update if the current point hasn't been recorded yet
-    if (!API_is_RedNode(x, y))
+    if (color == 3)//if red found, fire pit is  drawn
     {
-        if (color == 3)
-        {
-            addDangerZone(x, y);
-        }
+        addDangerZone(x, y);
+    } else if (color == 2){
+        API_add_OrangeNode(x, y);
     }
+
+    API_detectAndAddSurvivor(x , y);
 }
 
 Action MazeSolver::explore()
@@ -303,8 +303,6 @@ Action MazeSolver::explore()
 
     visitCount[position.x][position.y]++;
 
-    // char color = visitCount[position.x][position.y] == 1 ? 'G' : visitCount[position.x][position.y] == 2 ? 'O' : 'R';
-    // API::setColor(position.x, position.y, color);
 
     updateMaze();
     updateDistances();
@@ -587,15 +585,15 @@ void MazeSolver::addDangerZone(int x, int y)
         return;
     }
 
+    // Mark center cell (1x1)
+    API_add_RedNode(x, y); //this need to come before adding orange cells or this will be also added  to the orange cells along with the red node
+
     // Mark inner layer (3x3)
-    for (int i = x + 1; i < x + 4; i++)
+    for (int i = x - 1; i < x + 2; i++)
     {
-        for (int j = y + 1; j < y + 4; j++)
+        for (int j = y - 1; j < y + 2; j++)
         {
             API_add_OrangeNode(i, j);
         }
     }
-
-    // Mark center cell (1x1)
-    API_add_RedNode(x + 2, y + 2);
 }

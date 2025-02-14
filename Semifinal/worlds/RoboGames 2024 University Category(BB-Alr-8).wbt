@@ -10,8 +10,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.2832921101204107 0.31857110863116905 0.9045761599163628 1.5578143743538788
-  position 0.32313894064763526 -4.498672273015588 1.5093239163053191
+  orientation 0.4555455675057175 -0.4734312237654451 -0.7538840177970662 4.468219312068845
+  position -1.1760264643318192 -5.1896567940754785 6.1427357198514585
 }
 TexturedBackground {
 }
@@ -966,6 +966,18 @@ Wall {
   translation 2.0397 1.79327 0
   rotation 0 0 -1 -0.7854
   name "wall(46)"
+  size 0.01 0.1 0.1
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
+  translation -0.703801 -2.44931 0
+  rotation 0 0 -1 -0.7854
+  name "wall(225)"
   size 0.01 0.1 0.1
   appearance Roughcast {
     colorOverride 0 1 0

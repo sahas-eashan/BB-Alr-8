@@ -100,7 +100,7 @@ int CameraController::processScanCamera() {
 
       //std::cout << "  R=" << r << " G=" << g << " B=" << b <<  std::endl;
 
-      if (r <= 50 && g >= 220 && b <= 50) {
+      if (r <= 45 && g >= 70 && b <= 45) {
         green_count++;
       }
     }

@@ -4,9 +4,6 @@
 #include <queue>
 #include <limits>    // For std::numeric_limits
 #include <algorithm> // For std::find, std::reverse, std::next_permutation
-                     // #include <random>
-                     // #include <algorithm>
-
 struct Point
 {
     int x, y;

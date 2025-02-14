@@ -51,6 +51,10 @@ bool API_is_OrangeNode(int x, int y) {
     return BbAlr8::getInstance().isOrangeNode(x, y);
 }
 
+void API_detectAndAddSurvivor(int x , int y){
+    BbAlr8::getInstance().detectAndAddSurvivors(x, y);
+}
+
 void exploreMaze() {
     std::cout << "Starting to explore the maze....." << std::endl;
 

@@ -10,12 +10,7 @@
 #include "CameraController.hpp"
 #include <unordered_map>
 #include "rescueRunAlgo.hpp"
-
-// #include "floodfill.hpp"
-
 #include "API.hpp"
-// #include "solver.hpp"
-
 struct Position
 {
     int x_mapped, y_mapped; // Mapped grid coordinates
@@ -46,7 +41,7 @@ public:
 
     void run();
     int8_t getFloorColor();
-    bool see_Survivor();
+    bool seeSurvivors();
     bool iswallFront();
     bool iswallRight();
     bool iswallLeft();
@@ -60,6 +55,9 @@ public:
     void addOrangeNode(int x, int y);
     bool isRedNode(int x, int y) const;
     bool isOrangeNode(int x, int y) const;
+
+    void detectAndAddSurvivors(int x, int y);
+    bool isSurvivorAdded(int x, int y) const;
 
 private:
     BbAlr8();                                   // Private constructor to enforce singleton

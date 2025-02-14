@@ -27,4 +27,6 @@ bool API_is_OrangeNode(int x, int y);
 void API_add_OrangeNode(int x, int y);
 void API_add_RedNode(int x, int y);
 
+void API_detectAndAddSurvivor(int x , int y);
+
 #endif // API_H

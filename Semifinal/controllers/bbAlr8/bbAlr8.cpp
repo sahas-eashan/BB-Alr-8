@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cmath>
 #include <thread>
+#include <set>
 
 using namespace webots;
 
@@ -31,6 +32,11 @@ void BbAlr8::initDevices()
 void BbAlr8::run()
 {
     std::cout << "BB-Alr-8 robot starting..." << std::endl;
+
+    // while (step(Config::TIME_STEP) != -1)
+    // {
+    //     seeSurvivors();
+    // }
 
     motors.enterMaze(this, sensorManager);
 
@@ -96,16 +102,11 @@ void BbAlr8::run()
         }
     }
 
-    // while (step(Config::TIME_STEP) != -1)
-    // {
-    // leds.lightEachLEDSequentially(*this);
-    // floorColor();
-    // }
-
     API_turnRight();
     motors.moveForward(this, sensorManager, 1.5);
     API_turn180();
 
+    
 }
 
 int8_t BbAlr8::getFloorColor()
@@ -122,19 +123,6 @@ int8_t BbAlr8::getFloorColor()
 
     std::cout << "Unknown Color" << std::endl;
     return -1;
-}
-
-bool BbAlr8::see_Survivor()
-{
-    int green_pixels = cameraController.processScanCamera();
-
-    if (green_pixels > Config::GREEN_PIXEL_COUNT)
-    {
-        std::cout << std::endl
-                  << green_pixels << "  Green pixels detected " << std::endl;
-        return true;
-    }
-    return false;
 }
 
 void BbAlr8::updateLEDs(int8_t colorValue)
@@ -204,7 +192,11 @@ void BbAlr8::turn_180()
 
 void BbAlr8::addRedNode(int x, int y)
 {
-    rescueAlgo.redNodes.push_back({y, x});
+    if (!isRedNode(x, y))
+    {
+        rescueAlgo.redNodes.push_back({y, x});
+    }
+
     std::cout << "Updated redNodes: ";
     for (const auto &node : rescueAlgo.redNodes)
     {
@@ -215,9 +207,13 @@ void BbAlr8::addRedNode(int x, int y)
 
 void BbAlr8::addOrangeNode(int x, int y)
 {
-    rescueAlgo.orangeNodes.push_back({y, x});
+    if (!isOrangeNode(x, y) && !isRedNode(x, y))
+    {
+        rescueAlgo.orangeNodes.push_back({y, x});
+    }
+
     std::cout << "Updated orangeNodes: ";
-    for (const auto& node : rescueAlgo.orangeNodes)
+    for (const auto &node : rescueAlgo.orangeNodes)
     {
         std::cout << "(" << node.x << ", " << node.y << ") ";
     }
@@ -234,4 +230,42 @@ bool BbAlr8::isOrangeNode(int x, int y) const
 {
     Point p = {y, x}; // Note: Point format is {y, x}
     return std::find(rescueAlgo.orangeNodes.begin(), rescueAlgo.orangeNodes.end(), p) != rescueAlgo.orangeNodes.end();
+}
+
+bool BbAlr8::seeSurvivors()
+{
+    int green_pixels = cameraController.processScanCamera();
+
+    if (green_pixels > Config::GREEN_PIXEL_COUNT)
+    {
+        std::cout << std::endl
+                  << green_pixels << "  Green pixels detected " << std::endl;
+        return true;
+    }
+    return false;
+}
+
+void BbAlr8::detectAndAddSurvivors(int x, int y)
+{
+
+    if (seeSurvivors())
+    {
+        if (!isSurvivorAdded(x, y))
+        {
+            rescueAlgo.survivors.push_back({y, x});
+        }
+
+        std::cout << "Updated survivor List: ";
+        for (const auto &node : rescueAlgo.survivors)
+        {
+            std::cout << "(" << node.x << ", " << node.y << ") ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+bool BbAlr8::isSurvivorAdded(int x, int y) const
+{
+    Point p = {y, x}; // Note: Point format is {y, x}
+    return std::find(rescueAlgo.survivors.begin(), rescueAlgo.survivors.end(), p) != rescueAlgo.survivors.end();
 }
