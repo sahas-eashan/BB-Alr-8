@@ -42,11 +42,11 @@ void BbAlr8::run()
 
     std::cout << "inside the maze" << std::endl;
 
-    //exploreMaze();
+    exploreMaze();
 
     // Create rescue algorithm instance and calculate path
     RescueRunAlgo rescueAlgo;
-    //rescueAlgo.setDefaults();
+    rescueAlgo.setDefaults();
 
     rescueAlgo.findOptimalRoute();
 

@@ -4,6 +4,7 @@
 #include <limits>
 #include <queue>
 #include <algorithm>
+#include <iomanip>
 
 MazeSolver::MazeSolver()
     : maze{}, distances{}, position{10, 0}, heading{Heading::NORTH}, reachedCenter{false}
@@ -101,20 +102,20 @@ void MazeSolver::updateMaze()
         if (API_wallFront())
         {
             walls |= WallConfig::W;
-            if (x - 1 >= 0)
-                maze[x - 1][y] |= WallConfig::E;
+            // if (x - 1 >= 0)
+            //     maze[x - 1][y] |= WallConfig::E;
         }
         if (API_wallLeft())
         {
             walls |= WallConfig::S;
-            if (y - 1 >= 0)
-                maze[x][y - 1] |= WallConfig::N;
+            // if (y - 1 >= 0)
+            //     maze[x][y - 1] |= WallConfig::N;
         }
         if (API_wallRight())
         {
             walls |= WallConfig::N;
-            if (y + 1 != MAZE_SIZE)
-                maze[x][y + 1] |= WallConfig::S;
+            // if (y + 1 != MAZE_SIZE)
+            //     maze[x][y + 1] |= WallConfig::S;
         }
         break;
     }
@@ -282,14 +283,16 @@ void MazeSolver::updateColour()
     int x = position.x;
     int y = position.y;
 
-    if (color == 3)//if red found, fire pit is  drawn
+    if (color == 3) // if red found, fire pit is  drawn
     {
         addDangerZone(x, y);
-    } else if (color == 2){
+    }
+    else if (color == 2)
+    {
         API_add_OrangeNode(x, y);
     }
 
-    API_detectAndAddSurvivor(x , y);
+    API_detectAndAddSurvivor(x, y);
 }
 
 Action MazeSolver::explore()
@@ -303,13 +306,14 @@ Action MazeSolver::explore()
 
     visitCount[position.x][position.y]++;
 
-
     updateMaze();
     updateDistances();
     updateColour();
     Action action = tremauxSearch();
     updateHeading(action);
     updatePosition(action);
+
+    printMaze();
     return action;
 }
 
@@ -442,7 +446,7 @@ Action MazeSolver::tremauxSearch()
     if (leastVisits == std::numeric_limits<int>::max())
     {
         optimalMove = Action::RIGHT;
-        std::cout << "dead end" << std::endl;
+        std::cout << "dead end...." << std::endl;
     }
     if (optimalMove == Action::FORWARD)
     {
@@ -586,7 +590,7 @@ void MazeSolver::addDangerZone(int x, int y)
     }
 
     // Mark center cell (1x1)
-    API_add_RedNode(x, y); //this need to come before adding orange cells or this will be also added  to the orange cells along with the red node
+    API_add_RedNode(x, y); // this need to come before adding orange cells or this will be also added  to the orange cells along with the red node
 
     // Mark inner layer (3x3)
     for (int i = x - 1; i < x + 2; i++)
@@ -596,4 +600,128 @@ void MazeSolver::addDangerZone(int x, int y)
             API_add_OrangeNode(i, j);
         }
     }
+}
+
+void MazeSolver::printMaze() const
+{
+    // Print column numbers
+    std::cout << "   ";
+    for (int x = 0; x < MAZE_SIZE; ++x)
+    {
+        std::cout << std::setw(3) << x;
+    }
+    std::cout << "\n";
+
+    // For each row
+    for (int y = MAZE_SIZE - 1; y >= 0; --y)
+    {
+        // Print row number
+        std::cout << std::setw(2) << y << " ";
+
+        // Print top walls for each cell in the row
+        for (int x = 0; x < MAZE_SIZE; ++x)
+        {
+            std::cout << "+";
+            if (maze[x][y] & WallConfig::N)
+            {
+                std::cout << "---";
+            }
+            else
+            {
+                std::cout << "   ";
+            }
+        }
+        std::cout << "+\n";
+
+        // Print row number again
+        std::cout << "   ";
+
+        // Print side walls and cell contents
+        for (int x = 0; x < MAZE_SIZE; ++x)
+        {
+            if (maze[x][y] & WallConfig::W)
+            {
+                std::cout << "|";
+            }
+            else
+            {
+                std::cout << " ";
+            }
+
+            // Print cell content
+            if (x == position.x && y == position.y)
+            {
+                // Print direction the robot is facing
+                switch (heading)
+                {
+                case Heading::NORTH:
+                    std::cout << "^";
+                    break;
+                case Heading::EAST:
+                    std::cout << ">";
+                    break;
+                case Heading::SOUTH:
+                    std::cout << "v";
+                    break;
+                case Heading::WEST:
+                    std::cout << "<";
+                    break;
+                }
+                // Print distance value after direction
+                if (distances[x][y] >= 0)
+                {
+                    std::cout << std::setw(2) << distances[x][y];
+                }
+                else
+                {
+                    std::cout << " ?";
+                }
+            }
+            else
+            {
+                // Print just the distance for non-robot cells
+                if (distances[x][y] >= 0)
+                {
+                    std::cout << std::setw(3) << distances[x][y];
+                }
+                else
+                {
+                    std::cout << " ? ";
+                }
+            }
+        }
+
+        // Print final wall of row
+        if (maze[MAZE_SIZE - 1][y] & WallConfig::E)
+        {
+            std::cout << "|\n";
+        }
+        else
+        {
+            std::cout << " \n";
+        }
+    }
+
+    // Print bottom row of walls
+    std::cout << "   ";
+    for (int x = 0; x < MAZE_SIZE; ++x)
+    {
+        std::cout << "+";
+        if (maze[x][0] & WallConfig::S)
+        {
+            std::cout << "---";
+        }
+        else
+        {
+            std::cout << "   ";
+        }
+    }
+    std::cout << "+\n";
+
+    // Print legend
+    std::cout << "\nLegend:\n";
+    std::cout << "^,>,v,< - Robot direction\n";
+    std::cout << "Numbers - Distance from target\n";
+    std::cout << "?       - Unexplored/unreachable\n";
+    std::cout << "---|    - Walls\n";
 }
