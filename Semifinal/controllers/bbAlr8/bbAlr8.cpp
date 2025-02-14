@@ -93,11 +93,9 @@ void BbAlr8::run()
         }
     }
 
-    while (step(Config::TIME_STEP) != -1)
-    {
-        // leds.lightEachLEDSequentially(*this);
-        // floorColor();
-    }
+    API_turnRight();
+    motors.moveForward(this, sensorManager, 1.5);
+    API_turn180();
 }
 
 int8_t BbAlr8::getFloorColor()

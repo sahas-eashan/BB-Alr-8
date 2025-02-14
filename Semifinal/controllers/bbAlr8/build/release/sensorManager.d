@@ -1,7 +1,7 @@
 build/release/sensorManager.o: sensorManager.cpp sensorManager.hpp \
- D:\Apps\Webots/include/controller/cpp/webots/Robot.hpp \
- D:\Apps\Webots/include/controller/cpp/webots/DistanceSensor.hpp \
- D:\Apps\Webots/include/controller/cpp/webots/Device.hpp \
- D:/Apps/Webots/include/controller/c/webots/types.h \
- D:\Apps\Webots/include/controller/cpp/webots/PositionSensor.hpp \
+ /usr/local/webots/include/controller/cpp/webots/Robot.hpp \
+ /usr/local/webots/include/controller/cpp/webots/DistanceSensor.hpp \
+ /usr/local/webots/include/controller/cpp/webots/Device.hpp \
+ /usr/local/webots/include/controller/cpp/webots/../../c/webots/types.h \
+ /usr/local/webots/include/controller/cpp/webots/PositionSensor.hpp \
  config.hpp
