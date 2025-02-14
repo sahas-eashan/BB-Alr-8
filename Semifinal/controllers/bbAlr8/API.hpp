@@ -24,7 +24,10 @@ void exploreMaze();
 int8_t API_getColour();
 bool API_is_RedNode(int x, int y);
 bool API_is_OrangeNode(int x, int y);
+bool API_is_YellowNode(int x, int y);
+bool API_is_SurvivorNode(int x, int y);
 void API_add_OrangeNode(int x, int y);
+void API_add_YellowNode(int x, int y);
 void API_add_RedNode(int x, int y);
 
 void API_detectAndAddSurvivor(int x , int y);

@@ -53,8 +53,11 @@ public:
 
     void addRedNode(int x, int y);
     void addOrangeNode(int x, int y);
+    void addYellowNode(int x, int y);
     bool isRedNode(int x, int y) const;
     bool isOrangeNode(int x, int y) const;
+    bool isYellowNode(int x, int y) const;
+    bool isSurvivorNode(int x, int y) const;
 
     void detectAndAddSurvivors(int x, int y);
     bool isSurvivorAdded(int x, int y) const;

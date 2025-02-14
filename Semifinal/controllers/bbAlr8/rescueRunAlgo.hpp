@@ -94,10 +94,10 @@ public:
         {3, 1, 12, 10, 7, 5, 8, 10, 9, 12, 10, 13, 8, 2, 1, 6, 1, 14, 5, 14},
         {1, 8, 12, 12, 10, 9, 6, 5, 6, 5, 4, 6, 5, 8, 10, 3, 9, 6, 9, 6},
         {9, 12, 12, 12, 12, 12, 8, 8, 8, 10, 9, 8, 10, 13, 12, 8, 12, 8, 12, 10}};
-    std::vector<Point> redNodes = {{3, 7}, {15, 9}, {15, 15}}; // {y, x}
-    std::vector<Point> orangeNodes = {{2, 6}, {3, 6}, {4, 6}, {2, 7}, {4, 7}, {2, 8}, {3, 8}, {4, 8}, {14, 8}, {15, 8}, {16, 8}, {14, 9}, {16, 9}, {14, 10}, {15, 10}, {16, 10}, {14, 14}, {15, 14}, {16, 14}, {14, 15}, {16, 15}, {14, 16}, {15, 16}, {16, 16}};
-    std::vector<Point> yellowNodes = {};
-    std::vector<Point> survivors = {{19, 6}, {18, 17}, {0, 11}};
+    // std::vector<Point> redNodes = {{3, 7}, {15, 9}, {15, 15}}; // {y, x}
+    // std::vector<Point> orangeNodes = {{2, 6}, {3, 6}, {4, 6}, {2, 7}, {4, 7}, {2, 8}, {3, 8}, {4, 8}, {14, 8}, {15, 8}, {16, 8}, {14, 9}, {16, 9}, {14, 10}, {15, 10}, {16, 10}, {14, 14}, {15, 14}, {16, 14}, {14, 15}, {16, 15}, {14, 16}, {15, 16}, {16, 16}};
+    // std::vector<Point> yellowNodes = {};
+    // std::vector<Point> survivors = {{19, 6}, {18, 17}, {0, 11}};
 
 
     // const int MAZE_S = 20; // MAZE_SIZE
@@ -107,10 +107,10 @@ public:
     // const int WEST = 1;  
 
     // std::vector<std::vector<int>> maze = {}; // maze[y][x]
-    // std::vector<Point> redNodes = {}; // {y, x}
-    // std::vector<Point> orangeNodes = {};
-    // std::vector<Point> yellowNodes = {};
-    // std::vector<Point> survivors = {};
+    std::vector<Point> redNodes = {}; // {y, x}
+    std::vector<Point> orangeNodes = {};
+    std::vector<Point> yellowNodes = {};
+    std::vector<Point> survivors = {};
     
     Point startPoint = {10, 0};
 
