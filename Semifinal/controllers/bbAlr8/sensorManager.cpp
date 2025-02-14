@@ -150,7 +150,7 @@ bool SensorManager::isWallFront()
 {
     float F_Wall_Distance = frontWallDistance();
 
-    // std::cout << "Front wall Distance: " << F_Wall_Distance << " cm " << std::endl;
+    //std::cout << "Front wall Distance: " << F_Wall_Distance << " cm " << std::endl;
     return (F_Wall_Distance < Config::F_WALL_THRESHOLD) ? true : false;
 }
 
@@ -158,7 +158,7 @@ bool SensorManager::isWallRight()
 {
     float R_Wall_Distance = rightWallDistance();
 
-    // std::cout << "Right wall Distance: " << R_Wall_Distance << " cm " << std::endl;
+    //std::cout << "Right wall Distance: " << R_Wall_Distance << " cm " << std::endl;
     return (R_Wall_Distance < Config::R_WALL_THRESHOLD) ? true : false;
 }
 

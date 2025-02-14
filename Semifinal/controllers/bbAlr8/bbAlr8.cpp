@@ -44,67 +44,67 @@ void BbAlr8::run()
 
     exploreMaze();
 
-    // Create rescue algorithm instance and calculate path
-    RescueRunAlgo rescueAlgo;
-    rescueAlgo.setDefaults();
+    // // Create rescue algorithm instance and calculate path
+    // RescueRunAlgo rescueAlgo;
+    // rescueAlgo.setDefaults();
 
-    rescueAlgo.findOptimalRoute();
+    // rescueAlgo.findOptimalRoute();
 
-    // Follow the calculated path
-    if (!rescueAlgo.hasPathCalculated())
-        return;
-    {
-        const auto &path = rescueAlgo.getOptimalPath();
-        Point currentPos = path[0]; // Start position
-        int currentHeading = 0;     // Start facing NORTH
+    // // Follow the calculated path
+    // if (!rescueAlgo.hasPathCalculated())
+    //     return;
+    // {
+    //     const auto &path = rescueAlgo.getOptimalPath();
+    //     Point currentPos = path[0]; // Start position
+    //     int currentHeading = 0;     // Start facing NORTH
 
-        size_t i = 1;
-        while (i < path.size())
-        {
-            Point nextPos = path[i];
-            auto movement = rescueAlgo.getNextMovement(currentPos, nextPos, currentHeading);
+    //     size_t i = 1;
+    //     while (i < path.size())
+    //     {
+    //         Point nextPos = path[i];
+    //         auto movement = rescueAlgo.getNextMovement(currentPos, nextPos, currentHeading);
 
-            // Execute the movement command
-            switch (movement.command)
-            {
-            case RescueRunAlgo::Command::MOVE_FORWARD:
-                std::cout << "Moving forward" << std::endl;
-                move_Forward();
-                break;
-            case RescueRunAlgo::Command::TURN_LEFT:
-                std::cout << "Turning left" << std::endl;
-                turn_Left();
-                currentHeading = (currentHeading + 3) % 4;
-                break;
-            case RescueRunAlgo::Command::TURN_RIGHT:
-                std::cout << "Turning right" << std::endl;
-                turn_Right();
-                currentHeading = (currentHeading + 1) % 4;
-                break;
-            case RescueRunAlgo::Command::TURN_180:
-                std::cout << "Turning 180" << std::endl;
-                turn_180();
-                currentHeading = (currentHeading + 2) % 4;
-                break;
-            case RescueRunAlgo::Command::WAIT:
-                std::cout << "Found survivor! Waiting for 3 seconds..." << std::endl;
-                // Wait for 3 seconds (3000 milliseconds)
-                step(3000);
-                break;
-            }
+    //         // Execute the movement command
+    //         switch (movement.command)
+    //         {
+    //         case RescueRunAlgo::Command::MOVE_FORWARD:
+    //             std::cout << "Moving forward" << std::endl;
+    //             move_Forward();
+    //             break;
+    //         case RescueRunAlgo::Command::TURN_LEFT:
+    //             std::cout << "Turning left" << std::endl;
+    //             turn_Left();
+    //             currentHeading = (currentHeading + 3) % 4;
+    //             break;
+    //         case RescueRunAlgo::Command::TURN_RIGHT:
+    //             std::cout << "Turning right" << std::endl;
+    //             turn_Right();
+    //             currentHeading = (currentHeading + 1) % 4;
+    //             break;
+    //         case RescueRunAlgo::Command::TURN_180:
+    //             std::cout << "Turning 180" << std::endl;
+    //             turn_180();
+    //             currentHeading = (currentHeading + 2) % 4;
+    //             break;
+    //         case RescueRunAlgo::Command::WAIT:
+    //             std::cout << "Found survivor! Waiting for 3 seconds..." << std::endl;
+    //             // Wait for 3 seconds (3000 milliseconds)
+    //             step(3000);
+    //             break;
+    //         }
 
-            if (movement.command == RescueRunAlgo::Command::MOVE_FORWARD)
-            {
-                // std::cout << "Next position: " << movement.nextPosition.x << "," << movement.nextPosition.y << std::endl;
-                currentPos = nextPos;
-                i++;
-            }
-        }
-    }
+    //         if (movement.command == RescueRunAlgo::Command::MOVE_FORWARD)
+    //         {
+    //             // std::cout << "Next position: " << movement.nextPosition.x << "," << movement.nextPosition.y << std::endl;
+    //             currentPos = nextPos;
+    //             i++;
+    //         }
+    //     }
+    // }
 
-    API_turnRight();
-    motors.moveForward(this, sensorManager, 1.5);
-    API_turn180();
+    // API_turnRight();
+    // motors.moveForward(this, sensorManager, 1.5);
+    // API_turn180();
 
     
 }

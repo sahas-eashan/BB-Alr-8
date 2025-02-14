@@ -5,6 +5,13 @@
 #include <queue>
 #include <algorithm>
 #include <iomanip>
+#include <iostream>
+
+// Define ANSI color codes for terminal output
+#define ANSI_COLOR_RESET   "\033[0m"
+#define ANSI_COLOR_GREEN   "\033[32m"
+#define ANSI_COLOR_RED     "\033[31m"
+#define ANSI_COLOR_BLUE    "\033[34m"
 
 MazeSolver::MazeSolver()
     : maze{}, distances{}, position{10, 0}, heading{Heading::NORTH}, reachedCenter{false}
@@ -27,6 +34,13 @@ void MazeSolver::initialize()
     maze[MAZE_SIZE - 1][MAZE_SIZE - 1] = WallConfig::NE;
 
     resetDistances({0,0});
+
+    // Initialize visitCount with zeros
+    for (int x = 0; x < MAZE_SIZE; ++x) {
+        for (int y = 0; y < MAZE_SIZE; ++y) {
+            visitCount[x][y] = 0;
+        }
+    }
 }
 
 void MazeSolver::updateMaze()
@@ -195,6 +209,8 @@ void MazeSolver::updateDistances() {
             }
         }
     }
+
+    
 }
 
 void MazeSolver::updateHeading(Action nextAction) {
@@ -287,7 +303,7 @@ Action MazeSolver::explore()
         updateMaze();
     }
    
-    
+    //updateMaze();
     updateDistances();
     updateColour();
     Action action = tremauxSearch();
@@ -662,7 +678,17 @@ void MazeSolver::printMaze() const
                 // Print just the distance for non-robot cells
                 if (distances[x][y] >= 0)
                 {
-                    std::cout << std::setw(3) << distances[x][y];
+                    // Check if the cell has been visited
+                    if (visitCount[x][y] > 0)
+                    {
+                        // Visited cell: print distance in green
+                        std::cout << ANSI_COLOR_GREEN << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
+                    }
+                    else
+                    {
+                        // Unvisited cell: print distance in default color
+                        std::cout << std::setw(3) << distances[x][y];
+                    }
                 }
                 else
                 {
@@ -702,6 +728,7 @@ void MazeSolver::printMaze() const
     std::cout << "\nLegend:\n";
     std::cout << "^,>,v,< - Robot direction\n";
     std::cout << "Numbers - Distance from target\n";
+    std::cout << ANSI_COLOR_GREEN << "Green" << ANSI_COLOR_RESET << " - Visited cell\n";
     std::cout << "?       - Unexplored/unreachable\n";
     std::cout << "---|    - Walls\n";
 }
