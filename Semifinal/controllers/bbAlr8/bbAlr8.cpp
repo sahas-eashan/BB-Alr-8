@@ -38,10 +38,15 @@ void BbAlr8::run()
 
     exploreMaze();
 
+    // Create rescue algorithm instance and calculate path
+    RescueRunAlgo rescueAlgo;
+    rescueAlgo.setDefaults();
+
     rescueAlgo.findOptimalRoute();
 
     // Follow the calculated path
-    if (rescueAlgo.hasPathCalculated())
+    if (!rescueAlgo.hasPathCalculated())
+        return;
     {
         const auto &path = rescueAlgo.getOptimalPath();
         Point currentPos = path[0]; // Start position
@@ -75,6 +80,11 @@ void BbAlr8::run()
                 turn_180();
                 currentHeading = (currentHeading + 2) % 4;
                 break;
+            case RescueRunAlgo::Command::WAIT:
+                std::cout << "Found survivor! Waiting for 3 seconds..." << std::endl;
+                // Wait for 3 seconds (3000 milliseconds)
+                step(3000);
+                break;
             }
 
             if (movement.command == RescueRunAlgo::Command::MOVE_FORWARD)
@@ -91,6 +101,11 @@ void BbAlr8::run()
     // leds.lightEachLEDSequentially(*this);
     // floorColor();
     // }
+
+    API_turnRight();
+    motors.moveForward(this, sensorManager, 1.5);
+    API_turn180();
+
 }
 
 int8_t BbAlr8::getFloorColor()

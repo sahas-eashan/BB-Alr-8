@@ -37,6 +37,13 @@ public:
     void findOptimalRoute();
     RescueRunAlgo();
     ~RescueRunAlgo();
+    void setMaze(const std::vector<std::vector<int>> &maze);
+    void setDefaults();
+    void setRedNodes(const std::vector<Point> &redNodes);
+    void setOrangeNodes(const std::vector<Point> &orangeNodes);
+    void setYellowNodes(const std::vector<Point> &yellowNodes);
+    void setStartPoint(const Point &startPoint);
+    void setSurvivors(const std::vector<Point> &survivors);
 
     // Add getter for the calculated path
     const std::vector<Point> &getOptimalPath() const { return optimalPath; }
@@ -48,7 +55,8 @@ public:
         MOVE_FORWARD,
         TURN_LEFT,
         TURN_RIGHT,
-        TURN_180
+        TURN_180,
+        WAIT
     };
 
     struct Movement
@@ -57,7 +65,7 @@ public:
         Point nextPosition;
     };
 
-    Movement getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading) const;
+    Movement getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading);
 
     // // Maze data and constants
     // const int MAZE_S = 20; // MAZE_SIZE
@@ -104,12 +112,15 @@ public:
     std::vector<Point> orangeNodes = {};
     std::vector<Point> yellowNodes = {};
     std::vector<Point> survivors = {};
+    
     Point startPoint = {10, 0};
 
 private:
     std::vector<Point> optimalPath;
 
 
+
+    std::vector<std::vector<int>> convertNESWtoNSEW(const std::vector<std::vector<int>> &neswMatrix);
     PathInfo findShortestPath(Point start, Point end);
     bool canMove(int x, int y, int direction);
     std::vector<std::vector<int>> calculateAllPairDistances();

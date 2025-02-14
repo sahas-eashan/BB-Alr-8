@@ -26,6 +26,66 @@ void RescueRunAlgo::log(const std::string &text)
     std::cerr << text << std::endl;
 }
 
+void RescueRunAlgo::setMaze(const std::vector<std::vector<int>> &nesw_maze)
+{
+    auto nsew_maze = convertNESWtoNSEW(nesw_maze);
+    this->maze = nsew_maze;
+}
+
+void RescueRunAlgo::setDefaults()
+{
+    auto nsew_maze = convertNESWtoNSEW(maze);
+    this->maze = nsew_maze;
+}
+
+void RescueRunAlgo::setRedNodes(const std::vector<Point> &redNodes)
+{
+    this->redNodes = redNodes;
+}
+
+void RescueRunAlgo::setOrangeNodes(const std::vector<Point> &orangeNodes)
+{
+    this->orangeNodes = orangeNodes;
+}
+
+void RescueRunAlgo::setYellowNodes(const std::vector<Point> &yellowNodes)
+{
+    this->yellowNodes = yellowNodes;
+}
+
+void RescueRunAlgo::setStartPoint(const Point &startPoint)
+{
+    this->startPoint = startPoint;
+}
+
+void RescueRunAlgo::setSurvivors(const std::vector<Point> &survivors)
+{
+    this->survivors = survivors;
+}
+
+std::vector<std::vector<int>> RescueRunAlgo::convertNESWtoNSEW(const std::vector<std::vector<int>> &neswMatrix)
+{
+    int rows = neswMatrix.size();
+    int cols = neswMatrix[0].size();
+    std::vector<std::vector<int>> nsewMatrix(rows, std::vector<int>(cols));
+
+    for (int i = 0; i < rows; ++i)
+    {
+        for (int j = 0; j < cols; ++j)
+        {
+            int value = neswMatrix[i][j];
+            int n = (value & 8);      // North remains the same
+            int e = (value & 4) >> 1; // East moves to South (bit shift right)
+            int s = (value & 2) << 1; // South moves to East (bit shift left)
+            int w = (value & 1);      // West remains the same
+
+            nsewMatrix[i][j] = n | e | s | w;
+        }
+    }
+
+    return nsewMatrix;
+}
+
 // Implements Dijkstra's algorithm with danger zone penalties
 PathInfo RescueRunAlgo::findShortestPath(Point start, Point end)
 {
@@ -97,11 +157,11 @@ PathInfo RescueRunAlgo::findShortestPath(Point start, Point end)
             {
                 if (isPointIn(newPoint, redNodes))
                 {
-                    stepCost *= 100;
+                    stepCost *= 1000;
                 }
                 if (isPointIn(newPoint, orangeNodes))
                 {
-                    stepCost *= 10;
+                    stepCost *= 5000;
                 }
                 else if (isPointIn(newPoint, yellowNodes))
                 {
@@ -255,10 +315,19 @@ void RescueRunAlgo::findOptimalRoute()
     }
 }
 
-RescueRunAlgo::Movement RescueRunAlgo::getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading) const
+RescueRunAlgo::Movement RescueRunAlgo::getNextMovement(const Point &currentPos, const Point &nextPos, int currentHeading)
 {
     Movement movement;
     movement.nextPosition = nextPos;
+
+    // Check if current position is a survivor point
+    auto isSurvivor = std::find(survivors.begin(), survivors.end(), currentPos);
+    if (isSurvivor != survivors.end())
+    {
+        survivors.erase(isSurvivor);
+        movement.command = Command::WAIT;
+        return movement;
+    }
 
     // Determine target heading based on movement direction
     int targetHeading;

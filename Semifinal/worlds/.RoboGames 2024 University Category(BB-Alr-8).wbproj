@@ -12,5 +12,5 @@ textFiles: 2 "controllers/bbAlr8/main.cpp" "controllers/bbAlr8/bbAlr8.hpp" "cont
 globalOptionalRendering: DistanceSensorRays
 consoles: Console:All:All
 renderingDevicePerspectives: robot:dcam;1;54.7347;0.021815;0.129463
-renderingDevicePerspectives: robot:fcam;1;0.673819;0.745203;0.440159
+renderingDevicePerspectives: robot:fcam;1;1.08984;0.745203;0.440159
 renderingDevicePerspectives: robot:scancam;1;32;0;0
