@@ -4,7 +4,6 @@
 #include <sstream>
 #include <cmath>
 #include <thread>
-#include <set>
 
 using namespace webots;
 
@@ -48,32 +47,11 @@ void BbAlr8::run()
         Point currentPos = path[0]; // Start position
         int currentHeading = 0;     // Start facing NORTH
 
-        std::set<Point> visitedSurvivors;
-
         size_t i = 1;
         while (i < path.size())
         {
             Point nextPos = path[i];
             auto movement = rescueAlgo.getNextMovement(currentPos, nextPos, currentHeading);
-
-            // Check if the current position is a survivor's location and hasn't been visited yet
-            for (const auto &survivor : rescueAlgo.survivors)
-            {
-                if (currentPos == survivor && visitedSurvivors.find(survivor) == visitedSurvivors.end())
-                {
-                    visitedSurvivors.insert(survivor); // Mark survivor as visited
-
-                    leds.lightGreenOn();
-                    // Delay for 3 seconds
-                    int delaySteps = (Config::DELAY_TIME / Config::TIME_STEP);
-                    for (int i = 0; i < delaySteps; i++)
-                    {
-                        step(Config::TIME_STEP);
-                    }
-                    leds.lightGreenOff();
-                    break; // Exit the loop early since we found a match
-                }
-            }
 
             // Execute the movement command
             switch (movement.command)
