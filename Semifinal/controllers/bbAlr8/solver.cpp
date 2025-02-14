@@ -4,6 +4,7 @@
 #include <limits>
 #include <queue>
 #include <algorithm>
+#include <iomanip>
 
 MazeSolver::MazeSolver()
     : maze{}, distances{}, position{10, 0}, heading{Heading::NORTH}, reachedCenter{false}
@@ -14,8 +15,7 @@ MazeSolver::MazeSolver()
 void MazeSolver::initialize()
 {
     // Setting the borders
-    for (int i = 1; i < MAZE_SIZE - 1; ++i)
-    {
+    for (int i = 1; i < MAZE_SIZE - 1; ++i) {
         maze[0][i] = WallConfig::W;
         maze[i][0] = WallConfig::S;
         maze[i][MAZE_SIZE - 1] = WallConfig::N;
@@ -26,7 +26,7 @@ void MazeSolver::initialize()
     maze[MAZE_SIZE - 1][0] = WallConfig::ES;
     maze[MAZE_SIZE - 1][MAZE_SIZE - 1] = WallConfig::NE;
 
-    resetDistances({0, 0});
+    resetDistances({0,0});
 }
 
 void MazeSolver::updateMaze()
@@ -145,98 +145,81 @@ void MazeSolver::resetDistances(Coordinate target)
     distances[target.x][target.y] = 0;
 }
 
-bool MazeSolver::isWallInDirection(int x, int y, Heading direction) const
-{
-    switch (direction)
-    {
-    case Heading::NORTH:
-        return maze[x][y] & WallConfig::N;
-    case Heading::EAST:
-        return maze[x][y] & WallConfig::E;
-    case Heading::SOUTH:
-        return maze[x][y] & WallConfig::S;
-    case Heading::WEST:
-        return maze[x][y] & WallConfig::W;
+bool MazeSolver::isWallInDirection(int x, int y, Heading direction) const {
+    switch (direction) {
+    case Heading::NORTH: return maze[x][y] & WallConfig::N;
+    case Heading::EAST:  return maze[x][y] & WallConfig::E;
+    case Heading::SOUTH: return maze[x][y] & WallConfig::S;
+    case Heading::WEST:  return maze[x][y] & WallConfig::W;
     }
     return false;
 }
 
-void MazeSolver::updateDistances()
-{
+void MazeSolver::updateDistances() {
     resetDistances(targetCoordinate);
     std::queue<int> squares;
 
     // Add goal squares to queue
-    for (int x = 0; x < MAZE_SIZE; ++x)
-    {
-        for (int y = 0; y < MAZE_SIZE; ++y)
-        {
-            if (distances[x][y] == 0)
-            {
+    for (int x = 0; x < MAZE_SIZE; ++x) {
+        for (int y = 0; y < MAZE_SIZE; ++y) {
+            if (distances[x][y] == 0) {
                 squares.push(xyToSquare(x, y));
             }
         }
     }
 
-    while (!squares.empty())
-    {
+    while (!squares.empty()) {
         Coordinate square = squareToCoord(squares.front());
         squares.pop();
         int x = square.x;
         int y = square.y;
 
         // Check all four directions
-        const std::array<std::pair<Heading, std::pair<int, int>>, 4> directions = {{{Heading::NORTH, {0, 1}},
-                                                                                    {Heading::EAST, {1, 0}},
-                                                                                    {Heading::SOUTH, {0, -1}},
-                                                                                    {Heading::WEST, {-1, 0}}}};
+        const std::array<std::pair<Heading, std::pair<int, int>>, 4> directions = {{
+            {Heading::NORTH, {0, 1}},
+            {Heading::EAST,  {1, 0}},
+            {Heading::SOUTH, {0, -1}},
+            {Heading::WEST,  {-1, 0}}
+        }};
 
-        for (const auto &[dir, offset] : directions)
-        {
+        for (const auto& [dir, offset] : directions) {
             int newX = x + offset.first;
             int newY = y + offset.second;
-
-            if (!isWallInDirection(x, y, dir) &&
-                newX >= 0 && newX < MAZE_SIZE &&
-                newY >= 0 && newY < MAZE_SIZE &&
-                distances[newX][newY] == -1)
-            {
-                distances[newX][newY] = distances[x][y] + 1;
-                squares.push(xyToSquare(newX, newY));
+            
+            if (!isWallInDirection(x, y, dir) && 
+                newX >= 0 && newX < MAZE_SIZE && 
+                newY >= 0 && newY < MAZE_SIZE && 
+                distances[newX][newY] == -1) {
+                    distances[newX][newY] = distances[x][y] + 1;
+                    squares.push(xyToSquare(newX, newY));
             }
         }
     }
 }
 
-void MazeSolver::updateHeading(Action nextAction)
-{
-    if (nextAction == Action::FORWARD || nextAction == Action::IDLE)
-        return;
+void MazeSolver::updateHeading(Action nextAction) {
+    if (nextAction == Action::FORWARD || nextAction == Action::IDLE) return;
 
     const std::array<Heading, 4> headings = {
-        Heading::NORTH, Heading::EAST, Heading::SOUTH, Heading::WEST};
+        Heading::NORTH, Heading::EAST, Heading::SOUTH, Heading::WEST
+    };
 
     int currentIndex = static_cast<int>(heading);
-    if (nextAction == Action::LEFT)
-    {
-        heading = headings[(currentIndex + 3) % 4]; // +3 is same as -1 but avoids negative numbers
-    }
-    else if (nextAction == Action::RIGHT)
-    {
+    if (nextAction == Action::LEFT) {
+        heading = headings[(currentIndex + 3) % 4];  // +3 is same as -1 but avoids negative numbers
+    } else if (nextAction == Action::RIGHT) {
         heading = headings[(currentIndex + 1) % 4];
     }
 }
 
-void MazeSolver::updatePosition(Action nextAction)
-{
-    if (nextAction != Action::FORWARD)
-        return;
+void MazeSolver::updatePosition(Action nextAction) {
+    if (nextAction != Action::FORWARD) return;
 
     const std::array<std::pair<int, int>, 4> offsets = {{
-        {0, 1},  // NORTH
-        {1, 0},  // EAST
-        {0, -1}, // SOUTH
-        {-1, 0}  // WEST
+        {0, 1},   // NORTH
+        {1, 0},   // EAST
+        {0, -1},  // SOUTH
+        {-1, 0}   // WEST
     }};
 
     int index = static_cast<int>(heading);
@@ -252,7 +235,7 @@ Action MazeSolver::solve()
         return Action::IDLE;
     }
 
-    updateMaze();
+    //updateMaze();
     updateDistances();
 
     Action action = floodFill();
@@ -261,14 +244,10 @@ Action MazeSolver::solve()
     return action;
 }
 
-bool MazeSolver::allCellsExplored()
-{
-    for (int x = 0; x < MAZE_SIZE; ++x)
-    {
-        for (int y = 0; y < MAZE_SIZE; ++y)
-        {
-            if (visitCount[x][y] == 0)
-            {
+bool MazeSolver::allCellsExplored(){
+    for (int x = 0; x < MAZE_SIZE; ++x) {
+        for (int y = 0; y < MAZE_SIZE; ++y) {
+            if (visitCount[x][y] == 0) {
                 return false;
             }
         }
@@ -303,19 +282,24 @@ Action MazeSolver::explore()
 
     visitCount[position.x][position.y]++;
 
-
-    updateMaze();
+    if(visitCount[position.x][position.y] == 1)
+    {
+        updateMaze();
+    }
+   
+    
     updateDistances();
     updateColour();
     Action action = tremauxSearch();
     updateHeading(action);
     updatePosition(action);
+    printMaze();
     return action;
 }
 
 Action MazeSolver::tremauxSearch()
 {
-    int leastVisits = std::numeric_limits<int>::max();
+    unsigned int leastVisits = std::numeric_limits<unsigned int>::max();
     Action optimalMove = Action::IDLE;
 
     // visitCount[position.x][position.y]++;
@@ -439,15 +423,15 @@ Action MazeSolver::tremauxSearch()
         }
     }
     // Handle dead ends
-    if (leastVisits == std::numeric_limits<int>::max())
+    if (leastVisits == std::numeric_limits<unsigned int>::max())
     {
         optimalMove = Action::RIGHT;
         std::cout << "dead end" << std::endl;
     }
-    if (optimalMove == Action::FORWARD)
-    {
-        visitCount[position.x][position.y]++;
-    }
+    // if (optimalMove == Action::FORWARD)
+    // {
+    //     visitCount[position.x][position.y]++;
+    // }
 
     return optimalMove;
 }
@@ -596,4 +580,128 @@ void MazeSolver::addDangerZone(int x, int y)
             API_add_OrangeNode(i, j);
         }
     }
+}
+
+void MazeSolver::printMaze() const
+{
+    // Print column numbers
+    std::cout << "   ";
+    for (int x = 0; x < MAZE_SIZE; ++x)
+    {
+        std::cout << std::setw(3) << x;
+    }
+    std::cout << "\n";
+
+    // For each row
+    for (int y = MAZE_SIZE - 1; y >= 0; --y)
+    {
+        // Print row number
+        std::cout << std::setw(2) << y << " ";
+
+        // Print top walls for each cell in the row
+        for (int x = 0; x < MAZE_SIZE; ++x)
+        {
+            std::cout << "+";
+            if (maze[x][y] & WallConfig::N)
+            {
+                std::cout << "---";
+            }
+            else
+            {
+                std::cout << "   ";
+            }
+        }
+        std::cout << "+\n";
+
+        // Print row number again
+        std::cout << "   ";
+
+        // Print side walls and cell contents
+        for (int x = 0; x < MAZE_SIZE; ++x)
+        {
+            if (maze[x][y] & WallConfig::W)
+            {
+                std::cout << "|";
+            }
+            else
+            {
+                std::cout << " ";
+            }
+
+            // Print cell content
+            if (x == position.x && y == position.y)
+            {
+                // Print direction the robot is facing
+                switch (heading)
+                {
+                case Heading::NORTH:
+                    std::cout << "^";
+                    break;
+                case Heading::EAST:
+                    std::cout << ">";
+                    break;
+                case Heading::SOUTH:
+                    std::cout << "v";
+                    break;
+                case Heading::WEST:
+                    std::cout << "<";
+                    break;
+                }
+                // Print distance value after direction
+                if (distances[x][y] >= 0)
+                {
+                    std::cout << std::setw(2) << distances[x][y];
+                }
+                else
+                {
+                    std::cout << " ?";
+                }
+            }
+            else
+            {
+                // Print just the distance for non-robot cells
+                if (distances[x][y] >= 0)
+                {
+                    std::cout << std::setw(3) << distances[x][y];
+                }
+                else
+                {
+                    std::cout << " ? ";
+                }
+            }
+        }
+
+        // Print final wall of row
+        if (maze[MAZE_SIZE - 1][y] & WallConfig::E)
+        {
+            std::cout << "|\n";
+        }
+        else
+        {
+            std::cout << " \n";
+        }
+    }
+
+    // Print bottom row of walls
+    std::cout << "   ";
+    for (int x = 0; x < MAZE_SIZE; ++x)
+    {
+        std::cout << "+";
+        if (maze[x][0] & WallConfig::S)
+        {
+            std::cout << "---";
+        }
+        else
+        {
+            std::cout << "   ";
+        }
+    }
+    std::cout << "+\n";
+
+    // Print legend
+    std::cout << "\nLegend:\n";
+    std::cout << "^,>,v,< - Robot direction\n";
+    std::cout << "Numbers - Distance from target\n";
+    std::cout << "?       - Unexplored/unreachable\n";
+    std::cout << "---|    - Walls\n";
 }

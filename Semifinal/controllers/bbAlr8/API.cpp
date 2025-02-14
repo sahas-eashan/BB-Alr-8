@@ -70,7 +70,6 @@ void exploreMaze() {
     int i =0;
     while (true) {
         i++;
-        std::cout << i << " th move  ";
         Action action = explorer.explore();
         //std::cout <<" Next Move: " << action << std::endl;
         if (action == Action::ALLEXPLORED) {
@@ -79,15 +78,15 @@ void exploreMaze() {
         }
         switch (action) {
             case Action::FORWARD:
-                std::cout <<" Next Move: F"<< std::endl;
+                std::cout << i <<" th Move: F"<< std::endl;
                 API_moveForward();
                 break;
             case Action::LEFT:
-                std::cout <<" Next Move: L"<< std::endl;
+                std::cout << i <<" th Move: L"<< std::endl;
                 API_turnLeft();
                 break;
             case Action::RIGHT:
-                std::cout <<" Next Move: R"<< std::endl;
+                std::cout << i <<" th Move: R"<< std::endl;
                 API_turnRight();
                 break;
             case Action::IDLE:

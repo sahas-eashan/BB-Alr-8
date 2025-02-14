@@ -60,7 +60,7 @@ public:
         resetDistances(targetCoordinate);
     }
 
-    
+    void printMaze() const;
 
 
 private:
