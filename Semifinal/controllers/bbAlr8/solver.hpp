@@ -3,6 +3,7 @@
 
 #include <array>
 #include <vector>
+#include <stack>
 
 
 enum class Heading { NORTH, EAST, SOUTH, WEST };
@@ -62,6 +63,8 @@ public:
 
     void printMaze() const;
 
+    Action dfsSearch(); 
+
 
 private:
     std::array<std::array<unsigned int, MAZE_SIZE>, MAZE_SIZE> maze;
@@ -90,6 +93,12 @@ private:
 
     void updateColour();
     void addDangerZone(int x, int y);
+
+    std::stack<Coordinate> dfsStack;
+    bool backtracking;
+    Coordinate previousPosition;
+
+    bool shouldMarkVisited(int x, int y);
 };
 
 #endif

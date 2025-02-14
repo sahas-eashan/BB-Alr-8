@@ -41,6 +41,9 @@ void MazeSolver::initialize()
             visitCount[x][y] = 0;
         }
     }
+    dfsStack.push(position); // Initial position
+    backtracking = false;
+    previousPosition = position;
 }
 
 void MazeSolver::updateMaze()
@@ -260,6 +263,43 @@ Action MazeSolver::solve()
     return action;
 }
 
+bool MazeSolver::shouldMarkVisited(int x, int y) {
+    int visitedNeighbors = 0;
+    int totalNeighbors = 4;
+
+    // Check North
+    if (y + 1 < MAZE_SIZE) {
+        if (visitCount[x][y + 1] > 0) visitedNeighbors++;
+    } else {
+        totalNeighbors--; // Edge case: No neighbor in this direction
+    }
+
+    // Check South
+    if (y - 1 >= 0) {
+        if (visitCount[x][y - 1] > 0) visitedNeighbors++;
+    } else {
+        totalNeighbors--;
+    }
+
+    // Check East
+    if (x + 1 < MAZE_SIZE) {
+        if (visitCount[x + 1][y] > 0) visitedNeighbors++;
+    } else {
+        totalNeighbors--;
+    }
+
+    // Check West
+    if (x - 1 >= 0) {
+        if (visitCount[x - 1][y] > 0) visitedNeighbors++;
+    } else {
+        totalNeighbors--;
+    }
+
+    // If all possible neighbors are visited, mark the cell as visited
+    return (visitedNeighbors == totalNeighbors);
+}
+
+
 bool MazeSolver::allCellsExplored(){
     for (int x = 0; x < MAZE_SIZE; ++x) {
         for (int y = 0; y < MAZE_SIZE; ++y) {
@@ -287,30 +327,146 @@ void MazeSolver::updateColour()
     API_detectAndAddSurvivor(x , y);
 }
 
-Action MazeSolver::explore()
-{
+// Action MazeSolver::explore()
+// {
 
-    if (allCellsExplored())
-    {
-        // API::debugLog("All cells explored!");
+//     if (allCellsExplored())
+//     {
+//         // API::debugLog("All cells explored!");
+//         return Action::ALLEXPLORED;
+//     }
+
+//     visitCount[position.x][position.y]++;
+
+//     if(visitCount[position.x][position.y] == 1)
+//     {
+//         updateMaze();
+//     }
+   
+//     //updateMaze();
+//     updateDistances();
+//     updateColour();
+//     Action action = tremauxSearch();
+//     updateHeading(action);
+//     updatePosition(action);
+//     printMaze();
+//     return action;
+// }
+
+Action MazeSolver::explore() {
+    if (allCellsExplored()) {
         return Action::ALLEXPLORED;
     }
 
     visitCount[position.x][position.y]++;
+    
+    // for (int x = 0; x < MAZE_SIZE; ++x) {
+    //     for (int y = 0; y < MAZE_SIZE; ++y) {
+    //         // Mark as visited if all adjacent necessary walls are visited
+    //         if (shouldMarkVisited(x, y)) {
+    //         visitCount[x][y] = 2; // Ensure it's marked as visited
+    // }
+    //     }
+    // }
+
+    
 
     if(visitCount[position.x][position.y] == 1)
     {
         updateMaze();
     }
-   
-    //updateMaze();
     updateDistances();
     updateColour();
-    Action action = tremauxSearch();
+    
+    Action action = dfsSearch(); // Call dfsSearch instead of tremauxSearch
     updateHeading(action);
     updatePosition(action);
+    
     printMaze();
     return action;
+}
+
+Action MazeSolver::dfsSearch() {
+    const int x = position.x;
+    const int y = position.y;
+    std::vector<std::pair<Action, int>> possibleActions; // Store (action, visitCount)
+
+    // Check possible moves in priority order: Forward, Left, Right
+    auto checkAndAddAction = [&](Heading dir, Action act, int nx, int ny) {
+        if (!isWallInDirection(x, y, dir)) {
+            possibleActions.emplace_back(act, visitCount[nx][ny]); // Store action with visit count
+        }
+    };
+
+    switch (heading) {
+        case Heading::NORTH:
+            checkAndAddAction(Heading::NORTH, Action::FORWARD, x, y + 1);
+            checkAndAddAction(Heading::WEST, Action::LEFT, x - 1, y);
+            checkAndAddAction(Heading::EAST, Action::RIGHT, x + 1, y);
+            break;
+        case Heading::EAST:
+            checkAndAddAction(Heading::EAST, Action::FORWARD, x + 1, y);
+            checkAndAddAction(Heading::NORTH, Action::LEFT, x, y + 1);
+            checkAndAddAction(Heading::SOUTH, Action::RIGHT, x, y - 1);
+            break;
+        case Heading::SOUTH:
+            checkAndAddAction(Heading::SOUTH, Action::FORWARD, x, y - 1);
+            checkAndAddAction(Heading::EAST, Action::LEFT, x + 1, y);
+            checkAndAddAction(Heading::WEST, Action::RIGHT, x - 1, y);
+            break;
+        case Heading::WEST:
+            checkAndAddAction(Heading::WEST, Action::FORWARD, x - 1, y);
+            checkAndAddAction(Heading::SOUTH, Action::LEFT, x, y - 1);
+            checkAndAddAction(Heading::NORTH, Action::RIGHT, x, y + 1);
+            break;
+    }
+
+    // Sort actions by visit count (lower count preferred)
+    std::sort(possibleActions.begin(), possibleActions.end(),
+              [](const std::pair<Action, int>& a, const std::pair<Action, int>& b) {
+                  return a.second < b.second;
+              });
+
+    // Prefer less-visited cells
+    if (!possibleActions.empty()) {
+        backtracking = false;
+        dfsStack.push(position); // Push current position before moving
+        return possibleActions.front().first; // Return the action with the least visit count
+    }
+
+    // Backtrack if no new cells
+    if (!dfsStack.empty() && !backtracking) {
+        previousPosition = dfsStack.top();
+        dfsStack.pop();
+        backtracking = true;
+    }
+
+    if (backtracking) {
+        // Calculate direction to previous position
+        int dx = previousPosition.x - x;
+        int dy = previousPosition.y - y;
+        Heading requiredHeading = Heading::NORTH;
+
+        if (dx == 1) requiredHeading = Heading::EAST;
+        else if (dx == -1) requiredHeading = Heading::WEST;
+        else if (dy == 1) requiredHeading = Heading::NORTH;
+        else if (dy == -1) requiredHeading = Heading::SOUTH;
+
+        // Determine turn direction
+        int currentIdx = static_cast<int>(heading);
+        int requiredIdx = static_cast<int>(requiredHeading);
+        int diff = (requiredIdx - currentIdx + 4) % 4;
+
+        if (diff == 1) return Action::RIGHT;
+        else if (diff == 3) return Action::LEFT;
+        else if (diff == 2) { // 180 turn
+            backtracking = false;
+            return Action::RIGHT; // Turn right twice (simplified)
+        }
+        else return Action::FORWARD;
+    }
+
+    return Action::IDLE;
 }
 
 Action MazeSolver::tremauxSearch()
