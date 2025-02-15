@@ -26,10 +26,53 @@ void RescueRunAlgo::log(const std::string &text)
     std::cerr << text << std::endl;
 }
 
-void RescueRunAlgo::setMaze(const std::vector<std::vector<int>> &nesw_maze)
+void RescueRunAlgo::setMaze(std::array<std::array<unsigned int, 20>, 20> &nesw_maze)
 {
-    auto nsew_maze = convertNESWtoNSEW(nesw_maze);
+    std::vector<std::vector<int>> mazeTemp;
+
+    // Iterate through the std::array and convert each row to std::vector<int>
+    for (size_t i = 0; i < nesw_maze.size(); ++i)
+    {
+        // Convert each row (which is a std::array) into a std::vector<int>
+        std::vector<int> row(nesw_maze[i].begin(), nesw_maze[i].end());
+        mazeTemp.push_back(row);
+    }
+
+    // Now you can use 'maze' as a std::vector<std::vector<int>>
+    auto nsew_maze = convertNESWtoNSEW(mazeTemp);
     this->maze = nsew_maze;
+
+    std::cout << "converted maze = {\n";
+    for (int y = 0; y < MAZE_S; ++y)
+    {
+        std::cout << "    {";
+        for (int x = 0; x < MAZE_S; ++x)
+        {
+            std::cout << maze[y][x];
+            if (x < MAZE_S - 1)
+                std::cout << ", ";
+        }
+        std::cout << "}";
+        if (y < MAZE_S - 1)
+            std::cout << ",";
+        std::cout << "\n";
+    }
+    std::cout << "};\n";
+
+    printNodes(redNodes, "Red");
+    printNodes(orangeNodes, "Orange");
+    printNodes(yellowNodes, "Yellow");
+    printNodes(survivors, "Survivor");
+}
+
+void RescueRunAlgo::printNodes(const std::vector<Point> &nodes, const std::string &color)
+{
+    std::cout << color << " Nodes:\n";
+    for (const auto &node : nodes)
+    {
+        std::cout << "{" << node.y << ", " << node.x << "} ,";
+    }
+    std::cout << "\n";
 }
 
 void RescueRunAlgo::setDefaults()
@@ -79,7 +122,7 @@ std::vector<std::vector<int>> RescueRunAlgo::convertNESWtoNSEW(const std::vector
             int s = (value & 2) << 1; // South moves to East (bit shift left)
             int w = (value & 1);      // West remains the same
 
-            nsewMatrix[i][j] = n | e | s | w;
+            nsewMatrix[j][i] = n | e | s | w;
         }
     }
 

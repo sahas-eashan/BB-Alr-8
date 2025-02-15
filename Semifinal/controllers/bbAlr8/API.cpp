@@ -65,16 +65,11 @@ void API_detectAndAddSurvivor(int x , int y){
     BbAlr8::getInstance().detectAndAddSurvivors(x, y);
 }
 
-void exploreMaze() {
+std::array<std::array<unsigned int, MAZE_SIZE>, MAZE_SIZE> exploreMaze() {
     std::cout << "Starting to explore the maze....." << std::endl;
 
     MazeSolver explorer;
 
-    //API_moveForward();
-    //API_turnRight();
-    //API_turn180();  
-
-    //explorer.setStart({10, 0});
     explorer.setTarget({10, 0});
 
     int i =0;
@@ -111,8 +106,16 @@ void exploreMaze() {
     std::cout << "Exploration complete!" << std::endl;
     std::cout << "Returning to start....." << std::endl;
 
+    explorer.printWallsInEnd();
+
     while (true) {
         Action action = explorer.solve();
+
+        if (action == Action::IDLE) {
+            std::cout << "Back to start cell" << std::endl;
+            break;
+        }
+
         switch (action) {
             case Action::FORWARD:
                 API_moveForward();
@@ -131,6 +134,10 @@ void exploreMaze() {
                 break; 
         }
     }
+
+    explorer.printWallsInEnd();
+
+    return explorer.getMaze();
 }
 
 int8_t API_getColour(){

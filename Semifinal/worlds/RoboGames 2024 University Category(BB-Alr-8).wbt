@@ -975,18 +975,6 @@ Wall {
   }
 }
 Wall {
-  translation -0.703801 -2.44931 0
-  rotation 0 0 -1 -0.7854
-  name "wall(225)"
-  size 0.01 0.1 0.1
-  appearance Roughcast {
-    colorOverride 0 1 0
-    textureTransform TextureTransform {
-      scale 2.4 1
-    }
-  }
-}
-Wall {
   translation 1.625 1.5 0
   rotation 0 0 1 1.5708
   name "wall(23)"

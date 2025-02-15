@@ -8,12 +8,12 @@
 #include <iostream>
 
 // Define ANSI color codes for terminal output
-#define ANSI_COLOR_RESET   "\033[0m"
-#define ANSI_COLOR_GREEN   "\033[32m"
-#define ANSI_COLOR_RED     "\033[31m"
-#define ANSI_COLOR_BLUE    "\033[34m"
-#define ANSI_COLOR_YELLOW  "\033[33m"
-#define ANSI_COLOR_ORANGE  "\033[35m"//"\033[35m"  // Using 256-color code for orange
+#define ANSI_COLOR_RESET "\033[0m"
+#define ANSI_COLOR_GREEN "\033[32m"
+#define ANSI_COLOR_RED "\033[31m"
+#define ANSI_COLOR_BLUE "\033[34m"
+#define ANSI_COLOR_YELLOW "\033[33m"
+#define ANSI_COLOR_ORANGE "\033[35m" //"\033[35m"  // Using 256-color code for orange
 
 MazeSolver::MazeSolver()
     : maze{}, distances{}, position{10, 0}, heading{Heading::NORTH}, reachedCenter{false}
@@ -24,7 +24,8 @@ MazeSolver::MazeSolver()
 void MazeSolver::initialize()
 {
     // Setting the borders
-    for (int i = 1; i < MAZE_SIZE - 1; ++i) {
+    for (int i = 1; i < MAZE_SIZE - 1; ++i)
+    {
         maze[0][i] = WallConfig::W;
         maze[i][0] = WallConfig::S;
         maze[i][MAZE_SIZE - 1] = WallConfig::N;
@@ -35,11 +36,13 @@ void MazeSolver::initialize()
     maze[MAZE_SIZE - 1][0] = WallConfig::ES;
     maze[MAZE_SIZE - 1][MAZE_SIZE - 1] = WallConfig::NE;
 
-    resetDistances({0,0});
+    resetDistances({0, 0});
 
     // Initialize visitCount with zeros
-    for (int x = 0; x < MAZE_SIZE; ++x) {
-        for (int y = 0; y < MAZE_SIZE; ++y) {
+    for (int x = 0; x < MAZE_SIZE; ++x)
+    {
+        for (int y = 0; y < MAZE_SIZE; ++y)
+        {
             visitCount[x][y] = 0;
         }
     }
@@ -164,83 +167,98 @@ void MazeSolver::resetDistances(Coordinate target)
     distances[target.x][target.y] = 0;
 }
 
-bool MazeSolver::isWallInDirection(int x, int y, Heading direction) const {
-    switch (direction) {
-    case Heading::NORTH: return maze[x][y] & WallConfig::N;
-    case Heading::EAST:  return maze[x][y] & WallConfig::E;
-    case Heading::SOUTH: return maze[x][y] & WallConfig::S;
-    case Heading::WEST:  return maze[x][y] & WallConfig::W;
+bool MazeSolver::isWallInDirection(int x, int y, Heading direction) const
+{
+    switch (direction)
+    {
+    case Heading::NORTH:
+        return maze[x][y] & WallConfig::N;
+    case Heading::EAST:
+        return maze[x][y] & WallConfig::E;
+    case Heading::SOUTH:
+        return maze[x][y] & WallConfig::S;
+    case Heading::WEST:
+        return maze[x][y] & WallConfig::W;
     }
     return false;
 }
 
-void MazeSolver::updateDistances() {
+void MazeSolver::updateDistances()
+{
     resetDistances(targetCoordinate);
     std::queue<int> squares;
 
     // Add goal squares to queue
-    for (int x = 0; x < MAZE_SIZE; ++x) {
-        for (int y = 0; y < MAZE_SIZE; ++y) {
-            if (distances[x][y] == 0) {
+    for (int x = 0; x < MAZE_SIZE; ++x)
+    {
+        for (int y = 0; y < MAZE_SIZE; ++y)
+        {
+            if (distances[x][y] == 0)
+            {
                 squares.push(xyToSquare(x, y));
             }
         }
     }
 
-    while (!squares.empty()) {
+    while (!squares.empty())
+    {
         Coordinate square = squareToCoord(squares.front());
         squares.pop();
         int x = square.x;
         int y = square.y;
 
         // Check all four directions
-        const std::array<std::pair<Heading, std::pair<int, int>>, 4> directions = {{
-            {Heading::NORTH, {0, 1}},
-            {Heading::EAST,  {1, 0}},
-            {Heading::SOUTH, {0, -1}},
-            {Heading::WEST,  {-1, 0}}
-        }};
+        const std::array<std::pair<Heading, std::pair<int, int>>, 4> directions = {{{Heading::NORTH, {0, 1}},
+                                                                                    {Heading::EAST, {1, 0}},
+                                                                                    {Heading::SOUTH, {0, -1}},
+                                                                                    {Heading::WEST, {-1, 0}}}};
 
-        for (const auto& [dir, offset] : directions) {
+        for (const auto &[dir, offset] : directions)
+        {
             int newX = x + offset.first;
             int newY = y + offset.second;
-            
-            if (!isWallInDirection(x, y, dir) && 
-                newX >= 0 && newX < MAZE_SIZE && 
-                newY >= 0 && newY < MAZE_SIZE && 
-                distances[newX][newY] == -1) {
-                    distances[newX][newY] = distances[x][y] + 1;
-                    squares.push(xyToSquare(newX, newY));
+
+            if (!isWallInDirection(x, y, dir) &&
+                newX >= 0 && newX < MAZE_SIZE &&
+                newY >= 0 && newY < MAZE_SIZE &&
+                distances[newX][newY] == -1)
+            {
+                distances[newX][newY] = distances[x][y] + 1;
+                squares.push(xyToSquare(newX, newY));
             }
         }
     }
-
-    
 }
 
-void MazeSolver::updateHeading(Action nextAction) {
-    if (nextAction == Action::FORWARD || nextAction == Action::IDLE) return;
+void MazeSolver::updateHeading(Action nextAction)
+{
+    if (nextAction == Action::FORWARD || nextAction == Action::IDLE)
+        return;
 
     const std::array<Heading, 4> headings = {
-        Heading::NORTH, Heading::EAST, Heading::SOUTH, Heading::WEST
-    };
+        Heading::NORTH, Heading::EAST, Heading::SOUTH, Heading::WEST};
 
     int currentIndex = static_cast<int>(heading);
-    if (nextAction == Action::LEFT) {
-        heading = headings[(currentIndex + 3) % 4];  // +3 is same as -1 but avoids negative numbers
-    } else if (nextAction == Action::RIGHT) {
+    if (nextAction == Action::LEFT)
+    {
+        heading = headings[(currentIndex + 3) % 4]; // +3 is same as -1 but avoids negative numbers
+    }
+    else if (nextAction == Action::RIGHT)
+    {
         heading = headings[(currentIndex + 1) % 4];
     }
 }
 
-void MazeSolver::updatePosition(Action nextAction) {
-    if (nextAction != Action::FORWARD) return;
+void MazeSolver::updatePosition(Action nextAction)
+{
+    if (nextAction != Action::FORWARD)
+        return;
 
     const std::array<std::pair<int, int>, 4> offsets = {{
-        {0, 1},   // NORTH
-        {1, 0},   // EAST
-        {0, -1},  // SOUTH
-        {-1, 0}   // WEST
+        {0, 1},  // NORTH
+        {1, 0},  // EAST
+        {0, -1}, // SOUTH
+        {-1, 0}  // WEST
     }};
 
     int index = static_cast<int>(heading);
@@ -256,44 +274,63 @@ Action MazeSolver::solve()
         return Action::IDLE;
     }
 
-    //updateMaze();
+    // updateMaze();
     updateDistances();
 
     Action action = floodFill();
     updateHeading(action);
     updatePosition(action);
+
+    printMaze();
     return action;
 }
 
-bool MazeSolver::shouldMarkVisited(int x, int y) {
+bool MazeSolver::shouldMarkVisited(int x, int y)
+{
     int visitedNeighbors = 0;
     int totalNeighbors = 4;
 
     // Check North
-    if (y + 1 < MAZE_SIZE) {
-        if (visitCount[x][y + 1] > 0) visitedNeighbors++;
-    } else {
+    if (y + 1 < MAZE_SIZE)
+    {
+        if (visitCount[x][y + 1] > 0)
+            visitedNeighbors++;
+    }
+    else
+    {
         totalNeighbors--; // Edge case: No neighbor in this direction
     }
 
     // Check South
-    if (y - 1 >= 0) {
-        if (visitCount[x][y - 1] > 0) visitedNeighbors++;
-    } else {
+    if (y - 1 >= 0)
+    {
+        if (visitCount[x][y - 1] > 0)
+            visitedNeighbors++;
+    }
+    else
+    {
         totalNeighbors--;
     }
 
     // Check East
-    if (x + 1 < MAZE_SIZE) {
-        if (visitCount[x + 1][y] > 0) visitedNeighbors++;
-    } else {
+    if (x + 1 < MAZE_SIZE)
+    {
+        if (visitCount[x + 1][y] > 0)
+            visitedNeighbors++;
+    }
+    else
+    {
         totalNeighbors--;
     }
 
     // Check West
-    if (x - 1 >= 0) {
-        if (visitCount[x - 1][y] > 0) visitedNeighbors++;
-    } else {
+    if (x - 1 >= 0)
+    {
+        if (visitCount[x - 1][y] > 0)
+            visitedNeighbors++;
+    }
+    else
+    {
         totalNeighbors--;
     }
 
@@ -301,11 +338,14 @@ bool MazeSolver::shouldMarkVisited(int x, int y) {
     return (visitedNeighbors == totalNeighbors);
 }
 
-
-bool MazeSolver::allCellsExplored(){
-    for (int x = 0; x < MAZE_SIZE; ++x) {
-        for (int y = 0; y < MAZE_SIZE; ++y) {
-            if (visitCount[x][y] == 0) {
+bool MazeSolver::allCellsExplored()
+{
+    for (int x = 0; x < MAZE_SIZE; ++x)
+    {
+        for (int y = 0; y < MAZE_SIZE; ++y)
+        {
+            if (visitCount[x][y] == 0)
+            {
                 return false;
             }
         }
@@ -319,16 +359,20 @@ void MazeSolver::updateColour()
     int x = position.x;
     int y = position.y;
 
-    if (color == 3)//if red found, fire pit is  drawn
+    if (color == 3) // if red found, fire pit is  drawn
     {
         addDangerZone(x, y);
-    } else if (color == 2){
+    }
+    else if (color == 2)
+    {
         API_add_OrangeNode(x, y);
-    } else if (color == 1){
-        API_add_YellowNode( x, y);
+    }
+    else if (color == 1)
+    {
+        API_add_YellowNode(x, y);
     }
 
-    API_detectAndAddSurvivor(x , y);
+    API_detectAndAddSurvivor(x, y);
 }
 
 // Action MazeSolver::explore()
@@ -346,7 +390,7 @@ void MazeSolver::updateColour()
 //     {
 //         updateMaze();
 //     }
-   
+
 //     //updateMaze();
 //     updateDistances();
 //     updateColour();
@@ -357,13 +401,15 @@ void MazeSolver::updateColour()
 //     return action;
 // }
 
-Action MazeSolver::explore() {
-    if (allCellsExplored()) {
+Action MazeSolver::explore()
+{
+    if (allCellsExplored())
+    {
         return Action::ALLEXPLORED;
     }
 
     visitCount[position.x][position.y]++;
-    
+
     // for (int x = 0; x < MAZE_SIZE; ++x) {
     //     for (int y = 0; y < MAZE_SIZE; ++y) {
     //         // Mark as visited if all adjacent necessary walls are visited
@@ -373,101 +419,115 @@ Action MazeSolver::explore() {
     //     }
     // }
 
-    
-
-    if(visitCount[position.x][position.y] == 1)
+    if (visitCount[position.x][position.y] == 1)
     {
         updateMaze();
     }
     updateDistances();
     updateColour();
-    
+
     Action action = dfsSearch(); // Call dfsSearch instead of tremauxSearch
     updateHeading(action);
     updatePosition(action);
-    
+
     printMaze();
     return action;
 }
 
-Action MazeSolver::dfsSearch() {
+Action MazeSolver::dfsSearch()
+{
     const int x = position.x;
     const int y = position.y;
     std::vector<std::pair<Action, int>> possibleActions; // Store (action, visitCount)
 
     // Check possible moves in priority order: Forward, Left, Right
-    auto checkAndAddAction = [&](Heading dir, Action act, int nx, int ny) {
-        if (!isWallInDirection(x, y, dir)) {
+    auto checkAndAddAction = [&](Heading dir, Action act, int nx, int ny)
+    {
+        if (!isWallInDirection(x, y, dir))
+        {
             possibleActions.emplace_back(act, visitCount[nx][ny]); // Store action with visit count
         }
     };
 
-    switch (heading) {
-        case Heading::NORTH:
-            checkAndAddAction(Heading::NORTH, Action::FORWARD, x, y + 1);
-            checkAndAddAction(Heading::WEST, Action::LEFT, x - 1, y);
-            checkAndAddAction(Heading::EAST, Action::RIGHT, x + 1, y);
-            break;
-        case Heading::EAST:
-            checkAndAddAction(Heading::EAST, Action::FORWARD, x + 1, y);
-            checkAndAddAction(Heading::NORTH, Action::LEFT, x, y + 1);
-            checkAndAddAction(Heading::SOUTH, Action::RIGHT, x, y - 1);
-            break;
-        case Heading::SOUTH:
-            checkAndAddAction(Heading::SOUTH, Action::FORWARD, x, y - 1);
-            checkAndAddAction(Heading::EAST, Action::LEFT, x + 1, y);
-            checkAndAddAction(Heading::WEST, Action::RIGHT, x - 1, y);
-            break;
-        case Heading::WEST:
-            checkAndAddAction(Heading::WEST, Action::FORWARD, x - 1, y);
-            checkAndAddAction(Heading::SOUTH, Action::LEFT, x, y - 1);
-            checkAndAddAction(Heading::NORTH, Action::RIGHT, x, y + 1);
-            break;
+    switch (heading)
+    {
+    case Heading::NORTH:
+        checkAndAddAction(Heading::NORTH, Action::FORWARD, x, y + 1);
+        checkAndAddAction(Heading::WEST, Action::LEFT, x - 1, y);
+        checkAndAddAction(Heading::EAST, Action::RIGHT, x + 1, y);
+        break;
+    case Heading::EAST:
+        checkAndAddAction(Heading::EAST, Action::FORWARD, x + 1, y);
+        checkAndAddAction(Heading::NORTH, Action::LEFT, x, y + 1);
+        checkAndAddAction(Heading::SOUTH, Action::RIGHT, x, y - 1);
+        break;
+    case Heading::SOUTH:
+        checkAndAddAction(Heading::SOUTH, Action::FORWARD, x, y - 1);
+        checkAndAddAction(Heading::EAST, Action::LEFT, x + 1, y);
+        checkAndAddAction(Heading::WEST, Action::RIGHT, x - 1, y);
+        break;
+    case Heading::WEST:
+        checkAndAddAction(Heading::WEST, Action::FORWARD, x - 1, y);
+        checkAndAddAction(Heading::SOUTH, Action::LEFT, x, y - 1);
+        checkAndAddAction(Heading::NORTH, Action::RIGHT, x, y + 1);
+        break;
     }
 
     // Sort actions by visit count (lower count preferred)
     std::sort(possibleActions.begin(), possibleActions.end(),
-              [](const std::pair<Action, int>& a, const std::pair<Action, int>& b) {
+              [](const std::pair<Action, int> &a, const std::pair<Action, int> &b)
+              {
                   return a.second < b.second;
               });
 
     // Prefer less-visited cells
-    if (!possibleActions.empty()) {
+    if (!possibleActions.empty())
+    {
         backtracking = false;
-        dfsStack.push(position); // Push current position before moving
+        dfsStack.push(position);              // Push current position before moving
         return possibleActions.front().first; // Return the action with the least visit count
     }
 
     // Backtrack if no new cells
-    if (!dfsStack.empty() && !backtracking) {
+    if (!dfsStack.empty() && !backtracking)
+    {
         previousPosition = dfsStack.top();
         dfsStack.pop();
         backtracking = true;
     }
 
-    if (backtracking) {
+    if (backtracking)
+    {
         // Calculate direction to previous position
         int dx = previousPosition.x - x;
         int dy = previousPosition.y - y;
         Heading requiredHeading = Heading::NORTH;
 
-        if (dx == 1) requiredHeading = Heading::EAST;
-        else if (dx == -1) requiredHeading = Heading::WEST;
-        else if (dy == 1) requiredHeading = Heading::NORTH;
-        else if (dy == -1) requiredHeading = Heading::SOUTH;
+        if (dx == 1)
+            requiredHeading = Heading::EAST;
+        else if (dx == -1)
+            requiredHeading = Heading::WEST;
+        else if (dy == 1)
+            requiredHeading = Heading::NORTH;
+        else if (dy == -1)
+            requiredHeading = Heading::SOUTH;
 
         // Determine turn direction
         int currentIdx = static_cast<int>(heading);
         int requiredIdx = static_cast<int>(requiredHeading);
         int diff = (requiredIdx - currentIdx + 4) % 4;
 
-        if (diff == 1) return Action::RIGHT;
-        else if (diff == 3) return Action::LEFT;
-        else if (diff == 2) { // 180 turn
+        if (diff == 1)
+            return Action::RIGHT;
+        else if (diff == 3)
+            return Action::LEFT;
+        else if (diff == 2)
+        { // 180 turn
             backtracking = false;
             return Action::RIGHT; // Turn right twice (simplified)
         }
-        else return Action::FORWARD;
+        else
+            return Action::FORWARD;
     }
 
     return Action::IDLE;
@@ -475,7 +535,7 @@ Action MazeSolver::dfsSearch() {
 
 Action MazeSolver::tremauxSearch()
 {
-    unsigned int leastVisits = std::numeric_limits<unsigned int>::max();
+    int leastVisits = std::numeric_limits<int>::max();
     Action optimalMove = Action::IDLE;
 
     // visitCount[position.x][position.y]++;
@@ -599,7 +659,7 @@ Action MazeSolver::tremauxSearch()
         }
     }
     // Handle dead ends
-    if (leastVisits == std::numeric_limits<unsigned int>::max())
+    if (leastVisits == std::numeric_limits<int>::max())
     {
         optimalMove = Action::RIGHT;
         std::cout << "dead end" << std::endl;
@@ -746,7 +806,7 @@ void MazeSolver::addDangerZone(int x, int y)
     }
 
     // Mark center cell (1x1)
-    API_add_RedNode(x, y); //this need to come before adding orange cells or this will be also added  to the orange cells along with the red node
+    API_add_RedNode(x, y); // this need to come before adding orange cells or this will be also added  to the orange cells along with the red node
 
     // Mark inner layer (3x3)
     for (int i = x - 1; i < x + 2; i++)
@@ -756,15 +816,25 @@ void MazeSolver::addDangerZone(int x, int y)
             API_add_OrangeNode(i, j);
         }
     }
+
+    // Mark outer layer (3x3)
+    for (int i = x - 2; i < x + 3; i++)
+    {
+        for (int j = y - 2; j < y + 3; j++)
+        {
+            API_add_YellowNode(i, j);
+        }
+    }
 }
 
 void MazeSolver::printMaze() const
 {
     // Print column numbers
-    std::cout << "   ";
+    std::cout << std::endl
+              << "  ";
     for (int x = 0; x < MAZE_SIZE; ++x)
     {
-        std::cout << std::setw(3) << x;
+        std::cout << std::setw(4) << x;
     }
     std::cout << "\n";
 
@@ -836,29 +906,35 @@ void MazeSolver::printMaze() const
             else
             {
                 // Check if the cell is a special cell
-                bool isRedNode = API_is_RedNode( x, y);
-                bool isOrangeNode = API_is_OrangeNode( x, y);
-                bool isYellowNode = API_is_YellowNode( x, y);
-                bool isSurvivor = API_is_SurvivorNode( x, y);
+                bool isRedNode = API_is_RedNode(x, y);
+                bool isOrangeNode = API_is_OrangeNode(x, y);
+                bool isYellowNode = API_is_YellowNode(x, y);
+                bool isSurvivor = API_is_SurvivorNode(x, y);
 
                 if (distances[x][y] >= 0)
                 {
-                    if (isRedNode) {
+                    if (isRedNode)
+                    {
                         std::cout << ANSI_COLOR_RED << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
                     }
-                    else if (isOrangeNode) {
+                    else if (isOrangeNode)
+                    {
                         std::cout << ANSI_COLOR_ORANGE << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
                     }
-                    else if (isYellowNode) {
+                    else if (isYellowNode)
+                    {
                         std::cout << ANSI_COLOR_YELLOW << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
                     }
-                    else if (isSurvivor) {
-                        std::cout << ANSI_COLOR_BLUE << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
-                    }
-                    else if (visitCount[x][y] > 0) {
+                    else if (isSurvivor)
+                    {
                         std::cout << ANSI_COLOR_GREEN << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
                     }
-                    else {
+                    else if (visitCount[x][y] > 0)
+                    {
+                        std::cout << ANSI_COLOR_BLUE << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
+                    }
+                    else
+                    {
                         std::cout << std::setw(3) << distances[x][y];
                     }
                 }
@@ -900,11 +976,36 @@ void MazeSolver::printMaze() const
     std::cout << "\nLegend:\n";
     std::cout << "^,>,v,< - Robot direction\n";
     std::cout << "Numbers - Distance from target\n";
-    std::cout << ANSI_COLOR_GREEN << "Green" << ANSI_COLOR_RESET << " - Visited cell\n";
+    std::cout << "?       - Unexplored/unreachable\n";
+    std::cout << "---|    - Walls\n";
+    std::cout << ANSI_COLOR_BLUE << "Green" << ANSI_COLOR_RESET << " - Visited cell\n";
     std::cout << ANSI_COLOR_RED << "Red" << ANSI_COLOR_RESET << " - Red node\n";
     std::cout << ANSI_COLOR_ORANGE << "Orange" << ANSI_COLOR_RESET << " - Orange node\n";
     std::cout << ANSI_COLOR_YELLOW << "Yellow" << ANSI_COLOR_RESET << " - Yellow node\n";
-    std::cout << ANSI_COLOR_BLUE << "Blue" << ANSI_COLOR_RESET << " - Survivor location\n";
-    std::cout << "?       - Unexplored/unreachable\n";
-    std::cout << "---|    - Walls\n";
+    std::cout << ANSI_COLOR_GREEN << "Blue" << ANSI_COLOR_RESET << " - Survivor location\n";
+}
+
+void MazeSolver::printWallsInEnd() const
+{
+    std::cout << "{\n";
+    for (int y = 0; y < MAZE_SIZE; ++y)
+    {
+        std::cout << "    {";
+        for (int x = 0; x < MAZE_SIZE; ++x)
+        {
+            std::cout << maze[y][x];
+            if (x < MAZE_SIZE - 1)
+                std::cout << ", ";
+        }
+        std::cout << "}";
+        if (y < MAZE_SIZE - 1)
+            std::cout << ",";
+        std::cout << "\n";
+    }
+    std::cout << "};\n";
+}
+
+std::array<std::array<unsigned int, MAZE_SIZE>, MAZE_SIZE> MazeSolver::getMaze()
+{
+    return this->maze; // Assuming maze is a member of MazeSolver
 }

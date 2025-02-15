@@ -19,7 +19,7 @@ bool API_wallFront();
 bool API_wallRight();
 bool API_wallLeft();
 
-void exploreMaze();
+std::array<std::array<unsigned int, MAZE_SIZE>, MAZE_SIZE> exploreMaze();
 
 int8_t API_getColour();
 bool API_is_RedNode(int x, int y);
