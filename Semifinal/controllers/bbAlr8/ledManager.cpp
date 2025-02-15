@@ -56,7 +56,7 @@ void LEDManager::lightRedOff()
 // In the end and start. for indicating
 void LEDManager::lightEachLEDSequentially(webots::Robot &robot)
 {
-    std::cout << "3..." << std::endl;;
+    std::cout << "3..." << std::endl;
     // Turn on each LED one by one
     for (int i = 1; i <= Config::NUM_LEDS; i++)
     {

@@ -70,7 +70,7 @@ void RescueRunAlgo::printNodes(const std::vector<Point> &nodes, const std::strin
     std::cout << color << " Nodes:\n";
     for (const auto &node : nodes)
     {
-        std::cout << "{" << node.y << ", " << node.x << "} ,";
+        std::cout << "{" << node.x << ", " << node.y << "} ,";
     }
     std::cout << "\n";
 }
@@ -200,11 +200,11 @@ PathInfo RescueRunAlgo::findShortestPath(Point start, Point end)
             {
                 if (isPointIn(newPoint, redNodes))
                 {
-                    stepCost *= 1000;
+                    stepCost *= 10000;
                 }
                 if (isPointIn(newPoint, orangeNodes))
                 {
-                    stepCost *= 5000;
+                    stepCost *= 2000;
                 }
                 else if (isPointIn(newPoint, yellowNodes))
                 {
@@ -347,10 +347,10 @@ void RescueRunAlgo::findOptimalRoute()
         // Log the path
         for (const auto &point : pathSegment.path)
         {
-            log("(" + std::to_string(point.x) + "," + std::to_string(point.y) + ") ");
+            std::cout << "(" << point.x << "," << point.y << ")  ==> ";
         }
-        log("\n");
     }
+    std::cout << std::endl;
     // Add the final point
     if (!tspResult.path.empty())
     {

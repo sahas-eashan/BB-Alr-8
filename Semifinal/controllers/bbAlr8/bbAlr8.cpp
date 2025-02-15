@@ -251,7 +251,7 @@ void BbAlr8::addRedNode(int x, int y)
 {
     if (!isRedNode(x, y))
     {
-        rescueAlgo.redNodes.push_back({y, x});
+        rescueAlgo.redNodes.push_back({x, y});
     }
 
     std::cout << "Updated redNodes: ";
@@ -266,7 +266,7 @@ void BbAlr8::addOrangeNode(int x, int y)
 {
     if (!isOrangeNode(x, y) && !isRedNode(x, y))
     {
-        rescueAlgo.orangeNodes.push_back({y, x});
+        rescueAlgo.orangeNodes.push_back({x, y});
     }
 
     std::cout << "Updated orangeNodes: ";
@@ -281,7 +281,7 @@ void BbAlr8::addYellowNode(int x, int y)
 {
     if (!isYellowNode(x, y) && !isOrangeNode(x, y) && !isRedNode(x, y))
     {
-        rescueAlgo.yellowNodes.push_back({y, x});
+        rescueAlgo.yellowNodes.push_back({x, y});
     }
 
     std::cout << "Updated yellowNodes: ";
@@ -294,24 +294,24 @@ void BbAlr8::addYellowNode(int x, int y)
 
 bool BbAlr8::isRedNode(int x, int y) const
 {
-    Point p = {y, x}; // Note: Point format is {y, x}
+    Point p = {x, y}; // Note: Point format is {y, x}
     return std::find(rescueAlgo.redNodes.begin(), rescueAlgo.redNodes.end(), p) != rescueAlgo.redNodes.end();
 }
 
 bool BbAlr8::isOrangeNode(int x, int y) const
 {
-    Point p = {y, x}; // Note: Point format is {y, x}
+    Point p = {x, y}; // Note: Point format is {y, x}
     return std::find(rescueAlgo.orangeNodes.begin(), rescueAlgo.orangeNodes.end(), p) != rescueAlgo.orangeNodes.end();
 }
 bool BbAlr8::isYellowNode(int x, int y) const
 {
-    Point p = {y, x}; // Note: Point format is {y, x}
+    Point p = {x, y}; // Note: Point format is {y, x}
     return std::find(rescueAlgo.yellowNodes.begin(), rescueAlgo.yellowNodes.end(), p) != rescueAlgo.yellowNodes.end();
 }
 
 bool BbAlr8::isSurvivorNode(int x, int y) const
 {
-    Point p = {y, x}; // Note: Point format is {y, x}
+    Point p = {x, y}; // Note: Point format is {y, x}
     return std::find(rescueAlgo.survivors.begin(), rescueAlgo.survivors.end(), p) != rescueAlgo.survivors.end();
 }
 
@@ -335,7 +335,7 @@ void BbAlr8::detectAndAddSurvivors(int x, int y)
     {
         if (!isSurvivorAdded(x, y))
         {
-            rescueAlgo.survivors.push_back({y, x});
+            rescueAlgo.survivors.push_back({x, y});
         }
 
         std::cout << "Updated survivor List: ";
@@ -349,6 +349,6 @@ void BbAlr8::detectAndAddSurvivors(int x, int y)
 
 bool BbAlr8::isSurvivorAdded(int x, int y) const
 {
-    Point p = {y, x}; // Note: Point format is {y, x}
+    Point p = {x, y}; // Note: Point format is {y, x}
     return std::find(rescueAlgo.survivors.begin(), rescueAlgo.survivors.end(), p) != rescueAlgo.survivors.end();
 }
