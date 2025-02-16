@@ -20,6 +20,7 @@ public:
     void turnLeft(webots::Robot *robot);
     void turnRight(webots::Robot *robot);
     void turn180(webots::Robot *robot);
+    void turn180Custom(webots::Robot *robot);
     void moveForward(webots::Robot *robot, SensorManager sensorManager ,int cells);
     void stop();
     

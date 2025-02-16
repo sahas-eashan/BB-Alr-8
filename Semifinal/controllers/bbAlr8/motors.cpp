@@ -52,6 +52,13 @@ void Motors::turn180(webots::Robot *robot)
     stop();
 }
 
+void Motors::turn180Custom(webots::Robot *robot)
+{
+    setSpeed(-Config::TURN_SPEED*1.08, +Config::TURN_SPEED*1.08);
+    robot->step(Config::TIME_180_TURN);
+    stop();
+}
+
 void Motors::moveForward(webots::Robot *robot, SensorManager sensorManager, int cells)
 {
     int targetCount = cells * 13;

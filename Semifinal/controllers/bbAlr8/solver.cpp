@@ -913,7 +913,11 @@ void MazeSolver::printMaze() const
 
                 if (distances[x][y] >= 0)
                 {
-                    if (isRedNode)
+                    if (isSurvivor)
+                    {
+                        std::cout << ANSI_COLOR_GREEN << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
+                    }
+                    else if (isRedNode)
                     {
                         std::cout << ANSI_COLOR_RED << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
                     }
@@ -924,10 +928,6 @@ void MazeSolver::printMaze() const
                     else if (isYellowNode)
                     {
                         std::cout << ANSI_COLOR_YELLOW << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
-                    }
-                    else if (isSurvivor)
-                    {
-                        std::cout << ANSI_COLOR_GREEN << std::setw(3) << distances[x][y] << ANSI_COLOR_RESET;
                     }
                     else if (visitCount[x][y] > 0)
                     {
@@ -978,11 +978,11 @@ void MazeSolver::printMaze() const
     std::cout << "Numbers - Distance from target\n";
     std::cout << "?       - Unexplored/unreachable\n";
     std::cout << "---|    - Walls\n";
-    std::cout << ANSI_COLOR_BLUE << "Green" << ANSI_COLOR_RESET << " - Visited cell\n";
+    std::cout << ANSI_COLOR_GREEN  << "Green" << ANSI_COLOR_RESET << " - Visited cell\n";
     std::cout << ANSI_COLOR_RED << "Red" << ANSI_COLOR_RESET << " - Red node\n";
     std::cout << ANSI_COLOR_ORANGE << "Orange" << ANSI_COLOR_RESET << " - Orange node\n";
     std::cout << ANSI_COLOR_YELLOW << "Yellow" << ANSI_COLOR_RESET << " - Yellow node\n";
-    std::cout << ANSI_COLOR_GREEN << "Blue" << ANSI_COLOR_RESET << " - Survivor location\n";
+    std::cout << ANSI_COLOR_BLUE << "Blue" << ANSI_COLOR_RESET << " - Survivor location\n";
 }
 
 void MazeSolver::printWallsInEnd() const

@@ -45,8 +45,8 @@ void BbAlr8::run()
     std::array<std::array<unsigned int, MAZE_SIZE>, MAZE_SIZE> searchedMaze = exploreMaze();
 
     API_turnRight();
-    motors.moveForward(this, sensorManager, 1.5);
-    API_turn180();
+    motors.moveForward(this, sensorManager, 1);
+    motors.turn180Custom(this);
 
     std::cout << "Back at start" << std::endl;
 
@@ -146,8 +146,8 @@ void BbAlr8::run()
     }
 
     API_turnRight();
-    motors.moveForward(this, sensorManager, 1.5);
-    API_turn180();
+    motors.moveForward(this, sensorManager, 1);
+    motors.turn180Custom(this);
 
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
@@ -160,10 +160,12 @@ void BbAlr8::run()
 
     // Print the timing results
     std::cout << "\n=== Rescue Operation Complete ===" << std::endl;
-    std::cout << "Total time taken: " << minutes << " minutes, "
+    std::cout << "Total Real world time taken: " << minutes << " minutes, "
               << seconds << " seconds, "
               << milliseconds << " milliseconds" << std::endl;
-    std::cout << "(Total milliseconds: " << duration.count() << ")" << std::endl;
+    std::cout << "(Total real world milliseconds: " << duration.count() << ")" << std::endl;
+    std::cout << "Note: This measurement reflects real-world execution time, not the Simulation time. So it can vary across different devices and conditions."
+          << "For accurate rescue time comparisons, ensure a controlled and consistent testing environment." << std::endl;
 }
 
 int8_t BbAlr8::getFloorColor()
