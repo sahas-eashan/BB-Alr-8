@@ -50,27 +50,6 @@ void BbAlr8::run()
 
     std::cout << "Back at start" << std::endl;
 
-    // std::array<std::array<unsigned int, MAZE_SIZE>, MAZE_SIZE> searchedMaze = {{{3, 13, 3, 13, 3, 5, 5, 5, 1, 1, 9, 7, 5, 9, 3, 1, 5, 5, 1, 9},
-    //                                                                             {2, 5, 8, 3, 12, 3, 1, 1, 4, 8, 6, 5, 5, 12, 10, 14, 3, 1, 8, 10},
-    //                                                                             {10, 7, 4, 12, 3, 12, 14, 10, 11, 6, 5, 5, 5, 5, 12, 3, 12, 10, 10, 10},
-    //                                                                             {10, 3, 1, 9, 10, 3, 5, 4, 12, 3, 9, 3, 5, 5, 9, 10, 3, 12, 10, 10},
-    //                                                                             {6, 12, 10, 10, 10, 10, 7, 9, 3, 12, 10, 6, 5, 9, 2, 8, 10, 7, 12, 10},
-    //                                                                             {3, 5, 12, 6, 8, 6, 9, 2, 12, 11, 6, 9, 3, 12, 2, 12, 10, 3, 9, 10},
-    //                                                                             {6, 13, 3, 13, 6, 1, 0, 8, 3, 0, 13, 10, 6, 9, 14, 7, 4, 8, 6, 8},
-    //                                                                             {3, 9, 2, 1, 9, 2, 4, 4, 8, 14, 3, 12, 11, 2, 9, 3, 5, 12, 3, 8},
-    //                                                                             {10, 6, 4, 8, 10, 2, 1, 9, 6, 1, 0, 5, 12, 10, 10, 6, 5, 9, 6, 8},
-    //                                                                             {10, 3, 9, 10, 10, 2, 8, 6, 5, 4, 4, 9, 11, 10, 6, 5, 13, 10, 3, 12},
-    //                                                                             {14, 10, 6, 12, 6, 12, 10, 3, 5, 5, 1, 12, 6, 12, 3, 5, 5, 12, 2, 9},
-    //                                                                             {11, 6, 5, 1, 1, 9, 10, 6, 1, 13, 6, 1, 5, 1, 12, 3, 9, 11, 6, 8},
-    //                                                                             {2, 9, 3, 12, 14, 10, 14, 3, 12, 3, 9, 10, 3, 8, 3, 12, 6, 8, 3, 12},
-    //                                                                             {10, 6, 4, 13, 3, 8, 3, 0, 13, 10, 10, 2, 4, 12, 2, 1, 1, 4, 8, 11},
-    //                                                                             {6, 9, 7, 1, 12, 6, 4, 4, 1, 8, 10, 2, 13, 3, 8, 6, 0, 1, 12, 10},
-    //                                                                             {3, 4, 9, 2, 5, 9, 7, 5, 4, 8, 10, 6, 5, 0, 4, 1, 12, 6, 5, 8},
-    //                                                                             {2, 9, 6, 12, 3, 12, 7, 1, 1, 8, 6, 9, 3, 4, 1, 8, 3, 1, 9, 10},
-    //                                                                             {10, 6, 5, 13, 2, 1, 1, 12, 10, 6, 5, 12, 10, 3, 12, 6, 8, 14, 6, 8},
-    //                                                                             {2, 5, 9, 3, 12, 2, 12, 11, 10, 3, 13, 3, 8, 6, 9, 11, 10, 3, 9, 10},
-    //                                                                             {6, 13, 6, 12, 7, 12, 7, 4, 4, 4, 5, 12, 6, 5, 12, 6, 12, 14, 6, 12}}};
-
 
     rescueAlgo.setMaze(searchedMaze); //instance is already created. don't add here as it will redirect new colors and survivor arrays
     std::cout << "Maze converted" << std::endl;
@@ -165,7 +144,7 @@ void BbAlr8::run()
               << milliseconds << " milliseconds" << std::endl;
     std::cout << "(Total real world milliseconds: " << duration.count() << ")" << std::endl;
     std::cout << "Note: This measurement reflects real-world execution time, not the Simulation time. So it can vary across different devices and conditions."
-          << "For accurate rescue time comparisons, ensure a controlled and consistent testing environment." << std::endl;
+          << "For accurate rescue time comparisons, ensure a controlled and consistent testing environment. Maybe consider time when rendering is off ig!!" << std::endl;
 }
 
 int8_t BbAlr8::getFloorColor()

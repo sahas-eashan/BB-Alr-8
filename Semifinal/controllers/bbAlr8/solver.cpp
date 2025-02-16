@@ -978,11 +978,11 @@ void MazeSolver::printMaze() const
     std::cout << "Numbers - Distance from target\n";
     std::cout << "?       - Unexplored/unreachable\n";
     std::cout << "---|    - Walls\n";
-    std::cout << ANSI_COLOR_GREEN  << "Green" << ANSI_COLOR_RESET << " - Visited cell\n";
+    std::cout << ANSI_COLOR_GREEN  << "Green" << ANSI_COLOR_RESET << " - Survivor location\n";
     std::cout << ANSI_COLOR_RED << "Red" << ANSI_COLOR_RESET << " - Red node\n";
     std::cout << ANSI_COLOR_ORANGE << "Orange" << ANSI_COLOR_RESET << " - Orange node\n";
     std::cout << ANSI_COLOR_YELLOW << "Yellow" << ANSI_COLOR_RESET << " - Yellow node\n";
-    std::cout << ANSI_COLOR_BLUE << "Blue" << ANSI_COLOR_RESET << " - Survivor location\n";
+    std::cout << ANSI_COLOR_BLUE << "Blue" << ANSI_COLOR_RESET << " - Visited Cell\n";
 }
 
 void MazeSolver::printWallsInEnd() const
