@@ -10,8 +10,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.5074044470608817 0.629581372851272 -0.5883604524962128 1.880391620839714
-  position 0.319543398053739 1.3364928487525867 4.424004833759616
+  orientation -0.5547674779128806 -0.5296310291870435 0.6416572436842387 4.240839693712428
+  position -0.3328134290624267 1.701894147260642 9.336940796831724
 }
 TexturedBackground {
 }
@@ -48,18 +48,23 @@ Wall {
   translation -0.16 -0.74 0
   rotation 0 0 1 1.5708
   name "wall(8)"
-  size 0.01 0.3 0.3048
+  size 0.1 0.375 0.125
 }
 Wall {
   translation -0.87 0.19 0
   name "wall(9)"
-  size 0.01 0.3 0.3048
+  size 0.125 0.375 0.105
+}
+Wall {
+  translation 0.97 -0.1 0
+  name "wall(12)"
+  size 0.125 0.375 0.105
 }
 Wall {
   translation 0.84 -1.18 0
   rotation 0 0 1 -1.5707953071795862
   name "wall(10)"
-  size 0.01 0.3 0.3048
+  size 0.1 0.375 0.125
 }
 Wall {
   translation 1.52 -0.78 0
@@ -148,127 +153,116 @@ Wall {
   }
 }
 Solid {
-  translation 0.477324 -0.786743 0.07367565000000004
-  rotation -1.1576978372877079e-16 -6.329749843359701e-17 1 0.523599
+  translation 0.477324 -0.786743 0.03660302074033122
+  rotation 7.843706095538847e-17 1.5863604802531298e-16 1 0.523599
   children [
-    Shape {
+    DEF rbox Shape {
       appearance PBRAppearance {
         baseColor 1 0 0
         roughness 0.5
         metalness 0
       }
       geometry Box {
-        size 0.15 0.15 0.15
+        size 0.075 0.075 0.075
       }
     }
   ]
   name "red_box"
-  boundingObject Box {
-    size 0.15 0.15 0.15
-  }
+  boundingObject USE rbox
   physics Physics {
   }
-  linearVelocity 7.007636494296571e-17 1.6337589823783462e-17 -6.737788848194081e-17
-  angularVelocity -3.5088530160992373e-16 1.1228329651517617e-15 1.0671554233262018e-16
+  linearVelocity -1.054072592587047e-16 9.63060298293845e-18 0.005720237663288605
+  angularVelocity -1.0526559048297788e-15 -1.824603568371614e-15 3.9686676143337897e-16
 }
 Solid {
-  translation -0.8892320582121507 -1.18984591775451 0.07367565000000001
-  rotation 0.9369194995219867 -0.24716578587606952 -0.24716578587606958 1.6359081838648981
+  translation -0.8892320582121507 -1.18984591775451 0.0366031042580257
+  rotation 0.9369194995219867 -0.2471657858760695 -0.24716578587606952 1.6359081838648986
   children [
-    Shape {
+    DEF gbox Shape {
       appearance PBRAppearance {
         baseColor 0 1 0
         roughness 0.5
         metalness 0
       }
       geometry Box {
-        size 0.15 0.15 0.15
+        size 0.075 0.075 0.075
       }
     }
   ]
   name "green_box"
-  boundingObject Box {
-    size 0.15 0.15 0.15
-  }
+  boundingObject USE gbox
   physics Physics {
   }
-  linearVelocity -9.041744547511506e-17 -1.6253850122576035e-16 -1.345393080370381e-16
-  angularVelocity 2.2807544599142522e-15 -1.263187085689367e-15 -1.2315567398218743e-18
+  linearVelocity 6.058167362692724e-17 -5.247069914949091e-17 0.005719584507876823
+  angularVelocity 1.9649576890155867e-15 9.82478844507792e-16 -1.0116586923869895e-16
 }
 Solid {
-  translation -0.006073784898118671 0.11714769126389503 0.07367564999999987
-  rotation 1.5827397500837226e-14 2.5400084295063234e-14 -1 1.0806630833727853
+  translation -0.006073784898119729 0.11714769126389706 0.03727177606148995
+  rotation 8.66765377148724e-17 -2.64320467647584e-16 -1 1.0806630833727853
   children [
-    Shape {
+    DEF wbox Shape {
       appearance PBRAppearance {
         roughness 0.5
         metalness 0
       }
       geometry Box {
-        size 0.15 0.15 0.15
+        size 0.075 0.075 0.075
       }
     }
   ]
   name "white_box"
-  boundingObject Box {
-    size 0.15 0.15 0.15
-  }
+  boundingObject USE wbox
   physics Physics {
   }
-  linearVelocity -8.159144476847252e-15 1.5859954286288073e-14 1.0037692460052647e-15
-  angularVelocity -2.1148999171260777e-13 -1.0848274208467252e-13 1.2536785554277796e-16
+  linearVelocity -3.977629483602488e-17 2.7394294742050293e-17 0.0004901943784758735
+  angularVelocity -6.781025053641994e-16 1.0993173116614732e-17 -7.170454507860238e-17
 }
 Solid {
-  translation -0.5976480652747647 0.5781719229683006 0.07367565000000002
-  rotation 4.566333773677403e-18 6.047685708719795e-17 1 0.8747069927423239
+  translation -0.5976480652747647 0.5781719229683006 0.036603104258025716
+  rotation -1.9782491359856612e-16 -9.072210381561024e-17 1 0.8747069927423238
   children [
-    Shape {
+    DEF ybox Shape {
       appearance PBRAppearance {
         baseColor 1 1 0
         roughness 0.5
         metalness 0
       }
       geometry Box {
-        size 0.15 0.15 0.15
+        size 0.075 0.075 0.075
       }
     }
   ]
   name "yellow_box"
-  boundingObject Box {
-    size 0.15 0.15 0.15
-  }
+  boundingObject USE ybox
   physics Physics {
   }
-  linearVelocity -2.2833640642897707e-17 4.7552146314226293e-17 -1.3473984680213728e-16
-  angularVelocity -7.368619857465489e-16 -6.666827669963234e-16 1.8213828292228915e-16
+  linearVelocity 3.889036655537832e-17 -6.318584764107947e-17 0.005719584507876742
+  angularVelocity 2.8070824128794147e-15 5.263279524148892e-16 3.7709384877628896e-16
 }
 Solid {
-  translation 0.53 0.38 0.07367565000000002
-  rotation -0.3888124482391914 0.5832186723585278 0.7132186623375766 2.3102819269025365e-17
+  translation 0.53 0.38 0.03660310425802572
+  rotation -0.97128949313127 -0.19657049265751875 -0.13400284306379834 3.8842371811800224e-16
   children [
-    Shape {
+    DEF bbox Shape {
       appearance PBRAppearance {
         baseColor 0 1 1
         roughness 0.5
         metalness 0
       }
       geometry Box {
-        size 0.15 0.15 0.15
+        size 0.075 0.075 0.075
       }
     }
   ]
   name "cyan_box"
-  boundingObject Box {
-    size 0.15 0.15 0.15
-  }
+  boundingObject USE bbox
   physics Physics {
   }
-  linearVelocity -4.469578029847642e-17 -6.805577439173464e-18 -1.3503333143364262e-16
-  angularVelocity 1.403541206439689e-16 -1.1228329651517634e-15 -5.242356723035854e-18
+  linearVelocity 8.13884836910339e-17 -3.7417419487825644e-17 0.0057195845078766416
+  angularVelocity 8.421247238638227e-16 1.6842494477276467e-15 1.3598057372497234e-16
 }
 DEF BBAlr8 Robot {
-  translation 0.0610292 1.33466 0.0624972
-  rotation 1 0 0 0
+  translation 0.0646157 1.33274 0.0594643
   children [
     Solid {
       translation 0.11 -0.2 0
@@ -362,7 +356,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 343.80418634508203
+        position 362.8285702070544
         anchor 0.181 0 -0.03
       }
       device [
@@ -377,7 +371,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation 0.181 0 -0.03
-        rotation 0.7024184765199136 0.11494756637542985 0.7024210566517846 2.9127029325907516
+        rotation -0.7061149760371984 -0.05291141947106525 -0.7061175697470949 3.247316515943622
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -402,7 +396,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 339.9401848066847
+        position 355.6339873427084
         anchor -0.181 0 -0.03
       }
       device [
@@ -417,7 +411,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation -0.181 0 -0.03
-        rotation 0.30343074526577174 0.9032490745335671 0.30343185755901286 1.672381753801883
+        rotation 0.6888137172104949 -0.2259819626623574 0.6888162422111788 3.5860888608453676
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
