@@ -12,7 +12,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.11044960368557284 0.9628940313747806 0.24624371949051424 0.8718931420544974
-  position -4.661246004599556 0.5048328772079649 4.386724980650456
+  position -4.222600288147631 -0.42708957224860833 4.579256692649207
 }
 TexturedBackground {
 }
@@ -147,74 +147,117 @@ Wall {
     }
   }
 }
-SolidBox {
+Solid {
   translation -0.441667 -0.255 0.1
   rotation 0 0 1 0.523599
   name "red_box"
-  size 0.15 0.15 0.15
-  appearance PBRAppearance {
-    baseColor 1 0 0
-    roughness 0.5
-    metalness 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+        roughness 0.5
+        metalness 0
+      }
+      geometry Box {
+        size 0.15 0.15 0.15
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.15 0.15 0.15
   }
+
 }
-SolidBox {
+
+Solid {
   translation 0.733344 0.733346 0.1
   rotation 0 0 1 -0.785395307179586
   name "green_box"
-  size 0.15 0.15 0.15
-  appearance PBRAppearance {
-    baseColor 0 1 0
-    roughness 0.5
-    metalness 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+        roughness 0.5
+        metalness 0
+      }
+      geometry Box {
+        size 0.15 0.15 0.15
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.15 0.15 0.15
   }
+
 }
-SolidBox {
+
+Solid {
   translation -0.5 0.5 0.1
   rotation 0 0 1 -0.523595307179586
   name "blue_box"
-  size 0.15 0.15 0.15
-  appearance PBRAppearance {
-    baseColor 0 0 1
-    roughness 0.5
-    metalness 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 0 1
+        roughness 0.5
+        metalness 0
+      }
+      geometry Box {
+        size 0.15 0.15 0.15
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.15 0.15 0.15
   }
+
 }
-SolidBox {
+
+Solid {
   translation 0.62 -0.292156 0.1
   rotation 0 0 1 1.0472
   name "yellow_box"
-  size 0.15 0.15 0.15
-  appearance PBRAppearance {
-    baseColor 1 1 0
-    roughness 0.5
-    metalness 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 1 0
+        roughness 0.5
+        metalness 0
+      }
+      geometry Box {
+        size 0.15 0.15 0.15
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.15 0.15 0.15
   }
+
 }
-SolidBox {
+
+Solid {
   translation -0.5 -1.01 0.1
   name "cyan_box"
-  size 0.15 0.15 0.15
-  appearance PBRAppearance {
-    baseColor 0 1 1
-    roughness 0.5
-    metalness 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 1
+        roughness 0.5
+        metalness 0
+      }
+      geometry Box {
+        size 0.15 0.15 0.15
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.15 0.15 0.15
   }
 }
-SolidBox {
-  translation 0.753426 -1.00187 0.1
-  rotation 0 0 -1 0.261797
-  name "purple_box"
-  size 0.15 0.15 0.15
-  appearance PBRAppearance {
-    baseColor 0.5 0 0.5
-    roughness 0.5
-    metalness 0
-  }
-}
+
 DEF BBAlr8 Robot {
-  translation 0.000133008 0.224076 0.525128
-  rotation -0.9999753675941232 0.00011925811870603285 -0.00701783317691477 0.04467094081207809
+  translation -0.417703 0.833533 0.0247074
+  rotation -0.9966092238775718 0.010996346208613422 -0.08154222987019841 0.037611403629000895
   children [
     DEF frontCam Camera {
       translation 2.1522e-07 -0.181 0.06
@@ -274,6 +317,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
+        position 14.999907337434667
         anchor 0.181 0 -0.03
       }
       device [
@@ -288,7 +332,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation 0.181 0 -0.03
-        rotation -0.128900729092946 -0.9916575023864374 -3.1496344614446366e-09 4.677688464779303
+        rotation -0.6920328613644046 -0.25025561855365736 -0.6770986960363469 3.450589630049982
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -313,6 +357,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
+        position 15.028373067936341
         anchor -0.181 0 -0.03
       }
       device [
@@ -327,7 +372,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation -0.181 0 -0.03
-        rotation -6.280358323737861e-15 1 -3.1401791618689305e-16 1.5707999925117857
+        rotation 0.6859983772963936 0.2425056753020513 0.6860008919768334 2.6657686551993485
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
