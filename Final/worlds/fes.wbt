@@ -10,8 +10,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.4448580041992655 0.49920227350580865 0.7435714129970826 1.750856093781379
-  position 1.1542564393695707 -4.6179277124073685 5.729984997061827
+  orientation 0.5074044470608817 0.629581372851272 -0.5883604524962128 1.880391620839714
+  position 0.319543398053739 1.3364928487525867 4.424004833759616
 }
 TexturedBackground {
 }
@@ -65,7 +65,7 @@ Wall {
   translation 1.52 -0.78 0
   rotation 0 1 0 -1.5707953071795862
   name "wall(7)"
-  size 0.01 0.4 0.4
+  size 0.001 0.4 0.4
   appearance Roughcast {
     colorOverride 1 0 0
     textureTransform TextureTransform {
@@ -88,7 +88,7 @@ Wall {
   translation 1.52 0.61 0
   rotation 0 1 0 -1.5707953071795862
   name "wall(6)"
-  size 0.01 0.4 0.4
+  size 0.001 0.4 0.4
   appearance Roughcast {
     colorOverride 0 1 1
     textureTransform TextureTransform {
@@ -100,7 +100,7 @@ Wall {
   translation 0.26 1.31 1.28473e-06
   rotation 0 1 0 -1.5707953071795862
   name "wall(11)"
-  size 0.01 0.4 0.4
+  size 0.001 0.4 0.4
 }
 Wall {
   translation -1.52 -0.78 0
@@ -116,7 +116,7 @@ Wall {
   translation -1.52 -0.78 0
   rotation 0 1 0 1.5708
   name "wall(5)"
-  size 0.01 0.4 0.4
+  size 0.001 0.4 0.4
   appearance Roughcast {
     colorOverride 0 1 0
     textureTransform TextureTransform {
@@ -139,7 +139,7 @@ Wall {
   translation -1.52 0.61 0
   rotation 0 1 0 1.5708
   name "wall(4)"
-  size 0.01 0.4 0.4
+  size 0.001 0.4 0.4
   appearance Roughcast {
     colorOverride 1 1 0
     textureTransform TextureTransform {
@@ -148,8 +148,8 @@ Wall {
   }
 }
 Solid {
-  translation 0.477324 -0.786743 0.1
-  rotation 0 0 1 0.523599
+  translation 0.477324 -0.786743 0.07367565000000004
+  rotation -1.1576978372877079e-16 -6.329749843359701e-17 1 0.523599
   children [
     Shape {
       appearance PBRAppearance {
@@ -166,10 +166,14 @@ Solid {
   boundingObject Box {
     size 0.15 0.15 0.15
   }
+  physics Physics {
+  }
+  linearVelocity 7.007636494296571e-17 1.6337589823783462e-17 -6.737788848194081e-17
+  angularVelocity -3.5088530160992373e-16 1.1228329651517617e-15 1.0671554233262018e-16
 }
 Solid {
-  translation -0.822304 -0.822314 0.1
-  rotation 0 0 1 -0.785395307179586
+  translation -0.8892320582121507 -1.18984591775451 0.07367565000000001
+  rotation 0.9369194995219867 -0.24716578587606952 -0.24716578587606958 1.6359081838648981
   children [
     Shape {
       appearance PBRAppearance {
@@ -186,10 +190,14 @@ Solid {
   boundingObject Box {
     size 0.15 0.15 0.15
   }
+  physics Physics {
+  }
+  linearVelocity -9.041744547511506e-17 -1.6253850122576035e-16 -1.345393080370381e-16
+  angularVelocity 2.2807544599142522e-15 -1.263187085689367e-15 -1.2315567398218743e-18
 }
 Solid {
-  translation -0.0669866 0.25 0.1
-  rotation 0 0 1 -0.523595307179586
+  translation -0.006073784898118671 0.11714769126389503 0.07367564999999987
+  rotation 1.5827397500837226e-14 2.5400084295063234e-14 -1 1.0806630833727853
   children [
     Shape {
       appearance PBRAppearance {
@@ -205,10 +213,14 @@ Solid {
   boundingObject Box {
     size 0.15 0.15 0.15
   }
+  physics Physics {
+  }
+  linearVelocity -8.159144476847252e-15 1.5859954286288073e-14 1.0037692460052647e-15
+  angularVelocity -2.1148999171260777e-13 -1.0848274208467252e-13 1.2536785554277796e-16
 }
 Solid {
-  translation -0.581 0.74765 0.1
-  rotation 0 0 1 1.0472
+  translation -0.5976480652747647 0.5781719229683006 0.07367565000000002
+  rotation 4.566333773677403e-18 6.047685708719795e-17 1 0.8747069927423239
   children [
     Shape {
       appearance PBRAppearance {
@@ -225,9 +237,14 @@ Solid {
   boundingObject Box {
     size 0.15 0.15 0.15
   }
+  physics Physics {
+  }
+  linearVelocity -2.2833640642897707e-17 4.7552146314226293e-17 -1.3473984680213728e-16
+  angularVelocity -7.368619857465489e-16 -6.666827669963234e-16 1.8213828292228915e-16
 }
 Solid {
-  translation 0.53 0.38 0.1
+  translation 0.53 0.38 0.07367565000000002
+  rotation -0.3888124482391914 0.5832186723585278 0.7132186623375766 2.3102819269025365e-17
   children [
     Shape {
       appearance PBRAppearance {
@@ -244,22 +261,60 @@ Solid {
   boundingObject Box {
     size 0.15 0.15 0.15
   }
+  physics Physics {
+  }
+  linearVelocity -4.469578029847642e-17 -6.805577439173464e-18 -1.3503333143364262e-16
+  angularVelocity 1.403541206439689e-16 -1.1228329651517634e-15 -5.242356723035854e-18
 }
 DEF BBAlr8 Robot {
-  translation 0.399463 -0.118892 0.017046
-  rotation -0.037624341051471735 0.029934726068920392 -0.9988434918122164 1.4838755123051244
+  translation 0.0610292 1.33466 0.0624972
+  rotation 1 0 0 0
   children [
+    Solid {
+      translation 0.11 -0.2 0
+      children [
+        DEF leftArm Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+          }
+          geometry Box {
+            size 0.02 0.15 0.09
+          }
+        }
+      ]
+      name "solid(2)"
+      boundingObject USE leftArm
+      physics Physics {
+      }
+    }
+    Solid {
+      translation -0.11 -0.2 0
+      children [
+        DEF rightArm Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+          }
+          geometry Box {
+            size 0.02 0.15 0.09
+          }
+        }
+      ]
+      name "solid(3)"
+      boundingObject USE rightArm
+      physics Physics {
+      }
+    }
     DEF frontCam Camera {
-      translation 2.1522e-07 -0.181 0.06
-      rotation -4.2638199999214016e-06 -4.322939999920311e-06 -0.9999999999815661 -1.5707953071795862
+      translation -0.00497507 -0.0650495 0.090495
+      rotation 0 0 -1 1.5708
       children [
         DEF fcam Shape {
           appearance PBRAppearance {
             baseColor 1 0 0
           }
           geometry Capsule {
-            height 0.002
-            radius 0.004
+            height 0.012
+            radius 0.04
           }
           castShadows FALSE
         }
@@ -268,12 +323,12 @@ DEF BBAlr8 Robot {
       boundingObject USE fcam
       physics Physics {
       }
-      fieldOfView 2.7854
-      width 256
-      height 256
+      fieldOfView 1
+      width 640
+      height 480
     }
     DEF castorFront Solid {
-      translation 0 0.025 -0.015
+      translation 0 -0.15 -0.051
       children [
         DEF castor Shape {
           appearance PBRAppearance {
@@ -289,7 +344,7 @@ DEF BBAlr8 Robot {
       }
     }
     DEF castorBack Solid {
-      translation 0 -0.025 -0.0141
+      translation 0 0.149 -0.051
       children [
         DEF castor Shape {
           appearance PBRAppearance {
@@ -307,7 +362,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 100.2803310593946
+        position 343.80418634508203
         anchor 0.181 0 -0.03
       }
       device [
@@ -322,7 +377,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation 0.181 0 -0.03
-        rotation -0.007224445540189848 -0.9921322129157819 0.12498591713257373 4.6948332628398575
+        rotation 0.7024184765199136 0.11494756637542985 0.7024210566517846 2.9127029325907516
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -347,7 +402,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 102.27534061194
+        position 339.9401848066847
         anchor -0.181 0 -0.03
       }
       device [
@@ -362,7 +417,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation -0.181 0 -0.03
-        rotation 0.607965603030348 0.5106397371860819 0.6079678316642045 2.197349374950151
+        rotation 0.30343074526577174 0.9032490745335671 0.30343185755901286 1.672381753801883
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
@@ -406,4 +461,5 @@ DEF BBAlr8 Robot {
     ]
   }
   controller "bbAlr8"
+  cpuConsumption 20
 }
