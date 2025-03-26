@@ -6,13 +6,12 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Roughcast.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/solids/protos/SolidBox.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.11044960368557284 0.9628940313747806 0.24624371949051424 0.8718931420544974
-  position -4.222600288147631 -0.42708957224860833 4.579256692649207
+  orientation -0.4448580041992655 0.49920227350580865 0.7435714129970826 1.750856093781379
+  position 1.1542564393695707 -4.6179277124073685 5.729984997061827
 }
 TexturedBackground {
 }
@@ -35,43 +34,100 @@ RectangleArena {
   }
 }
 Wall {
-  translation 1.52 -0.38 0
+  translation 1.52 -0.78 0
   name "wall(2)"
-  size 0.01 0.3048 0.3048
+  size 0.01 0.4 0.4
   appearance Roughcast {
-    colorOverride 1 1 0
+    colorOverride 1 0 0
     textureTransform TextureTransform {
       scale 2.4 1
     }
   }
 }
 Wall {
-  translation 0.29 -0.46 0
-  name "wall(8)"
-  size 0.01 1 0.3048
-}
-Wall {
-  translation 0.29 1.01 0
+  translation -0.16 -0.74 0
   rotation 0 0 1 1.5708
-  name "wall(11)"
-  size 0.01 1 0.3048
+  name "wall(8)"
+  size 0.01 0.3 0.3048
 }
 Wall {
   translation -0.87 0.19 0
   name "wall(9)"
-  size 0.01 1 0.3048
+  size 0.01 0.3 0.3048
 }
 Wall {
-  translation 0.98 0.49 0
+  translation 0.84 -1.18 0
   rotation 0 0 1 -1.5707953071795862
   name "wall(10)"
-  size 0.01 1 0.3048
+  size 0.01 0.3 0.3048
 }
 Wall {
-  translation 1.52 -0.38 0
+  translation 1.52 -0.78 0
   rotation 0 1 0 -1.5707953071795862
   name "wall(7)"
-  size 0.01 0.3048 0.3048
+  size 0.01 0.4 0.4
+  appearance Roughcast {
+    colorOverride 1 0 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
+  translation 1.52 0.61 0
+  name "wall(3)"
+  size 0.01 0.4 0.4
+  appearance Roughcast {
+    colorOverride 0 1 1
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
+  translation 1.52 0.61 0
+  rotation 0 1 0 -1.5707953071795862
+  name "wall(6)"
+  size 0.01 0.4 0.4
+  appearance Roughcast {
+    colorOverride 0 1 1
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
+  translation 0.26 1.31 1.28473e-06
+  rotation 0 1 0 -1.5707953071795862
+  name "wall(11)"
+  size 0.01 0.4 0.4
+}
+Wall {
+  translation -1.52 -0.78 0
+  size 0.01 0.4 0.4
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
+  translation -1.52 -0.78 0
+  rotation 0 1 0 1.5708
+  name "wall(5)"
+  size 0.01 0.4 0.4
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+  }
+}
+Wall {
+  translation -1.52 0.61 0
+  name "wall(1)"
+  size 0.01 0.4 0.4
   appearance Roughcast {
     colorOverride 1 1 0
     textureTransform TextureTransform {
@@ -80,77 +136,20 @@ Wall {
   }
 }
 Wall {
-  translation 1.52 0.71 0
-  name "wall(3)"
-  size 0.01 0.3048 0.3048
-  appearance Roughcast {
-    colorOverride 1 0 0
-    textureTransform TextureTransform {
-      scale 2.4 1
-    }
-  }
-}
-Wall {
-  translation 1.52 0.71 0
-  rotation 0 1 0 -1.5707953071795862
-  name "wall(6)"
-  size 0.01 0.3048 0.3048
-  appearance Roughcast {
-    colorOverride 1 0 0
-    textureTransform TextureTransform {
-      scale 2.4 1
-    }
-  }
-}
-Wall {
-  translation -1.52 -0.38 0
-  size 0.01 0.3048 0.3048
-  appearance Roughcast {
-    colorOverride 0 1 0
-    textureTransform TextureTransform {
-      scale 2.4 1
-    }
-  }
-}
-Wall {
-  translation -1.52 -0.38 0
-  rotation 0 1 0 1.5708
-  name "wall(5)"
-  size 0.01 0.3048 0.3048
-  appearance Roughcast {
-    colorOverride 0 1 0
-    textureTransform TextureTransform {
-      scale 2.4 1
-    }
-  }
-}
-Wall {
-  translation -1.52 0.77 0
-  name "wall(1)"
-  size 0.01 0.3048 0.3048
-  appearance Roughcast {
-    colorOverride 0 0 1
-    textureTransform TextureTransform {
-      scale 2.4 1
-    }
-  }
-}
-Wall {
-  translation -1.52 0.77 0
+  translation -1.52 0.61 0
   rotation 0 1 0 1.5708
   name "wall(4)"
-  size 0.01 0.3048 0.3048
+  size 0.01 0.4 0.4
   appearance Roughcast {
-    colorOverride 0 0 1
+    colorOverride 1 1 0
     textureTransform TextureTransform {
       scale 2.4 1
     }
   }
 }
 Solid {
-  translation -0.441667 -0.255 0.1
+  translation 0.477324 -0.786743 0.1
   rotation 0 0 1 0.523599
-  name "red_box"
   children [
     Shape {
       appearance PBRAppearance {
@@ -163,16 +162,14 @@ Solid {
       }
     }
   ]
+  name "red_box"
   boundingObject Box {
     size 0.15 0.15 0.15
   }
-
 }
-
 Solid {
-  translation 0.733344 0.733346 0.1
+  translation -0.822304 -0.822314 0.1
   rotation 0 0 1 -0.785395307179586
-  name "green_box"
   children [
     Shape {
       appearance PBRAppearance {
@@ -185,20 +182,17 @@ Solid {
       }
     }
   ]
+  name "green_box"
   boundingObject Box {
     size 0.15 0.15 0.15
   }
-
 }
-
 Solid {
-  translation -0.5 0.5 0.1
+  translation -0.0669866 0.25 0.1
   rotation 0 0 1 -0.523595307179586
-  name "blue_box"
   children [
     Shape {
       appearance PBRAppearance {
-        baseColor 0 0 1
         roughness 0.5
         metalness 0
       }
@@ -207,16 +201,14 @@ Solid {
       }
     }
   ]
+  name "white_box"
   boundingObject Box {
     size 0.15 0.15 0.15
   }
-
 }
-
 Solid {
-  translation 0.62 -0.292156 0.1
+  translation -0.581 0.74765 0.1
   rotation 0 0 1 1.0472
-  name "yellow_box"
   children [
     Shape {
       appearance PBRAppearance {
@@ -229,15 +221,13 @@ Solid {
       }
     }
   ]
+  name "yellow_box"
   boundingObject Box {
     size 0.15 0.15 0.15
   }
-
 }
-
 Solid {
-  translation -0.5 -1.01 0.1
-  name "cyan_box"
+  translation 0.53 0.38 0.1
   children [
     Shape {
       appearance PBRAppearance {
@@ -250,14 +240,14 @@ Solid {
       }
     }
   ]
+  name "cyan_box"
   boundingObject Box {
     size 0.15 0.15 0.15
   }
 }
-
 DEF BBAlr8 Robot {
-  translation -0.417703 0.833533 0.0247074
-  rotation -0.9966092238775718 0.010996346208613422 -0.08154222987019841 0.037611403629000895
+  translation 0.399463 -0.118892 0.017046
+  rotation -0.037624341051471735 0.029934726068920392 -0.9988434918122164 1.4838755123051244
   children [
     DEF frontCam Camera {
       translation 2.1522e-07 -0.181 0.06
@@ -317,7 +307,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 14.999907337434667
+        position 100.2803310593946
         anchor 0.181 0 -0.03
       }
       device [
@@ -332,7 +322,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation 0.181 0 -0.03
-        rotation -0.6920328613644046 -0.25025561855365736 -0.6770986960363469 3.450589630049982
+        rotation -0.007224445540189848 -0.9921322129157819 0.12498591713257373 4.6948332628398575
         children [
           DEF leftWheel Shape {
             appearance PBRAppearance {
@@ -357,7 +347,7 @@ DEF BBAlr8 Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 15.028373067936341
+        position 102.27534061194
         anchor -0.181 0 -0.03
       }
       device [
@@ -372,7 +362,7 @@ DEF BBAlr8 Robot {
       ]
       endPoint Solid {
         translation -0.181 0 -0.03
-        rotation 0.6859983772963936 0.2425056753020513 0.6860008919768334 2.6657686551993485
+        rotation 0.607965603030348 0.5106397371860819 0.6079678316642045 2.197349374950151
         children [
           DEF rightWheel Shape {
             appearance PBRAppearance {
