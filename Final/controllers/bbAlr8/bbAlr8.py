@@ -5,8 +5,9 @@ import time
 from controller import Robot, Camera, Motor
 import kobukidriver  # Assuming standard Kobuki controller library
 
+
 class BBAlr8OpenCVController:
-    def __init__(self, target_color="red", stop_threshold=0.7):
+    def __init__(self, target_colors=None, stop_threshold=0.7):
         self.robot = Robot()
         self.time_step = int(self.robot.getBasicTimeStep())
 
@@ -25,7 +26,13 @@ class BBAlr8OpenCVController:
         self.height = self.camera.getHeight()
 
         # Parameters
-        self.target_color = target_color
+        self.target_colors = target_colors or [
+            "red",
+            "blue",
+            "green",
+            "yellow",
+            "unknown",
+        ]
         self.stop_threshold = stop_threshold
         self.MAX_SPEED = 7.0
 
@@ -33,6 +40,7 @@ class BBAlr8OpenCVController:
             "red": ([0, 100, 100], [10, 255, 255]),
             "blue": ([100, 100, 100], [140, 255, 255]),
             "green": ([40, 100, 100], [80, 255, 255]),
+            "yellow": ([20, 100, 100], [30, 255, 255]),
         }
 
         # Initialize Kobuki Driver
@@ -40,33 +48,51 @@ class BBAlr8OpenCVController:
 
     def detect_color_object(self, frame):
         img_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        lower, upper = self.color_ranges.get(self.target_color, ([0, 100, 100], [10, 255, 255]))
-        mask = cv2.inRange(img_hsv, np.array(lower), np.array(upper))
-        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        best_match = None
+        best_area = 0
+
         frame_with_detection = frame.copy()
 
-        if contours:
-            largest_contour = max(contours, key=cv2.contourArea)
-            M = cv2.moments(largest_contour)
-            if M["m00"] != 0:
-                cx = int(M["m10"] / M["m00"])
-                cy = int(M["m01"] / M["m00"])
+        for color in self.target_colors:
+            if color == "unknown":
+                continue
+            lower, upper = self.color_ranges.get(color, ([0, 100, 100], [10, 255, 255]))
+            mask = cv2.inRange(img_hsv, np.array(lower), np.array(upper))
+            contours, _ = cv2.findContours(
+                mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+            )
+
+            if contours:
+                largest_contour = max(contours, key=cv2.contourArea)
                 area = cv2.contourArea(largest_contour)
-                vertical_position = cy / self.height
+                if area > best_area:
+                    M = cv2.moments(largest_contour)
+                    if M["m00"] != 0:
+                        cx = int(M["m10"] / M["m00"])
+                        cy = int(M["m01"] / M["m00"])
+                        best_match = {
+                            "color": color,
+                            "x": cx,
+                            "y": cy,
+                            "area": area,
+                            "frame": frame_with_detection,
+                        }
+                        best_area = area
 
-                # Draw detection
-                cv2.drawContours(frame_with_detection, [largest_contour], -1, (0, 255, 0), 2)
-                label = f"{self.target_color.capitalize()} Object"
-                cv2.putText(frame_with_detection, label, (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+        if best_match is not None:
+            label = f"{best_match['color'].capitalize()} Object"
+            cv2.putText(
+                frame_with_detection,
+                label,
+                (best_match["x"], best_match["y"]),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (255, 255, 255),
+                2,
+            )
+            return best_match
 
-                return {
-                    "x": cx,
-                    "y": cy,
-                    "area": area,
-                    "vertical_position": vertical_position,
-                    "frame": frame_with_detection,
-                }
-        return {"frame": frame_with_detection, "x": None, "y": None}
+        return {"color": "unknown", "frame": frame_with_detection, "x": None, "y": None}
 
     def adjust_movement(self, object_info):
         if object_info["x"] is None:
@@ -140,9 +166,13 @@ class BBAlr8OpenCVController:
         print("Turning right 90°...")
         self.turn_angle("right", angle_deg=90, turn_speed=0.2)
 
+
 def main():
-    controller = BBAlr8OpenCVController(target_color="blue", stop_threshold=0.7)
+    controller = BBAlr8OpenCVController(
+        target_colors=["red", "blue", "green", "yellow", "unknown"], stop_threshold=0.7
+    )
     controller.run()
+
 
 if __name__ == "__main__":
     main()
