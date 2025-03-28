@@ -1,10 +1,6 @@
-import cv2
-import numpy as np
-import math
-import time
 from controller import Robot, Camera, Motor
-import kobukidriver  # Assuming standard Kobuki controller library
-
+import numpy as np
+import cv2
 
 class BBAlr8OpenCVController:
     def __init__(self, target_colors=None, stop_threshold=0.7):
@@ -26,153 +22,130 @@ class BBAlr8OpenCVController:
         self.height = self.camera.getHeight()
 
         # Parameters
-        self.target_colors = target_colors or [
-            "red",
-            "blue",
-            "green",
-            "yellow",
-            "unknown",
-        ]
+        self.target_colors = target_colors or ["red", "cyan", "green", "yellow", "white"]
         self.stop_threshold = stop_threshold
         self.MAX_SPEED = 7.0
+        self.detected_objects = set()
 
+        # Optimized color ranges for accurate detection
         self.color_ranges = {
-            "red": ([0, 100, 100], [10, 255, 255]),
-            "blue": ([100, 100, 100], [140, 255, 255]),
-            "green": ([40, 100, 100], [80, 255, 255]),
-            "yellow": ([20, 100, 100], [30, 255, 255]),
+            "red": ([0, 80, 50], [10, 255, 255]),
+            "red2": ([170, 80, 50], [180, 255, 255]), # Covers hue wrap-around
+            "cyan": ([85, 80, 80], [100, 255, 255]), # Pure cyan detection
+            "green": ([40, 80, 80], [90, 255, 255]),
+            "yellow": ([20, 100, 100], [35, 255, 255]),
+            "white": ([0, 0, 220], [180, 30, 255]),
         }
 
-        # Initialize Kobuki Driver
-        kobukidriver.init()
-
-    def detect_color_object(self, frame):
-        img_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        best_match = None
-        best_area = 0
-
-        frame_with_detection = frame.copy()
-
-        for color in self.target_colors:
-            if color == "unknown":
-                continue
-            lower, upper = self.color_ranges.get(color, ([0, 100, 100], [10, 255, 255]))
-            mask = cv2.inRange(img_hsv, np.array(lower), np.array(upper))
-            contours, _ = cv2.findContours(
-                mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-            )
-
-            if contours:
-                largest_contour = max(contours, key=cv2.contourArea)
-                area = cv2.contourArea(largest_contour)
-                if area > best_area:
-                    M = cv2.moments(largest_contour)
-                    if M["m00"] != 0:
-                        cx = int(M["m10"] / M["m00"])
-                        cy = int(M["m01"] / M["m00"])
-                        best_match = {
-                            "color": color,
-                            "x": cx,
-                            "y": cy,
-                            "area": area,
-                            "frame": frame_with_detection,
-                        }
-                        best_area = area
-
-        if best_match is not None:
-            label = f"{best_match['color'].capitalize()} Object"
-            cv2.putText(
-                frame_with_detection,
-                label,
-                (best_match["x"], best_match["y"]),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.5,
-                (255, 255, 255),
-                2,
-            )
-            return best_match
-
-        return {"color": "unknown", "frame": frame_with_detection, "x": None, "y": None}
-
-    def adjust_movement(self, object_info):
-        if object_info["x"] is None:
-            return
-
-        center = self.width // 2
-        error = object_info["x"] - center
-        turn_rate = error * 0.1
-
-        left_speed = self.MAX_SPEED - turn_rate
-        right_speed = self.MAX_SPEED + turn_rate
-        left_speed = max(min(left_speed, self.MAX_SPEED), -self.MAX_SPEED)
-        right_speed = max(min(right_speed, self.MAX_SPEED), -self.MAX_SPEED)
-
-        self.left_motor.setVelocity(left_speed)
-        self.right_motor.setVelocity(right_speed)
-
-    def move_forward(self):
-        self.left_motor.setVelocity(self.MAX_SPEED)
-        self.right_motor.setVelocity(self.MAX_SPEED)
-
-    def stop(self):
-        self.left_motor.setVelocity(0)
-        self.right_motor.setVelocity(0)
-
-    def run_distance(self, distance_cm, speed=0.2):
-        distance_m = distance_cm / 100.0
-        start_pose = kobukidriver.get_odometry()
-
-        kobukidriver.set_velocity(speed, speed)
-        while self.robot.step(self.time_step) != -1:
-            current_pose = kobukidriver.get_odometry()
-            dx = current_pose[0] - start_pose[0]
-            dy = current_pose[1] - start_pose[1]
-            traveled = math.sqrt(dx * dx + dy * dy)
-            if traveled >= distance_m:
-                break
-
-        kobukidriver.set_velocity(0, 0)
-
-    def turn_angle(self, direction, angle_deg=90, turn_speed=0.2):
-        angle_rad = math.radians(angle_deg)
-        left_speed, right_speed = (0, 0)
-
-        if direction.lower() == "left":
-            left_speed = -turn_speed
-            right_speed = turn_speed
-        elif direction.lower() == "right":
-            left_speed = turn_speed
-            right_speed = -turn_speed
+    def get_mask(self, img_hsv, color):
+        """
+        Generate mask using color ranges with combined red mask support.
+        """
+        if color == "red":
+            mask1 = cv2.inRange(img_hsv, np.array(self.color_ranges["red"][0]), np.array(self.color_ranges["red"][1]))
+            mask2 = cv2.inRange(img_hsv, np.array(self.color_ranges["red2"][0]), np.array(self.color_ranges["red2"][1]))
+            return cv2.bitwise_or(mask1, mask2)
         else:
-            print("Invalid direction. Use 'left' or 'right'.")
-            return
+            lower, upper = self.color_ranges.get(color, ([0, 0, 0], [0, 0, 0]))
+            return cv2.inRange(img_hsv, np.array(lower), np.array(upper))
 
-        angular_speed = 0.5 * (turn_speed / 0.2)
-        turn_time = angle_rad / angular_speed
+    def classify_by_distance(self, area, width, height):
+        """
+        Classify objects based on size and distance using bounding box analysis.
+        """
+        size_ratio = width * height
+        if area < 3000 or size_ratio < 20000:
+            return "Small Cube"
+        else:
+            return "Large Object"
 
-        kobukidriver.set_velocity(left_speed, right_speed)
-        start_time = self.robot.getTime()
-        while self.robot.step(self.time_step) != -1:
-            if self.robot.getTime() - start_time >= turn_time:
-                break
+    def is_too_close(self, width, height):
+        """
+        Detect if the object is too close to the camera.
+        """
+        size_ratio = width * height
+        if size_ratio > 120000: # Adjust this threshold based on experiments
+            return True
+        return False
 
-        kobukidriver.set_velocity(0, 0)
+    def draw_label(self, frame, text, x, y, color):
+        """
+        Draws a label with a filled background to prevent overlapping text.
+        """
+        (text_width, text_height), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+        cv2.rectangle(frame, (x, y - 20), (x + text_width, y), (0, 0, 0), -1)
+        cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+
+    def detect_objects_by_size(self, frame, color):
+        """
+        Detect objects using size and confidence-based filtering.
+        """
+        img_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        mask = self.get_mask(img_hsv, color)
+
+        # Confidence-based filtering to remove noise
+        confidence = cv2.countNonZero(mask) / (self.width * self.height)
+        if confidence < 0.005:
+            return  # Ignore low-confidence detections
+
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for contour in contours:
+            area = cv2.contourArea(contour)
+            x, y, w, h = cv2.boundingRect(contour)
+
+            # Ignore small noise
+            if area < 300:
+                continue
+            
+            # Apply near-object filter
+            if self.is_too_close(w, h):
+                classification = "Small Cube"
+            else:
+                classification = self.classify_by_distance(area, w, h)
+
+            label = f"{classification} ({color})"
+
+            # Prevent duplicate detections using a set
+            if label not in self.detected_objects:
+                self.detected_objects.add(label)
+
+                # Draw bounding box and label
+                box_color = (0, 255, 0) if classification == "Small Cube" else (255, 0, 0)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), box_color, 2)
+                self.draw_label(frame, f"Detected: {label}", x, y, box_color)
+
+    def visualize_hsv(self, frame):
+        """
+        Visualizes the HSV representation of the frame to adjust color ranges if necessary.
+        """
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        cv2.imshow('HSV View', hsv)
 
     def run(self):
-        print("Moving forward 50 cm...")
-        self.run_distance(50, speed=0.2)
-        print("Turning left 90°...")
-        self.turn_angle("left", angle_deg=90, turn_speed=0.2)
-        print("Turning right 90°...")
-        self.turn_angle("right", angle_deg=90, turn_speed=0.2)
+        while self.robot.step(self.time_step) != -1:
+            image_data = self.camera.getImage()
+            frame = np.frombuffer(image_data, np.uint8).reshape((self.height, self.width, 4))
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)
 
+            self.detected_objects.clear()  # Clear detected objects per frame
+
+            # Detect objects by size for all colors
+            for color in self.target_colors:
+                self.detect_objects_by_size(frame, color)
+                self.visualize_hsv(frame)
+
+            cv2.imshow("Object Detection", frame)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+
+        cv2.destroyAllWindows()
 
 def main():
     controller = BBAlr8OpenCVController(
-        target_colors=["red", "blue", "green", "yellow", "unknown"], stop_threshold=0.7
+        target_colors=["red", "cyan", "green", "yellow", "white"], stop_threshold=0.7
     )
     controller.run()
-
 
 if __name__ == "__main__":
     main()

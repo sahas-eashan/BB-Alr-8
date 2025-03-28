@@ -25,16 +25,24 @@ class ColorBoxFollower:
             "white": (np.array([0, 0, 200]), np.array([180, 30, 255])),
         }
 
-    def detect_color_box(self, frame, color):
+    def detect_color_object(self, frame, color, min_area=500, detect_area=False):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         lower, upper = self.color_ranges[color]
         mask = cv2.inRange(hsv, lower, upper)
         contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+        best_contour = None
+        max_area = 0
+
         for contour in contours:
-            if cv2.contourArea(contour) > 500:  # Adjust threshold as needed
-                x, y, w, h = cv2.boundingRect(contour)
-                return (x, y, w, h)
+            area = cv2.contourArea(contour)
+            if area > min_area and (not detect_area or area > max_area):
+                max_area = area
+                best_contour = contour
+
+        if best_contour is not None:
+            x, y, w, h = cv2.boundingRect(best_contour)
+            return (x, y, w, h)
         return None
 
     def detect_obstacles(self, frame):
@@ -69,15 +77,22 @@ class ColorBoxFollower:
                 if not ret:
                     break
 
-                box_coords = self.detect_color_box(frame, self.current_task)
-                area_coords = self.detect_color_box(frame, self.current_task)
+                box_coords = self.detect_color_object(
+                    frame, self.current_task, min_area=500
+                )
+                area_coords = self.detect_color_object(
+                    frame, self.current_task, min_area=1500, detect_area=True
+                )
                 obstacles = self.detect_obstacles(frame)
 
-                if box_coords is None:
+                if box_coords is None or area_coords is None:
                     self.direction = "Stop"
                 else:
                     x, y, w, h = box_coords
+                    ax, ay, aw, ah = area_coords
+
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 255), 2)
+                    cv2.rectangle(frame, (ax, ay), (ax + aw, ay + ah), (0, 255, 255), 2)
 
                     frame_center = frame.shape[1] // 2
                     box_center = x + w // 2
@@ -105,15 +120,13 @@ class ColorBoxFollower:
                             self.direction = "Forward"
 
                     # Check if box is near the matching area
-                    if area_coords:
-                        ax, ay, aw, ah = area_coords
-                        if abs(x - ax) < 30 and abs(y - ay) < 30:
-                            self.direction = "Stop"
-                            print(f"{self.current_task.capitalize()} Box Delivered!")
-                            self.task_sequence.pop(0)
-                            self.current_task = (
-                                self.task_sequence[0] if self.task_sequence else None
-                            )
+                    if abs(x - ax) < 30 and abs(y - ay) < 30:
+                        self.direction = "Stop"
+                        print(f"{self.current_task.capitalize()} Box Delivered!")
+                        self.task_sequence.pop(0)
+                        self.current_task = (
+                            self.task_sequence[0] if self.task_sequence else None
+                        )
 
                 cv2.putText(
                     frame,
