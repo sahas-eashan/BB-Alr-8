@@ -22,19 +22,19 @@ class BBAlr8OpenCVController:
         self.height = self.camera.getHeight()
 
         # Parameters
-        self.target_colors = target_colors or ["red", "cyan", "green", "yellow", "white"]
+        self.target_colors = target_colors or ["blue", "red", "green", "yellow", "white"]
         self.stop_threshold = stop_threshold
         self.MAX_SPEED = 7.0
         self.detected_objects = set()
 
-        # Optimized color ranges for accurate detection
+        # Updated color ranges for accurate detection
         self.color_ranges = {
-            "red": ([0, 80, 50], [10, 255, 255]),
-            "red2": ([170, 80, 50], [180, 255, 255]), # Covers hue wrap-around
-            "cyan": ([85, 80, 80], [100, 255, 255]), # Pure cyan detection
-            "green": ([40, 80, 80], [90, 255, 255]),
-            "yellow": ([20, 100, 100], [35, 255, 255]),
-            "white": ([0, 0, 220], [180, 30, 255]),
+            "red": ([0, 100, 100], [10, 255, 255]),  # Red
+            "red2": ([170, 100, 100], [180, 255, 255]),  # Red (hue wrap-around)
+            "blue": ([100, 100, 100], [140, 255, 255]),  # Light blue
+            "green": ([40, 100, 100], [80, 255, 255]),  # Green
+            "yellow": ([20, 100, 100], [35, 255, 255]),  # Yellow
+            "white": ([0, 0, 200], [180, 50, 255]),  # White
         }
 
     def get_mask(self, img_hsv, color):
@@ -49,24 +49,46 @@ class BBAlr8OpenCVController:
             lower, upper = self.color_ranges.get(color, ([0, 0, 0], [0, 0, 0]))
             return cv2.inRange(img_hsv, np.array(lower), np.array(upper))
 
-    def classify_by_distance(self, area, width, height):
+    def classify_object(self, contour):
         """
-        Classify objects based on size and distance using bounding box analysis.
+        Advanced object classification using multiple features
         """
-        size_ratio = width * height
-        if area < 3000 or size_ratio < 20000:
-            return "Small Cube"
-        else:
-            return "Large Object"
-
-    def is_too_close(self, width, height):
-        """
-        Detect if the object is too close to the camera.
-        """
-        size_ratio = width * height
-        if size_ratio > 120000: # Adjust this threshold based on experiments
-            return True
-        return False
+        # Calculate contour area and bounding box
+        area = cv2.contourArea(contour)
+        x, y, w, h = cv2.boundingRect(contour)
+        
+        # Aspect ratio and solidity for shape analysis
+        hull = cv2.convexHull(contour)
+        hull_area = cv2.contourArea(hull)
+        solidity = float(area) / hull_area if hull_area > 0 else 0
+        aspect_ratio = float(w) / h if h > 0 else 0
+        
+        # Classification criteria
+        classifications = {
+            "Cube": {
+                "area_min": 500,
+                "area_max": 10000,
+                "solidity_min": 0.8,
+                "aspect_ratio_min": 0.7,
+                "aspect_ratio_max": 1.3
+            },
+            "Large Object": {
+                "area_min": 10001,
+                "area_max": float('inf'),
+                "solidity_min": 0.6,
+                "aspect_ratio_min": 0.5,
+                "aspect_ratio_max": 2.0
+            }
+        }
+        
+        # Determine classification
+        for class_name, criteria in classifications.items():
+            if (criteria["area_min"] <= area <= criteria["area_max"] and
+                criteria["solidity_min"] <= solidity and
+                criteria["aspect_ratio_min"] <= aspect_ratio <= criteria["aspect_ratio_max"]):
+                return class_name
+        
+        return "Unknown Object"
 
     def draw_label(self, frame, text, x, y, color):
         """
@@ -78,49 +100,42 @@ class BBAlr8OpenCVController:
 
     def detect_objects_by_size(self, frame, color):
         """
-        Detect objects using size and confidence-based filtering.
+        Enhanced object detection method
         """
         img_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         mask = self.get_mask(img_hsv, color)
 
-        # Confidence-based filtering to remove noise
+        # Confidence-based filtering
         confidence = cv2.countNonZero(mask) / (self.width * self.height)
         if confidence < 0.005:
-            return  # Ignore low-confidence detections
+            return
 
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         for contour in contours:
-            area = cv2.contourArea(contour)
-            x, y, w, h = cv2.boundingRect(contour)
-
-            # Ignore small noise
-            if area < 300:
+            # Skip very small contours
+            if cv2.contourArea(contour) < 300:
                 continue
             
-            # Apply near-object filter
-            if self.is_too_close(w, h):
-                classification = "Small Cube"
-            else:
-                classification = self.classify_by_distance(area, w, h)
+            # Classify the object
+            classification = self.classify_object(contour)
+            
+            # Only process valid classifications
+            if classification in ["Cube", "Large Object"]:
+                x, y, w, h = cv2.boundingRect(contour)
+                
+                label = f"{classification} ({color})"
+                
+                # Prevent duplicate detections
+                if label not in self.detected_objects:
+                    self.detected_objects.add(label)
 
-            label = f"{classification} ({color})"
-
-            # Prevent duplicate detections using a set
-            if label not in self.detected_objects:
-                self.detected_objects.add(label)
-
-                # Draw bounding box and label
-                box_color = (0, 255, 0) if classification == "Small Cube" else (255, 0, 0)
-                cv2.rectangle(frame, (x, y), (x + w, y + h), box_color, 2)
-                self.draw_label(frame, f"Detected: {label}", x, y, box_color)
-
-    def visualize_hsv(self, frame):
-        """
-        Visualizes the HSV representation of the frame to adjust color ranges if necessary.
-        """
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        cv2.imshow('HSV View', hsv)
+                    # Color-code based on classification
+                    box_color = (0, 255, 0) if classification == "Cube" else (255, 0, 0)
+                    
+                    # Draw bounding box and label
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), box_color, 2)
+                    self.draw_label(frame, f"Detected: {label}", x, y, box_color)
 
     def run(self):
         while self.robot.step(self.time_step) != -1:
@@ -133,7 +148,6 @@ class BBAlr8OpenCVController:
             # Detect objects by size for all colors
             for color in self.target_colors:
                 self.detect_objects_by_size(frame, color)
-                self.visualize_hsv(frame)
 
             cv2.imshow("Object Detection", frame)
             if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -143,7 +157,7 @@ class BBAlr8OpenCVController:
 
 def main():
     controller = BBAlr8OpenCVController(
-        target_colors=["red", "cyan", "green", "yellow", "white"], stop_threshold=0.7
+        target_colors=["blue", "red", "green", "yellow", "white"], stop_threshold=0.7
     )
     controller.run()
 
