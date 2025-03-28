@@ -27,27 +27,17 @@ class BBAlr8OpenCVController:
         self.MAX_SPEED = 7.0
         self.detected_objects = set()
 
-        # Updated color ranges for accurate detection
+        # Refined color ranges with wider and more precise HSV ranges
         self.color_ranges = {
-            "red": ([0, 100, 100], [10, 255, 255]),  # Red
-            "red2": ([170, 100, 100], [180, 255, 255]),  # Red (hue wrap-around)
-            "blue": ([100, 100, 100], [140, 255, 255]),  # Light blue
-            "green": ([40, 100, 100], [80, 255, 255]),  # Green
-            "yellow": ([20, 100, 100], [35, 255, 255]),  # Yellow
-            "white": ([0, 0, 200], [180, 50, 255]),  # White
+            "red": [
+                ([0, 50, 50], [10, 255, 255]),    # Red range 1
+                ([170, 50, 50], [180, 255, 255])  # Red range 2 (hue wrap-around)
+            ],
+            "blue": ([100, 50, 50], [140, 255, 255]),  # Blue range
+            "green": ([40, 50, 50], [80, 255, 255]),   # Green range
+            "yellow": ([20, 50, 50], [35, 255, 255]),  # Yellow range
+            "white": ([0, 0, 200], [180, 50, 255]),    # White range
         }
-
-    def get_mask(self, img_hsv, color):
-        """
-        Generate mask using color ranges with combined red mask support.
-        """
-        if color == "red":
-            mask1 = cv2.inRange(img_hsv, np.array(self.color_ranges["red"][0]), np.array(self.color_ranges["red"][1]))
-            mask2 = cv2.inRange(img_hsv, np.array(self.color_ranges["red2"][0]), np.array(self.color_ranges["red2"][1]))
-            return cv2.bitwise_or(mask1, mask2)
-        else:
-            lower, upper = self.color_ranges.get(color, ([0, 0, 0], [0, 0, 0]))
-            return cv2.inRange(img_hsv, np.array(lower), np.array(upper))
 
     def classify_object(self, contour):
         """
@@ -66,9 +56,9 @@ class BBAlr8OpenCVController:
         # Classification criteria
         classifications = {
             "Cube": {
-                "area_min": 500,
+                "area_min": 300,
                 "area_max": 10000,
-                "solidity_min": 0.8,
+                "solidity_min": 0.7,
                 "aspect_ratio_min": 0.7,
                 "aspect_ratio_max": 1.3
             },
@@ -90,6 +80,51 @@ class BBAlr8OpenCVController:
         
         return "Unknown Object"
 
+    def get_mask(self, img_hsv, color):
+        """
+        Generate mask using color ranges with support for multi-range colors
+        """
+        if color == "red":
+            # Combine masks for both red ranges
+            masks = [cv2.inRange(img_hsv, np.array(lower), np.array(upper)) 
+                     for lower, upper in self.color_ranges["red"]]
+            return cv2.bitwise_or(masks[0], masks[1])
+        else:
+            # Single range colors
+            lower, upper = self.color_ranges.get(color, ([0, 0, 0], [0, 0, 0]))
+            return cv2.inRange(img_hsv, np.array(lower), np.array(upper))
+
+    def debug_color_detection(self, frame, color):
+        """
+        Diagnostic method to help understand color detection issues
+        """
+        # Convert to HSV
+        img_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        
+        # Get mask
+        mask = self.get_mask(img_hsv, color)
+        
+        # Calculate confidence
+        confidence = cv2.countNonZero(mask) / (self.width * self.height)
+        
+        # Find contours
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        # Print diagnostic information
+        print(f"\nColor: {color}")
+        print(f"Confidence: {confidence:.4f}")
+        print(f"Number of contours: {len(contours)}")
+        
+        # Visualize mask
+        cv2.imshow(f'{color} Mask', mask)
+        
+        # If no contours, print additional info
+        if len(contours) == 0:
+            print("No contours found. Possible reasons:")
+            print("1. Color range might be too narrow")
+            print("2. Lighting conditions may affect detection")
+            print("3. No objects of this color in the frame")
+
     def draw_label(self, frame, text, x, y, color):
         """
         Draws a label with a filled background to prevent overlapping text.
@@ -100,7 +135,7 @@ class BBAlr8OpenCVController:
 
     def detect_objects_by_size(self, frame, color):
         """
-        Enhanced object detection method
+        Enhanced object detection method with debugging
         """
         img_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         mask = self.get_mask(img_hsv, color)
@@ -108,6 +143,8 @@ class BBAlr8OpenCVController:
         # Confidence-based filtering
         confidence = cv2.countNonZero(mask) / (self.width * self.height)
         if confidence < 0.005:
+            # Debug if confidence is low
+            self.debug_color_detection(frame, color)
             return
 
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
