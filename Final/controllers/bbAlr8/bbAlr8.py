@@ -33,7 +33,7 @@ class BBAlr8OpenCVController:
                 ([0, 50, 50], [10, 255, 255]),    # Red range 1
                 ([170, 50, 50], [180, 255, 255])  # Red range 2 (hue wrap-around)
             ],
-            "blue": ([100, 50, 50], [140, 255, 255]),  # Blue range
+            "blue": ([90, 100, 50], [130, 255, 255]),  # Blue range
             "green": ([40, 50, 50], [80, 255, 255]),   # Green range
             "yellow": ([20, 50, 50], [35, 255, 255]),  # Yellow range
             "white": ([0, 0, 200], [180, 50, 255]),    # White range
