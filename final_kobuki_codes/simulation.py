@@ -5,74 +5,126 @@ import threading
 from kobukidriver import Kobuki
 
 
-class KobukiColorController:
+class MultiColorRobotController:
     def __init__(self):
-        """Initialize the Kobuki robot controller with OpenCV color tracking."""
-        # Initialize the robot
+        """Initialize the robot controller with OpenCV color tracking for multiple colors."""
+        # Initialize the Kobuki robot
         self.robot = Kobuki()
 
         # Initialize camera
         self.cap = cv2.VideoCapture(0)
-        ret, test_frame = self.cap.read()
-        if not ret:
-            raise Exception("Failed to initialize camera")
+        ret, frame = self.cap.read()
+        if ret:
+            self.height, self.width = frame.shape[:2]
+        else:
+            self.width, self.height = 640, 480  # Default if camera doesn't work
 
-        self.width = test_frame.shape[1]
-        self.height = test_frame.shape[0]
+        # Initialize time step for loop control
+        self.time_step = 100  # milliseconds
 
         # Default motor speeds
-        self.MAX_SPEED = 80.0
+        self.MAX_SPEED = 100  # Kobuki speed scale
 
-        # Color detection parameters (HSV ranges)
-        self.blue_lower = np.array([100, 100, 100])
-        self.blue_upper = np.array([140, 255, 255])
+        # Color detection parameters (HSV ranges for different colors)
+        self.color_ranges = {
+            "blue": {
+                "lower": np.array([100, 100, 100]),
+                "upper": np.array([140, 255, 255]),
+            },
+            "red1": {
+                "lower": np.array([0, 120, 70]),
+                "upper": np.array([10, 255, 255]),
+            },  # Lower red range
+            "red2": {
+                "lower": np.array([160, 100, 50]),
+                "upper": np.array([180, 255, 255]),
+            },  # Upper red range
+            "green": {
+                "lower": np.array([40, 40, 40]),
+                "upper": np.array([80, 255, 255]),
+            },
+            "yellow": {
+                "lower": np.array([20, 100, 100]),
+                "upper": np.array([30, 255, 255]),
+            },
+        }
+
+        # Current color to detect
+        self.current_color = "blue"
+        self.target_mode = "box"  # Either "box" or "goal"
 
         # Box detection parameters
         self.min_box_area = 500
-        self.goal_area_threshold = 15000  # Adjust for Kobuki's camera
+        self.goal_area_threshold = 10000
 
         # Create visualization windows
         cv2.namedWindow("Robot View", cv2.WINDOW_NORMAL)
 
         # Task management
+        self.main_phase = (
+            "blue_phase"  # Starts with blue phase, then red, green, yellow
+        )
         self.current_task = "initial_navigation"
         self.has_box = False
-        self.direction = "Stop"
+        self.turn_angle = 0.0
+        self.timer = 0
+        self.start_time = 0
+
+        # For rotation estimation
+        self.last_rotation_time = time.time()
+        self.rotation_speed = 0  # estimated degrees per second
+
+        # For stopping condition
         self.running = True
+        self.direction = "Stop"
         self.last_detection_time = time.time()
         self.timeout = 2  # seconds to stop if no color detected
 
-        # Rotation tracking (simulated since Kobuki might not have gyro)
-        self.turn_angle = 0.0
-        self.turn_start_time = 0
-        self.timer = 0
-
     def get_camera_image(self):
         """Get and process the camera image."""
-        ret, frame = self.cap.read()
+        ret, img_bgr = self.cap.read()
         if not ret:
-            return None
-        return frame
+            return np.zeros((self.height, self.width, 3), dtype=np.uint8)
+        return img_bgr
 
-    def detect_blue_object(self, captured_mode=False):
+    def detect_colored_object(self, goal_mode=False):
         """
-        Detect blue objects in the image with size constraints.
-        Returns (detected, x, y, w, h, area, center_x)
+        Detect colored objects in the image with size constraints.
 
-        If captured_mode is True, we're looking for the goal, which is larger
+        Args:
+            goal_mode (bool): If True, looking for goals which are larger than boxes
+
+        Returns:
+            (detected, x, y, w, h, area, center_x)
         """
         # Get camera image
         img_bgr = self.get_camera_image()
-        if img_bgr is None:
-            return False, 0, 0, 0, 0, 0, 0
-
         img_display = img_bgr.copy()
 
         # Convert to HSV colorspace
         img_hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
 
-        # Create mask for blue color
-        mask = cv2.inRange(img_hsv, self.blue_lower, self.blue_upper)
+        # Create mask for the current color
+        if self.current_color == "red":
+            # For red, we need to combine two ranges due to how hue wraps around
+            mask1 = cv2.inRange(
+                img_hsv,
+                self.color_ranges["red1"]["lower"],
+                self.color_ranges["red1"]["upper"],
+            )
+            mask2 = cv2.inRange(
+                img_hsv,
+                self.color_ranges["red2"]["lower"],
+                self.color_ranges["red2"]["upper"],
+            )
+            mask = cv2.bitwise_or(mask1, mask2)
+        else:
+            # For other colors, use the corresponding range
+            mask = cv2.inRange(
+                img_hsv,
+                self.color_ranges[self.current_color]["lower"],
+                self.color_ranges[self.current_color]["upper"],
+            )
 
         # Add morphology operations to clean up the mask
         kernel = np.ones((5, 5), np.uint8)
@@ -86,10 +138,10 @@ class KobukiColorController:
         min_area = self.min_box_area  # Default minimum area
         max_area = self.width * self.height * 0.2  # Max 20% of image
 
-        if captured_mode:
+        if goal_mode:
             # When looking for the goal, adjust size constraints
             min_area = self.min_box_area * 3
-            max_area = self.width * self.height * 0.7  # Allow larger area for goal
+            max_area = self.width * self.height * 0.8  # Allow larger area for goal
 
         # Find the largest contour that meets our criteria
         max_area_found = 0
@@ -109,8 +161,16 @@ class KobukiColorController:
             x, y, w, h = cv2.boundingRect(best_contour)
             center_x = x + (w // 2)
 
-            # Draw rectangle around detected object
-            cv2.rectangle(img_display, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            # Set display color based on current color
+            color_display = (0, 0, 255)  # Default red rectangle
+            if self.current_color == "blue":
+                color_display = (255, 0, 0)
+            elif self.current_color == "green":
+                color_display = (0, 255, 0)
+            elif self.current_color == "yellow":
+                color_display = (0, 255, 255)
+
+            cv2.rectangle(img_display, (x, y), (x + w, y + h), color_display, 2)
             cv2.line(img_display, (center_x, y), (center_x, y + h), (255, 0, 0), 2)
 
             # Draw center of image
@@ -127,8 +187,26 @@ class KobukiColorController:
             aspect_ratio = w / max(1, h)
             cv2.putText(
                 img_display,
-                f"Task: {self.current_task}",
+                f"Phase: {self.main_phase}",
                 (10, 20),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (255, 255, 255),
+                2,
+            )
+            cv2.putText(
+                img_display,
+                f"Task: {self.current_task}",
+                (10, 45),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (255, 255, 255),
+                2,
+            )
+            cv2.putText(
+                img_display,
+                f"Target: {self.target_mode} ({self.current_color})",
+                (10, 70),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.6,
                 (255, 255, 255),
@@ -137,7 +215,7 @@ class KobukiColorController:
             cv2.putText(
                 img_display,
                 f"Area: {max_area_found:.0f}",
-                (10, 50),
+                (10, 95),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.6,
                 (255, 255, 255),
@@ -146,46 +224,26 @@ class KobukiColorController:
             cv2.putText(
                 img_display,
                 f"Aspect: {aspect_ratio:.2f}",
-                (10, 80),
+                (10, 120),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.6,
                 (255, 255, 255),
                 2,
             )
 
-            # Show constraints
-            cv2.putText(
-                img_display,
-                f"Min area: {min_area}",
-                (10, 110),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.6,
-                (255, 255, 255),
-                2,
-            )
-            cv2.putText(
-                img_display,
-                f"Max area: {max_area:.0f}",
-                (10, 140),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.6,
-                (255, 255, 255),
-                2,
-            )
+            # Update last detection time for timeout feature
+            self.last_detection_time = time.time()
 
             # Display the image
             cv2.imshow("Robot View", img_display)
             cv2.waitKey(1)
-
-            # Update last detection time
-            self.last_detection_time = time.time()
 
             return True, x, y, w, h, max_area_found, center_x
         else:
             # No object detected
             cv2.putText(
                 img_display,
-                f"Task: {self.current_task}",
+                f"Phase: {self.main_phase}",
                 (10, 20),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.6,
@@ -194,33 +252,44 @@ class KobukiColorController:
             )
             cv2.putText(
                 img_display,
-                "No blue object detected",
-                (10, 50),
+                f"Task: {self.current_task}",
+                (10, 45),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (255, 255, 255),
+                2,
+            )
+            cv2.putText(
+                img_display,
+                f"Target: {self.target_mode} ({self.current_color})",
+                (10, 70),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (255, 255, 255),
+                2,
+            )
+            cv2.putText(
+                img_display,
+                f"No object detected",
+                (10, 95),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.6,
                 (255, 255, 255),
                 2,
             )
 
-            # Show constraints
-            cv2.putText(
-                img_display,
-                f"Min area: {min_area}",
-                (10, 80),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.6,
-                (255, 255, 255),
-                2,
-            )
-            cv2.putText(
-                img_display,
-                f"Max area: {max_area:.0f}",
-                (10, 110),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.6,
-                (255, 255, 255),
-                2,
-            )
+            # Check for timeout
+            if time.time() - self.last_detection_time > self.timeout:
+                self.direction = "Stop"
+                cv2.putText(
+                    img_display,
+                    "No detection - Stopping",
+                    (10, 145),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6,
+                    (0, 0, 255),
+                    2,
+                )
 
             # Draw center of image
             img_center_x = self.width // 2
@@ -233,7 +302,7 @@ class KobukiColorController:
             )
 
             # Also display the mask to debug color detection
-            cv2.imshow("Blue Mask", mask)
+            cv2.imshow("Color Mask", mask)
             cv2.imshow("Robot View", img_display)
             cv2.waitKey(1)
 
@@ -248,49 +317,38 @@ class KobukiColorController:
         return area > self.goal_area_threshold
 
     def move_motors(self, left_speed, right_speed):
-        """Set motor speeds for Kobuki with clamping to MAX_SPEED."""
-        self.robot.move(
-            max(-self.MAX_SPEED, min(self.MAX_SPEED, left_speed)),
-            max(-self.MAX_SPEED, min(self.MAX_SPEED, right_speed)),
-            0,  # No angular velocity setting needed for Kobuki
-        )
+        """Set motor speeds with clamping to MAX_SPEED."""
+        left = max(-self.MAX_SPEED, min(self.MAX_SPEED, left_speed))
+        right = max(-self.MAX_SPEED, min(self.MAX_SPEED, right_speed))
+        # Kobuki.move(left, right, radius) - radius is 0 for differential drive
+        self.robot.move(left, right, 0)
 
-    def simulate_rotation_tracking(self, direction, duration=None):
+    def estimate_rotation(self, clockwise=True):
         """
-        Simulate rotation tracking using time instead of gyro.
-        direction: 1 for left turn, -1 for right turn
-        duration: if provided, turn for this duration in ms
+        Estimate rotation based on time and rotation speed.
+        This replaces the gyro from Webots with a time-based estimation.
         """
-        # Approximate turn rate (radians per second)
-        TURN_RATE = 0.7  # Adjust based on actual robot behavior
+        current_time = time.time()
+        elapsed = current_time - self.last_rotation_time
 
-        if duration is None:
-            # Just update the angle based on direction
-            current_time = time.time()
-            elapsed_time = current_time - self.turn_start_time
-            self.turn_start_time = current_time
+        # Estimate rotation based on motor speeds
+        # For Kobuki, we can estimate that at MAX_SPEED, it rotates at around 90 degrees per second
+        # This needs calibration for your specific robot
+        rotation_speed = 90.0  # degrees per second at max speed
 
-            # Update the angle
-            self.turn_angle += direction * TURN_RATE * elapsed_time
+        # Scale by the ratio of current speed to max speed
+        if clockwise:
+            self.turn_angle -= rotation_speed * elapsed
         else:
-            # Turn for a specific duration
-            current_time = time.time()
-            if self.turn_start_time == 0:
-                self.turn_start_time = current_time
+            self.turn_angle += rotation_speed * elapsed
 
-            elapsed_time = (current_time - self.turn_start_time) * 1000  # Convert to ms
-
-            if elapsed_time >= duration:
-                # Turn completed
-                self.turn_start_time = 0
-                return True
-
-        return False
+        self.last_rotation_time = current_time
+        return self.turn_angle
 
     def reset_rotation_tracking(self):
         """Reset rotation tracking."""
         self.turn_angle = 0.0
-        self.turn_start_time = 0
+        self.last_rotation_time = time.time()
 
     def follow_object(self, detected, center_x, area):
         """
@@ -336,61 +394,89 @@ class KobukiColorController:
 
         return True
 
-    def turn_for_duration(self, direction, duration):
+    def turn_to_angle(self, target_angle):
         """
-        Turn robot in a direction for a set duration.
-        direction: "left" or "right"
-        duration: time in milliseconds
-        Returns True if turn is completed, False otherwise
+        Turn robot to a specific angle.
+        Returns True if target is reached, False otherwise.
         """
-        if self.turn_start_time == 0:
-            self.turn_start_time = time.time()
+        # Determine turn direction
+        if target_angle > 0:  # Turn counterclockwise (left)
+            self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
+            current_angle = self.estimate_rotation(clockwise=False)
+            return current_angle >= target_angle
+        else:  # Turn clockwise (right)
+            self.move_motors(self.MAX_SPEED * 0.5, -self.MAX_SPEED * 0.5)
+            current_angle = self.estimate_rotation(clockwise=True)
+            return current_angle <= target_angle
 
-        elapsed_time = (time.time() - self.turn_start_time) * 1000  # Convert to ms
-
-        if elapsed_time >= duration:
-            # Turn completed
-            self.move_motors(0, 0)
-            self.turn_start_time = 0
+    def turn_for_duration(self, duration_ms, clockwise=True):
+        """Turn for a specific duration, returns True when complete."""
+        if self.timer >= duration_ms:
             return True
 
-        # Perform the turn
-        if direction == "left":
-            self.move_motors(-self.MAX_SPEED * 0.7, self.MAX_SPEED * 0.7)
-            self.direction = "Left"
-        else:  # right
-            self.move_motors(self.MAX_SPEED * 0.7, -self.MAX_SPEED * 0.7)
-            self.direction = "Right"
+        if clockwise:
+            self.move_motors(self.MAX_SPEED * 0.5, -self.MAX_SPEED * 0.5)
+        else:
+            self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
 
         return False
 
+    def transition_to_next_color_phase(self):
+        """Transition to the next color phase in the sequence."""
+        if self.main_phase == "blue_phase":
+            self.main_phase = "red_phase"
+            self.current_color = "red"
+            print("Transitioning to RED phase")
+        elif self.main_phase == "red_phase":
+            self.main_phase = "green_phase"
+            self.current_color = "green"
+            print("Transitioning to GREEN phase")
+        elif self.main_phase == "green_phase":
+            self.main_phase = "yellow_phase"
+            self.current_color = "yellow"
+            print("Transitioning to YELLOW phase")
+        elif self.main_phase == "yellow_phase":
+            self.main_phase = "completed"
+            print("All phases completed!")
+
+        # Reset task state for the new phase
+        self.current_task = "turn_to_find_box"
+        self.target_mode = "box"  # Start by finding a box
+        self.has_box = False
+        self.reset_rotation_tracking()
+        self.timer = 0
+        self.start_time = time.time()
+
     def control_robot(self):
-        """Separate thread for robot control."""
+        """Thread function to control the robot based on current direction."""
         while self.running:
-            # This function is not needed as we're controlling directly in main loop
+            # Motor control is now handled in task-specific methods
             time.sleep(0.1)
 
     def run(self):
         """Main control loop for the robot."""
-        # Robot control thread (not necessary but kept for compatibility)
-        robot_thread = threading.Thread(target=self.control_robot)
-        robot_thread.daemon = True
-        robot_thread.start()
-
-        # Play startup sound
+        # Play sound to indicate start
         self.robot.play_on_sound()
 
-        # Initial turn durations (milliseconds)
-        LEFT_TURN_DURATION = 1500  # Adjust based on actual robot turning rate
-        RIGHT_TURN_DURATION = 1500
-        FORWARD_DURATION = 2000
+        # Define time durations for turns (milliseconds)
+        TURN_90_LEFT_TIME = 1000  # Time to turn 90 degrees left
+        TURN_90_RIGHT_TIME = 1000  # Time to turn 90 degrees right
+        TURN_180_TIME = 2000  # Time to turn 180 degrees
 
-        # Initial turn complete flag
+        # Initial turn complete flag for blue phase
         self.has_completed_initial_turn = False
         self.has_moved_forward = False
         self.has_turned_right = False
 
-        # Timer
+        # Drive forward timer
+        forward_time = 1600  # milliseconds
+
+        # Start a separate thread for robot control
+        robot_thread = threading.Thread(target=self.control_robot)
+        robot_thread.daemon = True
+        robot_thread.start()
+
+        # Reset timers
         self.timer = 0
         self.start_time = time.time()
 
@@ -398,180 +484,212 @@ class KobukiColorController:
             while self.running:
                 # Update timer
                 current_time = time.time()
-                self.timer = int(
-                    (current_time - self.start_time) * 1000
-                )  # Convert to ms
+                elapsed_ms = int((current_time - self.start_time) * 1000)
+                self.timer = elapsed_ms
 
-                # Simple task-based approach
-                if self.current_task == "initial_navigation":
-                    # Sub-task 1: Turn left
+                # Process keyboard input
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord("q"):
+                    self.running = False
+                    break
+
+                # Blue Phase: Initial Navigation
+                if (
+                    self.main_phase == "blue_phase"
+                    and self.current_task == "initial_navigation"
+                ):
+                    # Sub-task 1: Turn left 90 degrees
                     if not self.has_completed_initial_turn:
-                        if self.turn_for_duration("left", LEFT_TURN_DURATION):
+                        if self.turn_for_duration(TURN_90_LEFT_TIME, clockwise=False):
                             self.has_completed_initial_turn = True
+                            self.move_motors(0, 0)  # Stop
                             self.start_time = time.time()  # Reset timer
                             print("Initial turn complete")
 
                     # Sub-task 2: Move forward for a set time
                     elif not self.has_moved_forward:
                         self.move_motors(self.MAX_SPEED, self.MAX_SPEED)
-                        self.direction = "Forward"
-                        if self.timer >= FORWARD_DURATION:
+                        if self.timer >= forward_time:
                             self.has_moved_forward = True
+                            self.move_motors(0, 0)  # Stop
                             self.start_time = time.time()  # Reset timer
                             print("Forward movement complete")
 
-                    # Sub-task 3: Turn right
+                    # Sub-task 3: Turn right 90 degrees
                     elif not self.has_turned_right:
-                        if self.turn_for_duration("right", RIGHT_TURN_DURATION):
+                        if self.turn_for_duration(TURN_90_RIGHT_TIME, clockwise=True):
                             self.has_turned_right = True
+                            self.move_motors(0, 0)  # Stop
                             self.start_time = time.time()  # Reset timer
                             print("Right turn complete")
                             self.current_task = "find_box"
+                            self.target_mode = "box"
 
+                # All Phases: Find Box of Current Color
                 elif self.current_task == "find_box":
-                    # Search for the blue box by rotating
-                    detected, x, y, w, h, area, center_x = self.detect_blue_object(
+                    # Make sure we're looking for a box
+                    self.target_mode = "box"
+
+                    # Search for the box of current color by rotating
+                    detected, x, y, w, h, area, center_x = self.detect_colored_object(
                         False
                     )
 
                     if not detected:
                         # Turn slowly to search
                         self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
-                        self.direction = "Searching"
-
-                        # Check timeout for object detection
-                        if time.time() - self.last_detection_time > self.timeout:
-                            # Alternate search direction periodically
-                            if (
-                                int(time.time()) % 6 < 3
-                            ):  # Change direction every 3 seconds
-                                self.move_motors(
-                                    -self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5
-                                )
-                            else:
-                                self.move_motors(
-                                    self.MAX_SPEED * 0.5, -self.MAX_SPEED * 0.5
-                                )
                     else:
                         self.current_task = "approach_box"
-                        print("Box found, approaching")
+                        print(f"Found {self.current_color} box, approaching")
 
+                # All Phases: Approach Box
                 elif self.current_task == "approach_box":
-                    # Detect and follow the blue box
-                    detected, x, y, w, h, area, center_x = self.detect_blue_object(
+                    # Make sure we're still looking for a box
+                    self.target_mode = "box"
+
+                    # Detect and follow the box
+                    detected, x, y, w, h, area, center_x = self.detect_colored_object(
                         False
                     )
 
                     if not detected:
                         # Lost the box, go back to search
-                        if time.time() - self.last_detection_time > self.timeout:
-                            self.move_motors(0, 0)
-                            self.direction = "Stop"
-                            print("Box lost, searching again")
-                            self.current_task = "find_box"
+                        self.current_task = "find_box"
                     elif self.is_box_captured(y, h):
                         # Box is captured, stop and prepare to find goal
                         self.move_motors(0, 0)
-                        self.direction = "Stop"
                         self.has_box = True
                         self.start_time = time.time()  # Reset timer
                         self.current_task = "turn_to_goal"
-                        print("Box captured, turning to find goal")
+                        print(
+                            f"{self.current_color} box captured, turning to find goal"
+                        )
                     else:
                         # Follow the box using adaptive control
                         self.follow_object(detected, center_x, area)
 
+                # All Phases: Turn to Find Goal
                 elif self.current_task == "turn_to_goal":
-                    # Turn left to face the goal area
-                    if self.turn_for_duration("left", LEFT_TURN_DURATION):
+                    # Turn left 90 degrees to face the goal area
+                    if self.turn_for_duration(TURN_90_LEFT_TIME, clockwise=False):
+                        self.move_motors(0, 0)  # Stop
                         self.start_time = time.time()  # Reset timer
                         self.current_task = "find_goal"
-                        print("Turned to face goal area")
+                        self.target_mode = "goal"  # Now looking for a goal
+                        print(f"Turned to face {self.current_color} goal area")
 
+                # All Phases: Find Goal - Now uses the same color as the box
                 elif self.current_task == "find_goal":
-                    # Search for the blue goal
-                    detected, x, y, w, h, area, center_x = self.detect_blue_object(True)
+                    # We're looking for a goal - keep same color as the box
+                    self.target_mode = "goal"
+
+                    # Search for the matching colored goal
+                    detected, x, y, w, h, area, center_x = self.detect_colored_object(
+                        True
+                    )
 
                     if not detected:
                         # Turn slowly to search
                         self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
-                        self.direction = "Searching Goal"
-
-                        # Check timeout for object detection
-                        if time.time() - self.last_detection_time > self.timeout:
-                            # Alternate search direction periodically
-                            if (
-                                int(time.time()) % 6 < 3
-                            ):  # Change direction every 3 seconds
-                                self.move_motors(
-                                    -self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5
-                                )
-                            else:
-                                self.move_motors(
-                                    self.MAX_SPEED * 0.5, -self.MAX_SPEED * 0.5
-                                )
                     else:
                         self.current_task = "approach_goal"
-                        print("Goal found, approaching")
+                        print(f"{self.current_color} goal found, approaching")
 
+                # All Phases: Approach Goal - Uses same color as box
                 elif self.current_task == "approach_goal":
-                    # Detect and approach the blue goal
-                    detected, x, y, w, h, area, center_x = self.detect_blue_object(True)
+                    # Still looking for a goal
+                    self.target_mode = "goal"
+
+                    # Detect and approach the matching colored goal
+                    detected, x, y, w, h, area, center_x = self.detect_colored_object(
+                        True
+                    )
 
                     if not detected:
                         # Lost the goal, go back to search
-                        if time.time() - self.last_detection_time > self.timeout:
-                            self.move_motors(0, 0)
-                            self.direction = "Stop"
-                            print("Goal lost, searching again")
-                            self.current_task = "find_goal"
+                        self.current_task = "find_goal"
                     else:
-                        # Check if we've reached the goal based on area
+                        # Check if we've reached the goal based on area and aspect ratio
                         aspect_ratio = w / max(1, h)
                         if self.is_at_goal(area, aspect_ratio):
                             self.move_motors(0, 0)
-                            self.direction = "Stop"
                             self.current_task = "retreat"
                             self.start_time = time.time()  # Reset timer
-                            print("Goal reached, retreating")
+                            print(
+                                f"Goal reached with {self.current_color} box, retreating"
+                            )
                         else:
                             # Approach the goal while keeping it centered
                             self.follow_object(detected, center_x, area)
 
+                # All Phases: Retreat
                 elif self.current_task == "retreat":
                     # Back up for 2 seconds
                     self.move_motors(-self.MAX_SPEED * 0.7, -self.MAX_SPEED * 0.7)
-                    self.direction = "Reversing"
-                    if self.timer >= 2000:  # 2 seconds
-                        self.move_motors(0, 0)
-                        self.direction = "Stop"
-                        self.current_task = "finished"
-                        print("Task completed successfully")
-                        self.robot.play_off_sound()
 
+                    retreat_time = 4000
+                    if self.current_color == "red":
+                        retreat_time = 10000
+
+                    if self.timer >= retreat_time:
+                        self.move_motors(0, 0)
+
+                        # Check if we're done with all phases
+                        if self.main_phase == "yellow_phase":
+                            self.main_phase = "completed"
+                            self.current_task = "finished"
+                            print("All tasks completed successfully!")
+                        else:
+                            # Prepare for next color phase
+                            self.transition_to_next_color_phase()
+
+                # For turning to correct position to find next box
+                elif self.current_task == "turn_to_find_box":
+                    # Different turning times based on the current phase
+                    if self.main_phase == "red_phase":
+                        # After blue phase, turn right to find red box
+                        if self.turn_for_duration(TURN_90_RIGHT_TIME, clockwise=True):
+                            self.move_motors(0, 0)  # Stop
+                            self.start_time = time.time()  # Reset timer
+                            self.current_task = "find_box"
+                            print(f"Turned to search for {self.current_color} box")
+                    elif self.main_phase == "green_phase":
+                        # After red phase, turn 180 degrees to find green box
+                        if self.turn_for_duration(TURN_180_TIME, clockwise=True):
+                            self.move_motors(0, 0)  # Stop
+                            self.start_time = time.time()  # Reset timer
+                            self.current_task = "find_box"
+                            print(f"Turned to search for {self.current_color} box")
+                    elif self.main_phase == "yellow_phase":
+                        # After green phase, turn left to find yellow box
+                        if self.turn_for_duration(TURN_90_LEFT_TIME, clockwise=False):
+                            self.move_motors(0, 0)  # Stop
+                            self.start_time = time.time()  # Reset timer
+                            self.current_task = "find_box"
+                            print(f"Turned to search for {self.current_color} box")
+
+                # Final completion
                 elif self.current_task == "finished":
                     # Keep robot stopped
                     self.move_motors(0, 0)
-                    self.direction = "Stop"
 
-                # Check for exit command
-                if cv2.waitKey(1) & 0xFF == ord("q"):
-                    break
+                # Sleep to control loop rate
+                time.sleep(self.time_step / 1000.0)
 
         except KeyboardInterrupt:
-            print("Program interrupted by user")
+            print("Program stopped by user")
         finally:
+            # Cleanup
             self.running = False
-            self.robot.move(0, 0, 0)
+            self.move_motors(0, 0)
             self.robot.play_off_sound()
             self.cap.release()
             cv2.destroyAllWindows()
-            robot_thread.join(timeout=1.0)
 
     def cleanup(self):
         """Close all OpenCV windows and stop robot when done."""
         self.running = False
-        self.robot.move(0, 0, 0)
+        self.move_motors(0, 0)
         self.robot.play_off_sound()
         self.cap.release()
         cv2.destroyAllWindows()
@@ -580,18 +698,14 @@ class KobukiColorController:
 def main():
     """Main function to create and run the robot controller."""
     try:
-        print("Starting Kobuki robot with blue box tracking...")
-        controller = KobukiColorController()
+        controller = MultiColorRobotController()
         controller.run()
     except KeyboardInterrupt:
         print("Program stopped by user")
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
-        try:
-            controller.cleanup()
-        except:
-            pass
+        cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
