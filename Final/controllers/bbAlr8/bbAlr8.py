@@ -2,9 +2,9 @@ import cv2
 import numpy as np
 from controller import Robot, Camera, Motor, Gyro
 
-class SimplifiedRobotController:
+class MultiColorRobotController:
     def __init__(self):
-        """Initialize the robot controller with OpenCV color tracking."""
+        """Initialize the robot controller with OpenCV color tracking for multiple colors."""
         # Initialize the robot
         self.robot = Robot()
         self.time_step = int(self.robot.getBasicTimeStep())
@@ -30,9 +30,18 @@ class SimplifiedRobotController:
         # Default motor speeds
         self.MAX_SPEED = 7.0
         
-        # Color detection parameters (HSV ranges)
-        self.blue_lower = np.array([90, 100, 50])
-        self.blue_upper = np.array([130, 255, 255])
+        # Color detection parameters (HSV ranges for different colors)
+        self.color_ranges = {
+            "blue": {"lower": np.array([90, 100, 50]), "upper": np.array([130, 255, 255])},
+            "red1": {"lower": np.array([0, 100, 50]), "upper": np.array([10, 255, 255])},  # Lower red range
+            "red2": {"lower": np.array([160, 100, 50]), "upper": np.array([180, 255, 255])},  # Upper red range
+            "green": {"lower": np.array([40, 100, 50]), "upper": np.array([80, 255, 255])},
+            "yellow": {"lower": np.array([20, 100, 50]), "upper": np.array([40, 255, 255])}
+        }
+        
+        # Current color to detect (for both box and goal)
+        self.current_color = "blue"
+        self.target_mode = "box"  # Either "box" or "goal"
         
         # Box detection parameters
         self.min_box_area = 300
@@ -43,6 +52,7 @@ class SimplifiedRobotController:
         cv2.namedWindow('Robot View', cv2.WINDOW_NORMAL)
         
         # Task management
+        self.main_phase = "blue_phase"  # Starts with blue phase, then red, green, yellow
         self.current_task = "initial_navigation"
         self.has_box = False
         self.turn_angle = 0.0
@@ -54,12 +64,15 @@ class SimplifiedRobotController:
         img_array = np.frombuffer(image, np.uint8).reshape((self.height, self.width, 4))
         return img_array[:, :, :3]  # Return BGR image
     
-    def detect_blue_object(self, captured_mode=False):
+    def detect_colored_object(self, goal_mode=False):
         """
-        Detect blue objects in the image with size constraints.
-        Returns (detected, x, y, w, h, area, center_x)
+        Detect colored objects in the image with size constraints.
         
-        If captured_mode is True, we're looking for the goal, which is larger
+        Args:
+            goal_mode (bool): If True, looking for goals which are larger than boxes
+        
+        Returns:
+            (detected, x, y, w, h, area, center_x)
         """
         # Get camera image
         img_bgr = self.get_camera_image()
@@ -68,8 +81,16 @@ class SimplifiedRobotController:
         # Convert to HSV colorspace
         img_hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
         
-        # Create mask for blue color
-        mask = cv2.inRange(img_hsv, self.blue_lower, self.blue_upper)
+        # Create mask for the current color
+        if self.current_color == "red":
+            # For red, we need to combine two ranges due to how hue wraps around
+            mask1 = cv2.inRange(img_hsv, self.color_ranges["red1"]["lower"], self.color_ranges["red1"]["upper"])
+            mask2 = cv2.inRange(img_hsv, self.color_ranges["red2"]["lower"], self.color_ranges["red2"]["upper"])
+            mask = cv2.bitwise_or(mask1, mask2)
+        else:
+            # For other colors, use the corresponding range
+            mask = cv2.inRange(img_hsv, self.color_ranges[self.current_color]["lower"], 
+                              self.color_ranges[self.current_color]["upper"])
         
         # Add morphology operations to clean up the mask
         kernel = np.ones((5, 5), np.uint8)
@@ -80,10 +101,10 @@ class SimplifiedRobotController:
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
         # Area constraints
-        min_area = self.min_box_area  # Default minimum area (e.g., 500 pixels)
+        min_area = self.min_box_area  # Default minimum area
         max_area = self.width * self.height * 0.2  # Max 20% of image
         
-        if captured_mode:
+        if goal_mode:
             # When looking for the goal, adjust size constraints
             min_area = self.min_box_area * 3
             max_area = self.width * self.height * 0.8  # Allow larger area for goal
@@ -106,8 +127,16 @@ class SimplifiedRobotController:
             x, y, w, h = cv2.boundingRect(best_contour)
             center_x = x + (w // 2)
             
-            # Draw rectangle around detected object
-            cv2.rectangle(img_display, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            # Set display color based on current color
+            color_display = (0, 0, 255)  # Default red rectangle
+            if self.current_color == "blue":
+                color_display = (255, 0, 0)
+            elif self.current_color == "green":
+                color_display = (0, 255, 0)
+            elif self.current_color == "yellow":
+                color_display = (0, 255, 255)
+            
+            cv2.rectangle(img_display, (x, y), (x + w, y + h), color_display, 2)
             cv2.line(img_display, (center_x, y), (center_x, y + h), (255, 0, 0), 2)
             
             # Draw center of image
@@ -116,21 +145,21 @@ class SimplifiedRobotController:
             
             # Add information text
             aspect_ratio = w / max(1, h)
-            cv2.putText(img_display, f"Task: {self.current_task}", (10, 20), 
+            cv2.putText(img_display, f"Phase: {self.main_phase}", (10, 20), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-            cv2.putText(img_display, f"Area: {max_area_found:.0f}", (10, 50), 
+            cv2.putText(img_display, f"Task: {self.current_task}", (10, 45), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-            cv2.putText(img_display, f"Aspect: {aspect_ratio:.2f}", (10, 80), 
+            cv2.putText(img_display, f"Target: {self.target_mode} ({self.current_color})", (10, 70), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+            cv2.putText(img_display, f"Area: {max_area_found:.0f}", (10, 95), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+            cv2.putText(img_display, f"Aspect: {aspect_ratio:.2f}", (10, 120), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             
             # Show constraints
-            cv2.putText(img_display, f"Min area: {min_area}", (10, 110),
+            cv2.putText(img_display, f"Min area: {min_area}", (10, 145),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-            cv2.putText(img_display, f"Max area: {max_area:.0f}", (10, 140),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-            cv2.putText(img_display, f"Y : {y:.0f}", (10, 170),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-            cv2.putText(img_display, f"Height*0.9 : {self.height*0.9:.0f}", (10, 200),
+            cv2.putText(img_display, f"Max area: {max_area:.0f}", (10, 170),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             
             # Display the image
@@ -140,15 +169,19 @@ class SimplifiedRobotController:
             return True, x, y, w, h, max_area_found, center_x
         else:
             # No object detected
-            cv2.putText(img_display, f"Task: {self.current_task}", (10, 20), 
+            cv2.putText(img_display, f"Phase: {self.main_phase}", (10, 20), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-            cv2.putText(img_display, "No blue object detected", (10, 50), 
+            cv2.putText(img_display, f"Task: {self.current_task}", (10, 45), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+            cv2.putText(img_display, f"Target: {self.target_mode} ({self.current_color})", (10, 70), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+            cv2.putText(img_display, f"No object detected", (10, 95), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             
             # Show constraints
-            cv2.putText(img_display, f"Min area: {min_area}", (10, 80),
+            cv2.putText(img_display, f"Min area: {min_area}", (10, 120),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-            cv2.putText(img_display, f"Max area: {max_area:.0f}", (10, 110),
+            cv2.putText(img_display, f"Max area: {max_area:.0f}", (10, 145),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             
             # Draw center of image
@@ -156,7 +189,7 @@ class SimplifiedRobotController:
             cv2.line(img_display, (img_center_x, 0), (img_center_x, self.height), (0, 255, 255), 1)
             
             # Also display the mask to debug color detection
-            cv2.imshow('Blue Mask', mask)
+            cv2.imshow('Color Mask', mask)
             cv2.imshow('Robot View', img_display)
             cv2.waitKey(1)
             
@@ -249,20 +282,45 @@ class SimplifiedRobotController:
         
         return False
     
+    def transition_to_next_color_phase(self):
+        """Transition to the next color phase in the sequence."""
+        if self.main_phase == "blue_phase":
+            self.main_phase = "red_phase"
+            self.current_color = "red"
+            print("Transitioning to RED phase")
+        elif self.main_phase == "red_phase":
+            self.main_phase = "green_phase"
+            self.current_color = "green"
+            print("Transitioning to GREEN phase")
+        elif self.main_phase == "green_phase":
+            self.main_phase = "yellow_phase"
+            self.current_color = "yellow"
+            print("Transitioning to YELLOW phase")
+        elif self.main_phase == "yellow_phase":
+            self.main_phase = "completed"
+            print("All phases completed!")
+        
+        # Reset task state for the new phase
+        self.current_task = "turn_to_find_box"
+        self.target_mode = "box"  # Start by finding a box
+        self.has_box = False
+        self.reset_rotation_tracking()
+        self.timer = 0
+    
     def run(self):
         """Main control loop for the robot."""
-        # Target angles for initial navigation (radians)
-        TURN_LEFT_ANGLE = 1.57   # 90 degrees
-        TURN_RIGHT_ANGLE = -1.57  # -90 degrees
+        # Define angles for turns (radians)
+        TURN_LEFT_ANGLE = 1.57    # 90 degrees counterclockwise
+        TURN_RIGHT_ANGLE = -1.57  # 90 degrees clockwise
+        TURN_180_ANGLE = -3.14 *0.4 # 180 degrees (full turn)
         
-        # Initial turn complete flag
+        # Initial turn complete flag for blue phase
         self.has_completed_initial_turn = False
         self.has_moved_forward = False
         self.has_turned_right = False
-        self.initial_search_started = False
         
         # Drive forward timer
-        forward_time = 1500  # milliseconds
+        forward_time = 1600  # milliseconds
         self.timer = 0
         
         # Reset rotation tracking at start
@@ -272,8 +330,8 @@ class SimplifiedRobotController:
             # Update timer
             self.timer += self.time_step
             
-            # Simple task-based approach instead of complex state machine
-            if self.current_task == "initial_navigation":
+            # Blue Phase: Initial Navigation
+            if self.main_phase == "blue_phase" and self.current_task == "initial_navigation":
                 # Sub-task 1: Turn left 90 degrees
                 if not self.has_completed_initial_turn:
                     if self.turn_to_angle(TURN_LEFT_ANGLE):
@@ -296,20 +354,30 @@ class SimplifiedRobotController:
                         self.reset_rotation_tracking()
                         print("Right turn complete")
                         self.current_task = "find_box"
+                        self.target_mode = "box"
             
+            # All Phases: Find Box of Current Color
             elif self.current_task == "find_box":
-                # Search for the blue box by rotating
-                detected, x, y, w, h, area, center_x = self.detect_blue_object(False)
+                # Make sure we're looking for a box
+                self.target_mode = "box"
+                
+                # Search for the box of current color by rotating
+                detected, x, y, w, h, area, center_x = self.detect_colored_object(False)
                 
                 if not detected:
                     # Turn slowly to search
                     self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
                 else:
                     self.current_task = "approach_box"
+                    print(f"Found {self.current_color} box, approaching")
             
+            # All Phases: Approach Box
             elif self.current_task == "approach_box":
-                # Detect and follow the blue box
-                detected, x, y, w, h, area, center_x = self.detect_blue_object(False)
+                # Make sure we're still looking for a box
+                self.target_mode = "box"
+                
+                # Detect and follow the box
+                detected, x, y, w, h, area, center_x = self.detect_colored_object(False)
                 
                 if not detected:
                     # Lost the box, go back to search
@@ -320,32 +388,42 @@ class SimplifiedRobotController:
                     self.has_box = True
                     self.reset_rotation_tracking()
                     self.current_task = "turn_to_goal"
-                    print("Box captured, turning to find goal")
+                    print(f"{self.current_color} box captured, turning to find goal")
                 else:
                     # Follow the box using adaptive control
                     self.follow_object(detected, center_x, area)
             
+            # All Phases: Turn to Find Goal
             elif self.current_task == "turn_to_goal":
                 # Turn left 90 degrees to face the goal area
                 if self.turn_to_angle(TURN_LEFT_ANGLE):
                     self.reset_rotation_tracking()
                     self.current_task = "find_goal"
-                    print("Turned to face goal area")
+                    self.target_mode = "goal"  # Now looking for a goal
+                    print(f"Turned to face {self.current_color} goal area")
             
+            # All Phases: Find Goal - Now uses the same color as the box
             elif self.current_task == "find_goal":
-                # Search for the blue goal
-                detected, x, y, w, h, area, center_x = self.detect_blue_object(True)
+                # We're looking for a goal - keep same color as the box
+                self.target_mode = "goal"
+                
+                # Search for the matching colored goal
+                detected, x, y, w, h, area, center_x = self.detect_colored_object(True)
                 
                 if not detected:
                     # Turn slowly to search
                     self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
                 else:
                     self.current_task = "approach_goal"
-                    print("Goal found, approaching")
+                    print(f"{self.current_color} goal found, approaching")
             
+            # All Phases: Approach Goal - Uses same color as box
             elif self.current_task == "approach_goal":
-                # Detect and approach the blue goal
-                detected, x, y, w, h, area, center_x = self.detect_blue_object(True)
+                # Still looking for a goal
+                self.target_mode = "goal"
+                
+                # Detect and approach the matching colored goal
+                detected, x, y, w, h, area, center_x = self.detect_colored_object(True)
                 
                 if not detected:
                     # Lost the goal, go back to search
@@ -357,19 +435,54 @@ class SimplifiedRobotController:
                         self.move_motors(0, 0)
                         self.current_task = "retreat"
                         self.timer = 0
-                        print("Goal reached, retreating")
+                        print(f"Goal reached with {self.current_color} box, retreating")
                     else:
                         # Approach the goal while keeping it centered
                         self.follow_object(detected, center_x, area)
             
+            # All Phases: Retreat
             elif self.current_task == "retreat":
                 # Back up for 2 seconds
                 self.move_motors(-self.MAX_SPEED * 0.7, -self.MAX_SPEED * 0.7)
-                if self.timer >= 2000:  # 2 seconds
+
+                retreatTime = 4000
+
+                if (self.current_color == "red"):
+                    retreatTime = 10000
+
+                if self.timer >= retreatTime:  # 2 seconds
                     self.move_motors(0, 0)
-                    self.current_task = "finished"
-                    print("Task completed successfully")
+                    
+                    # Check if we're done with all phases
+                    if self.main_phase == "yellow_phase":
+                        self.main_phase = "completed"
+                        self.current_task = "finished"
+                        print("All tasks completed successfully!")
+                    else:
+                        # Prepare for next color phase
+                        self.transition_to_next_color_phase()
             
+            # For turning to correct position to find next box
+            elif self.current_task == "turn_to_find_box":
+                target_angle = 0
+                
+                # Different turning angles based on the current phase
+                if self.main_phase == "red_phase":
+                    # After blue phase, turn right to find red box
+                    target_angle = TURN_RIGHT_ANGLE
+                elif self.main_phase == "green_phase":
+                    # After red phase, turn 180 degrees to find green box
+                    target_angle = TURN_180_ANGLE
+                elif self.main_phase == "yellow_phase":
+                    # After green phase, turn left to find yellow box
+                    target_angle = TURN_LEFT_ANGLE
+                
+                if self.turn_to_angle(target_angle):
+                    self.reset_rotation_tracking()
+                    self.current_task = "find_box"
+                    print(f"Turned to search for {self.current_color} box")
+            
+            # Final completion
             elif self.current_task == "finished":
                 # Keep robot stopped
                 self.move_motors(0, 0)
@@ -382,7 +495,7 @@ class SimplifiedRobotController:
 def main():
     """Main function to create and run the robot controller."""
     try:
-        controller = SimplifiedRobotController()
+        controller = MultiColorRobotController()
         controller.run()
     except KeyboardInterrupt:
         controller.cleanup()
