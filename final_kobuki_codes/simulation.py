@@ -12,7 +12,7 @@ class MultiColorRobotController:
         self.robot = Kobuki()
 
         # Initialize camera
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(1)
         ret, frame = self.cap.read()
         if ret:
             self.height, self.width = frame.shape[:2]
@@ -316,12 +316,12 @@ class MultiColorRobotController:
         """Check if the box is at the goal based on area and aspect ratio."""
         return area > self.goal_area_threshold
 
-    def move_motors(self, left_speed, right_speed):
+    def move_motors(self, left_speed, right_speed, rotate=0):
         """Set motor speeds with clamping to MAX_SPEED."""
         left = max(-self.MAX_SPEED, min(self.MAX_SPEED, left_speed))
         right = max(-self.MAX_SPEED, min(self.MAX_SPEED, right_speed))
         # Kobuki.move(left, right, radius) - radius is 0 for differential drive
-        self.robot.move(left, right, 0)
+        self.robot.move(left, right, rotate)
 
     def estimate_rotation(self, clockwise=True):
         """
@@ -374,7 +374,7 @@ class MultiColorRobotController:
 
         # Very small error = go straight
         if abs(normalized_error) < 0.05:
-            self.move_motors(base_speed, base_speed)
+            self.move_motors(base_speed, base_speed, 0)
             self.direction = "Forward"
         else:
             # Use proportional control based on the error
@@ -390,7 +390,7 @@ class MultiColorRobotController:
                 right_speed = base_speed * (1.0 - normalized_error * turn_scale)
                 self.direction = "Right"
 
-            self.move_motors(left_speed, right_speed)
+            self.move_motors(left_speed, right_speed, 1)
 
         return True
 
@@ -401,11 +401,11 @@ class MultiColorRobotController:
         """
         # Determine turn direction
         if target_angle > 0:  # Turn counterclockwise (left)
-            self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
+            self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5, 1)
             current_angle = self.estimate_rotation(clockwise=False)
             return current_angle >= target_angle
         else:  # Turn clockwise (right)
-            self.move_motors(self.MAX_SPEED * 0.5, -self.MAX_SPEED * 0.5)
+            self.move_motors(self.MAX_SPEED * 0.5, -self.MAX_SPEED * 0.5, 1)
             current_angle = self.estimate_rotation(clockwise=True)
             return current_angle <= target_angle
 
@@ -415,9 +415,9 @@ class MultiColorRobotController:
             return True
 
         if clockwise:
-            self.move_motors(self.MAX_SPEED * 0.5, -self.MAX_SPEED * 0.5)
+            self.move_motors(self.MAX_SPEED * 0.5, -self.MAX_SPEED * 0.5, 1)
         else:
-            self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
+            self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5, 1)
 
         return False
 
@@ -459,8 +459,8 @@ class MultiColorRobotController:
         self.robot.play_on_sound()
 
         # Define time durations for turns (milliseconds)
-        TURN_90_LEFT_TIME = 1000  # Time to turn 90 degrees left
-        TURN_90_RIGHT_TIME = 1000  # Time to turn 90 degrees right
+        TURN_90_LEFT_TIME = 2000  # Time to turn 90 degrees left
+        TURN_90_RIGHT_TIME = 2000  # Time to turn 90 degrees right
         TURN_180_TIME = 2000  # Time to turn 180 degrees
 
         # Initial turn complete flag for blue phase
@@ -502,16 +502,16 @@ class MultiColorRobotController:
                     if not self.has_completed_initial_turn:
                         if self.turn_for_duration(TURN_90_LEFT_TIME, clockwise=False):
                             self.has_completed_initial_turn = True
-                            self.move_motors(0, 0)  # Stop
+                            self.move_motors(0, 0, 0)  # Stop
                             self.start_time = time.time()  # Reset timer
                             print("Initial turn complete")
 
                     # Sub-task 2: Move forward for a set time
                     elif not self.has_moved_forward:
-                        self.move_motors(self.MAX_SPEED, self.MAX_SPEED)
+                        self.move_motors(self.MAX_SPEED, self.MAX_SPEED, 0)
                         if self.timer >= forward_time:
                             self.has_moved_forward = True
-                            self.move_motors(0, 0)  # Stop
+                            self.move_motors(0, 0, 0)  # Stop
                             self.start_time = time.time()  # Reset timer
                             print("Forward movement complete")
 
@@ -519,7 +519,7 @@ class MultiColorRobotController:
                     elif not self.has_turned_right:
                         if self.turn_for_duration(TURN_90_RIGHT_TIME, clockwise=True):
                             self.has_turned_right = True
-                            self.move_motors(0, 0)  # Stop
+                            self.move_motors(0, 0, 0)  # Stop
                             self.start_time = time.time()  # Reset timer
                             print("Right turn complete")
                             self.current_task = "find_box"
@@ -537,7 +537,7 @@ class MultiColorRobotController:
 
                     if not detected:
                         # Turn slowly to search
-                        self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
+                        self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5, 1)
                     else:
                         self.current_task = "approach_box"
                         print(f"Found {self.current_color} box, approaching")
@@ -557,7 +557,7 @@ class MultiColorRobotController:
                         self.current_task = "find_box"
                     elif self.is_box_captured(y, h):
                         # Box is captured, stop and prepare to find goal
-                        self.move_motors(0, 0)
+                        self.move_motors(0, 0, 0)
                         self.has_box = True
                         self.start_time = time.time()  # Reset timer
                         self.current_task = "turn_to_goal"
@@ -572,7 +572,7 @@ class MultiColorRobotController:
                 elif self.current_task == "turn_to_goal":
                     # Turn left 90 degrees to face the goal area
                     if self.turn_for_duration(TURN_90_LEFT_TIME, clockwise=False):
-                        self.move_motors(0, 0)  # Stop
+                        self.move_motors(0, 0, 0)  # Stop
                         self.start_time = time.time()  # Reset timer
                         self.current_task = "find_goal"
                         self.target_mode = "goal"  # Now looking for a goal
@@ -590,7 +590,7 @@ class MultiColorRobotController:
 
                     if not detected:
                         # Turn slowly to search
-                        self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5)
+                        self.move_motors(-self.MAX_SPEED * 0.5, self.MAX_SPEED * 0.5, 1)
                     else:
                         self.current_task = "approach_goal"
                         print(f"{self.current_color} goal found, approaching")
@@ -625,7 +625,7 @@ class MultiColorRobotController:
                 # All Phases: Retreat
                 elif self.current_task == "retreat":
                     # Back up for 2 seconds
-                    self.move_motors(-self.MAX_SPEED * 0.7, -self.MAX_SPEED * 0.7)
+                    self.move_motors(-self.MAX_SPEED * 0.7, -self.MAX_SPEED * 0.7, 0)
 
                     retreat_time = 4000
                     if self.current_color == "red":
