@@ -36,7 +36,7 @@ class SimplifiedRobotController:
         
         # Box detection parameters
         self.min_box_area = 300
-        self.goal_area_threshold = 223000
+        self.goal_area_threshold = 220000
         self.goal_aspect_ratio = 1.5
         
         # Create visualization windows
@@ -86,7 +86,7 @@ class SimplifiedRobotController:
         if captured_mode:
             # When looking for the goal, adjust size constraints
             min_area = self.min_box_area * 3
-            max_area = self.width * self.height * 0.7  # Allow larger area for goal
+            max_area = self.width * self.height * 0.8  # Allow larger area for goal
         
         # Find the largest contour that meets our criteria
         max_area_found = 0
@@ -164,11 +164,11 @@ class SimplifiedRobotController:
     
     def is_box_captured(self, y, h):
         """Check if box is captured (bottom of box is near bottom of image)."""
-        return y > self.height * 0.89
+        return y > self.height * 0.88
     
     def is_at_goal(self, area, aspect_ratio):
         """Check if the box is at the goal based on area and aspect ratio."""
-        return (area > self.goal_area_threshold )
+        return (area > self.goal_area_threshold)
     
     def move_motors(self, left_speed, right_speed):
         """Set motor speeds with clamping to MAX_SPEED."""
