@@ -290,6 +290,8 @@ class ColorSequenceRobot:
         robot_thread.daemon = True
         robot_thread.start()
 
+        TURN_TIME = 5000
+
         # Play start sound
         self.robot.play_on_sound()
 
@@ -340,7 +342,7 @@ class ColorSequenceRobot:
                     )
 
                     # After 2 seconds, move to next task
-                    if self.timer >= 2000:
+                    if self.timer >= TURN_TIME:
                         self.current_task = "go_forward"
                         start_time = current_time  # Reset timer
                         print("Initial left turn complete, moving forward")
@@ -385,7 +387,7 @@ class ColorSequenceRobot:
                     )
 
                     # After 2 seconds, start looking for the first box
-                    if self.timer >= 2000:
+                    if self.timer >= TURN_TIME:
                         self.current_task = "find_box"
                         self.target_mode = "box"
                         start_time = current_time  # Reset timer
@@ -474,7 +476,7 @@ class ColorSequenceRobot:
                     )
 
                     # After 2 seconds, start looking for the goal
-                    if self.timer >= 2000:
+                    if self.timer >= TURN_TIME:
                         self.current_task = "find_goal"
                         start_time = current_time  # Reset timer
                         print(
