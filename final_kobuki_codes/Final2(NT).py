@@ -12,12 +12,45 @@ class ColorSequenceRobot:
         self.robot = Kobuki()
 
         # Initialize camera
-        self.cap = cv2.VideoCapture(0)
+        # List of camera interfaces to try
+        camera_ports = [0, 1, 2]
+        camera_connected = False
+        
+        while not camera_connected:
+            for port in camera_ports:
+                try:
+                    print(f"Attempting to connect to camera on port {port}...")
+                    self.cap = cv2.VideoCapture(port)
+                    
+                    # Check if camera opened successfully
+                    if self.cap.isOpened():
+                        # Verify we can read a frame
+                        ret, frame = self.cap.read()
+                        if ret:
+                            print(f"Successfully connected to camera on port {port}")
+                            self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                            self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                            camera_connected = True
+                            break
+                        else:
+                            print(f"Camera on port {port} opened but couldn't read a frame")
+                            self.cap.release()
+                    else:
+                        print(f"Failed to open camera on port {port}")
+                except Exception as e:
+                    print(f"Error trying camera port {port}: {e}")
+                    if hasattr(self, 'cap'):
+                        self.cap.release()
+            
+            if not camera_connected:
+                print("No working camera found. Retrying in 5 seconds...")
+                time.sleep(5)  # Wait before trying again
+                
         self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         # Motor control parameters
-        self.max_speed = 200
+        self.max_speed = 150
         self.running = True
         self.direction = "Stop"
 
@@ -81,10 +114,8 @@ class ColorSequenceRobot:
                 self.robot.move(self.max_speed * 0.5, self.max_speed * 0.5, 0)
             elif self.direction == "Turn Left":
                 self.robot.move(0, self.max_speed * 0.6, 1)
-                time.sleep(10)
             elif self.direction == "Turn Right":
                 self.robot.move(self.max_speed * 0.6, 0, 1)
-                time.sleep(10)
             elif self.direction == "Reverse":
                 self.robot.move(-self.max_speed * 0.5, -self.max_speed * 0.5, 1)
 

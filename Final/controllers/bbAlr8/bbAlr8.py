@@ -45,7 +45,7 @@ class MultiColorRobotController:
         
         # Box detection parameters
         self.min_box_area = 300
-        self.goal_area_threshold = 220000
+        self.goal_area_threshold = 240000
         self.goal_aspect_ratio = 1.5
         
         # Create visualization windows
