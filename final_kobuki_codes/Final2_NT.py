@@ -78,7 +78,7 @@ class ColorSequenceRobot:
 
         # Object detection parameters
         self.min_box_area = 500
-        self.goal_area_threshold = 10000  # Adjust based on your camera and objects
+        self.goal_area_threshold = 230000  # Adjust based on your camera and objects
         self.last_detection_time = time.time()
         self.detection_timeout = 2  # seconds to wait before giving up
 
@@ -87,7 +87,7 @@ class ColorSequenceRobot:
         self.turn_start_time = 0
         self.forward_time = 3000  # milliseconds, adjustable
         self.timer = 0
-        self.retreat_time = 3000  # milliseconds
+        self.retreat_time = 4000  # milliseconds
 
         # Create visualization window
         cv2.namedWindow("Robot View", cv2.WINDOW_NORMAL)
@@ -113,9 +113,9 @@ class ColorSequenceRobot:
             elif self.direction == "Slow Forward":
                 self.robot.move(self.max_speed * 0.5, self.max_speed * 0.5, 0)
             elif self.direction == "Turn Left":
-                self.robot.move(0, self.max_speed * 0.6, 1)
+                self.robot.move(0, self.max_speed * 0.8, 1)
             elif self.direction == "Turn Right":
-                self.robot.move(self.max_speed * 0.6, 0, 1)
+                self.robot.move(self.max_speed * 0.8, 0, 1)
             elif self.direction == "Reverse":
                 self.robot.move(-self.max_speed * 0.5, -self.max_speed * 0.5, 1)
 
@@ -263,7 +263,7 @@ class ColorSequenceRobot:
 
     def is_box_captured(self, y, h):
         """Check if box is captured (near bottom of frame)."""
-        return y + h > self.height * 0.85
+        return y > self.height * 0.88
 
     def is_at_goal(self, area):
         """Check if robot has reached the goal based on area."""
