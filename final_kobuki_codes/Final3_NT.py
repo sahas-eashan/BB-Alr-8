@@ -12,7 +12,40 @@ class ColorSequenceRobot:
         self.robot = Kobuki()
 
         # Initialize camera
-        self.cap = cv2.VideoCapture(1)
+        # List of camera interfaces to try
+        camera_ports = [0, 1, 2]
+        camera_connected = False
+        
+        while not camera_connected:
+            for port in camera_ports:
+                try:
+                    print(f"Attempting to connect to camera on port {port}...")
+                    self.cap = cv2.VideoCapture(port)
+                    
+                    # Check if camera opened successfully
+                    if self.cap.isOpened():
+                        # Verify we can read a frame
+                        ret, frame = self.cap.read()
+                        if ret:
+                            print(f"Successfully connected to camera on port {port}")
+                            self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                            self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                            camera_connected = True
+                            break
+                        else:
+                            print(f"Camera on port {port} opened but couldn't read a frame")
+                            self.cap.release()
+                    else:
+                        print(f"Failed to open camera on port {port}")
+                except Exception as e:
+                    print(f"Error trying camera port {port}: {e}")
+                    if hasattr(self, 'cap'):
+                        self.cap.release()
+            
+            if not camera_connected:
+                print("No working camera found. Retrying in 5 seconds...")
+                time.sleep(5)  # Wait before trying again
+                
         self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
@@ -44,7 +77,7 @@ class ColorSequenceRobot:
         self.target_mode = "box"  # Either "box" or "goal"
 
         # Object detection parameters
-        self.min_box_area = 200
+        self.min_box_area = 500
         self.goal_area_threshold = 230000  # Adjust based on your camera and objects
         self.last_detection_time = time.time()
         self.detection_timeout = 2  # seconds to wait before giving up
@@ -80,9 +113,9 @@ class ColorSequenceRobot:
             elif self.direction == "Slow Forward":
                 self.robot.move(self.max_speed * 0.5, self.max_speed * 0.5, 0)
             elif self.direction == "Turn Left":
-                self.robot.move(0, self.max_speed * 0.6, 1)
+                self.robot.move(0, self.max_speed * 0.8, 1)
             elif self.direction == "Turn Right":
-                self.robot.move(self.max_speed * 0.6, 0, 1)
+                self.robot.move(self.max_speed * 0.8, 0, 1)
             elif self.direction == "Reverse":
                 self.robot.move(-self.max_speed * 0.5, -self.max_speed * 0.5, 1)
 
@@ -137,11 +170,27 @@ class ColorSequenceRobot:
         max_area = 0
         best_contour = None
 
+        # Find the top two contours by area
+        contour_areas = []
         for contour in contours:
             area = cv2.contourArea(contour)
-            if area > min_area and area > max_area:
-                max_area = area
-                best_contour = contour
+            if area > min_area:
+                contour_areas.append((area, contour))
+
+        # Sort contours by area in descending order
+        contour_areas.sort(key=lambda x: x[0], reverse=True)
+
+        # Select the second largest contour if available, otherwise use the largest
+        best_contour = None
+        max_area = 0
+        if len(contour_areas) >= 2:
+            # Use the second largest contour
+            max_area = contour_areas[1][0]
+            best_contour = contour_areas[1][1]
+        elif len(contour_areas) == 1:
+            # Only one contour available, use it
+            max_area = contour_areas[0][0]
+            best_contour = contour_areas[0][1]
 
         # If contour found, draw and return information
         if best_contour is not None:

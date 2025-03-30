@@ -644,10 +644,10 @@ def main():
     robot.forward_time = 3000
 
     # Adjust retreat time if needed (default is 3000 ms)
-    robot.retreat_time = 3000
+    robot.retreat_time = 5000
 
     # Adjust goal area threshold based on your objects and camera
-    robot.goal_area_threshold = 10000
+    robot.goal_area_threshold = 2300000
 
     print(
         "Robot configured. Press 'q' to quit, 'f'/'g' to adjust forward time, 'r' to reset."
