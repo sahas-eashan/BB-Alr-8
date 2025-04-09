@@ -132,7 +132,9 @@ In the final round, we implemented a **real-time box sorting robot** using a **K
 ---
 
 🔗 [Click here to watch the Final Round Video](https://github.com/sahas-eashan/BB-Alr-8/blob/main/videos/WhatsApp%20Video%202025-03-31%20at%2009.14.59_cb0bb7b0.mp4)
-🔗 [Click here to watch the Final Round Video](https://github.com/sahas-eashan/BB-Alr-8/blob/main/videos/WhatsApp%20Video%202025-03-31%20at%2009.14.59_cb0bb7b0.mp4)
+//
+
+🔗 [Click here to watch the Final Round Video_Simulation](https://github.com/sahas-eashan/BB-Alr-8/blob/main/videos/WhatsApp%20Video%202025-03-29%20at%2014.55.56_7c259a14.mp4)
 
 ---
 
