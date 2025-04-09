@@ -133,8 +133,7 @@ In the final round, we implemented a **real-time box sorting robot** using a **K
 
 ## 🎥 Video Demonstrations
 
-- Demonstration videos for each round are submitted via the official portal.
-- Real-time footage included as per RoboGames requirements.
+
 
 ---
 
@@ -145,6 +144,3 @@ This repository is maintained by **Team BB-Alr-8** for academic and competition 
 ---
 
 **Made with ❤️ by Team BB-Alr-8 – 2nd Runners-Up of RoboGames 2024 🏆**
-```
-
-Let me know if you'd like me to update the actual `README.md` file in your project too!
