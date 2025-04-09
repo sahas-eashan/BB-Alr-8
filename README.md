@@ -7,7 +7,8 @@ Welcome to the official repository of **Team BB-Alr-8**, the **2nd Runners-up** 
 
 ## 🧠 Team Members
 
-- **Team Name**: BB-Alr-8  
+- **Team Name**: BB-Alr-8
+- **Team Members**: Kiran Gunathilaka, Sahas Eashan, Pankaja Balasooriya, Kavishka Jayakody, Anuja Kalhara
 - **Achievement**: 🥉 2nd Runners-Up – RoboGames 2024  
 - **Tools & Platforms**: Webots, Python, Raspberry Pi 5, Kobuki Base, Kinect Camera
 
